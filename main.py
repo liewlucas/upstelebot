@@ -1,5 +1,4 @@
 import constants as keys
-from telegram import bot
 from telegram.ext import *
 import responses as R
 from datetime import datetime
