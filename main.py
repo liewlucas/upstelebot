@@ -23,7 +23,7 @@ def start_command(update, context):
    # while current_time == '17:28:00':
       #  send_reminder_message()
 
-def send_reminder_message():
+def remindertestmessage():
     remindertext = "This is a Reminder to Update your Parade State by Wednesday, 2200H"
     tb = telebot.TeleBot(keys.API_KEY)
     CHAT_ID = '551111942'
@@ -52,13 +52,18 @@ def list_command(update,context):
 
 def Send_Reminder_Message(update, context):
     remindertext = "This is a Reminder to Update your Parade State by Wednesday, 2200H"
-    update.message.text = remindertext
+    #update.message.text = remindertext
     #context.bot.send_message(chat_id=update.effective_chat.id, text=remindertext)
     context.bot.send_message(chat_id='-551111942', text=remindertext)
 
-def scheduletest(update, context):
-    #schedule.every(10).seconds.do(send_reminder_message)
-    send_reminder_message()
+def scheduletest(update,context):
+    schedule.every().Day.at("12:00").do(Send_Reminder_Message, update,context)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+    #Send_Reminder_Message(update,context)
 
 def error(update, context):
     print(f"update {update} caused error {context.error}")
@@ -71,7 +76,7 @@ def main():
     dp.add_handler(CommandHandler("help", help_command))
     dp.add_handler(CommandHandler("schedule", schedule_command))
     dp.add_handler(CommandHandler("list", list_command))
-    dp.add_handler(CommandHandler("apple", Send_Reminder_Message))
+    dp.add_handler(CommandHandler("apple", scheduletest))
     dp.add_handler(MessageHandler(Filters.text, handle_message))
 
 
