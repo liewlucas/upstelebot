@@ -17,7 +17,8 @@ def sample_responses(input_text):
         replymessage = "Reminder is set at"
         arrayofreply = [replymessage, userinput]
         fullreply = " " #empty string
-        return(fullreply.join(arrayofreply))
+        reply = (fullreply.join(arrayofreply))
+        return reply
 
     except ValueError:
         return "Sorry Your Date Time format is wrong. Please Follow Example: 17:30 "
@@ -27,3 +28,5 @@ def sample_responses(input_text):
     your_str = userinput.text
 
     return "Sorry i dont understand"
+
+

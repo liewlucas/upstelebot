@@ -3,13 +3,16 @@ from telegram.ext import *
 import responses as R
 from datetime import datetime
 import telebot
-
+import schedule
+import time
 
 now = datetime.now()
 current_time= now.strftime("%H:%M:%S")
 
 print("Current Time =",current_time)
 print ("Bot started...")
+
+
 
 def start_command(update, context):
     update.message.reply_text("Welcome to the UpdateParadeStateBot! Here is a list of our commands to get you started!")
@@ -20,7 +23,7 @@ def start_command(update, context):
    # while current_time == '17:28:00':
       #  send_reminder_message()
 
-def send_reminder_message():
+def remindertestmessage():
     remindertext = "This is a Reminder to Update your Parade State by Wednesday, 2200H"
     tb = telebot.TeleBot(keys.API_KEY)
     CHAT_ID = '551111942'
@@ -41,14 +44,26 @@ def handle_message(update, context):
 def schedule_command(update,context):
     update.message.reply_text("What time would you like me to send the Reminder? (Format: e.g 17:30 for 5.30pm)")
     text = update.message.text.lower()  # receive text from user
-    response = R.sample_responses(text)  # process the text
+    #update.message.reply_text(R.sample_responses(R.reply))
+    schedule.every(10).seconds.do(print("hello"))
 
 def list_command(update,context):
     update.message.reply_text("hello! here are your set reminders : (work in progress)")
 
 def Send_Reminder_Message(update, context):
     remindertext = "This is a Reminder to Update your Parade State by Wednesday, 2200H"
-    update.message.text = remindertext
+    #update.message.text = remindertext
+    #context.bot.send_message(chat_id=update.effective_chat.id, text=remindertext)
+    context.bot.send_message(chat_id='-551111942', text=remindertext)
+
+def scheduletest(update,context):
+    schedule.every().day.at("12:00").do(Send_Reminder_Message, update,context)
+    print ("schedule set!")
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+    #Send_Reminder_Message(update,context)
 
 def error(update, context):
     print(f"update {update} caused error {context.error}")
@@ -61,12 +76,19 @@ def main():
     dp.add_handler(CommandHandler("help", help_command))
     dp.add_handler(CommandHandler("schedule", schedule_command))
     dp.add_handler(CommandHandler("list", list_command))
+    dp.add_handler(CommandHandler("apple", scheduletest))
     dp.add_handler(MessageHandler(Filters.text, handle_message))
+
 
 
     dp.add_error_handler(error)
 
+
     updater.start_polling(0) #seconds on how often bot check for input
     updater.idle()
 
+    #schedule.every().friday.at("17:25").do(Send_Reminder_Message)
+   # schedule.every().friday.at("17:26").do(print('hello'))
+    #print('hello')
 main()
+
