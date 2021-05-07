@@ -57,8 +57,8 @@ def Send_Reminder_Message(update, context):
     context.bot.send_message(chat_id='-551111942', text=remindertext)
 
 def scheduletest(update,context):
-    schedule.every().Day.at("12:00").do(Send_Reminder_Message, update,context)
-
+    schedule.every().day.at("12:00").do(Send_Reminder_Message, update,context)
+    print ("schedule set!")
     while True:
         schedule.run_pending()
         time.sleep(1)
