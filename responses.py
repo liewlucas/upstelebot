@@ -21,7 +21,7 @@ def sample_responses(input_text):
         return reply
 
     except ValueError:
-        return "Sorry Your Date Time format is wrong. Please Follow Example: 17:30 "
+        return "Sorry, Your Date Time format is wrong. Please Follow Example: 17:30 "
 
 
     print(userinput)
@@ -29,4 +29,17 @@ def sample_responses(input_text):
 
     return "Sorry i dont understand"
 
+def day_response(input_day):
+    user_day = str(input_day).lower()
 
+    try:
+        time.strptime(user_day, '%A')
+        userday = user_day
+        replymessage = "Reminder is set on"
+        arrayofreply= [replymessage, userday]
+        fullreply = " "
+        reply = (fullreply.join(arrayofreply))
+        return reply
+
+    except ValueError:
+        return "Sorry, Your Day format is wrong. Please Follow Example: Monday "
