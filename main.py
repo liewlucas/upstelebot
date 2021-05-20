@@ -45,10 +45,11 @@ def schedule_command(update,context):
     update.message.reply_text("What time would you like me to send the Reminder? (Format: e.g 17:30 for 5.30pm)")
     text = update.message.text.lower()  # receive text from user
     #update.message.reply_text(R.sample_responses(R.reply))
-    schedule.every(10).seconds.do(print("hello"))
+    #schedule.every(10).seconds.do(print("hello"))
 
 def list_command(update,context):
-    update.message.reply_text("hello! here are your set reminders : (work in progress)")
+    #update.message.reply_text("hello! here are your set reminders : (work in progress)")
+    print(update.message.chat.id)
 
 def Send_Reminder_Message(update, context):
     remindertext = "This is a Reminder to Update your Parade State by Wednesday, 2200H"
@@ -63,7 +64,25 @@ def scheduletest(update,context):
         schedule.run_pending()
         time.sleep(1)
 
+
+
     #Send_Reminder_Message(update,context)
+
+def get_chat_id(update, context):
+    chat_id = -1
+
+    if update.message is not None:
+        # text message
+        chat_id = update.message.chat.id
+    elif update.callback_query is not None:
+        # callback message
+        chat_id = update.callback_query.message.chat.id
+    elif update.poll is not None:
+        # answer in Poll
+        chat_id = context.bot_data[update.poll.id]
+
+    return chat_id
+    print (chat_id)
 
 def error(update, context):
     print(f"update {update} caused error {context.error}")
@@ -77,6 +96,7 @@ def main():
     dp.add_handler(CommandHandler("schedule", schedule_command))
     dp.add_handler(CommandHandler("list", list_command))
     dp.add_handler(CommandHandler("apple", scheduletest))
+    dp.add_handler(CommandHandler("pear", get_chat_id))
     dp.add_handler(MessageHandler(Filters.text, handle_message))
 
 
