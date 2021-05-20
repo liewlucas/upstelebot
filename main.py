@@ -44,8 +44,13 @@ def handle_message(update, context):
 def schedule_command(update,context):
     update.message.reply_text("What time would you like me to send the Reminder? (Format: e.g 17:30 for 5.30pm)")
     text = update.message.text.lower()  # receive text from user
+    global userchatid                   # create a global variable
+    userchatid= update.message.chat.id  # assign global variable to get chatID
+    print(userchatid)
+    #schedule.every(10).seconds.do(Send_Reminder_Message, update, context)
     #update.message.reply_text(R.sample_responses(R.reply))
     #schedule.every(10).seconds.do(print("hello"))
+    scheduletest(update,context)        # call schedule test function
 
 def list_command(update,context):
     #update.message.reply_text("hello! here are your set reminders : (work in progress)")
@@ -55,10 +60,13 @@ def Send_Reminder_Message(update, context):
     remindertext = "This is a Reminder to Update your Parade State by Wednesday, 2200H"
     #update.message.text = remindertext
     #context.bot.send_message(chat_id=update.effective_chat.id, text=remindertext)
-    context.bot.send_message(chat_id='-551111942', text=remindertext)
+    global userchatid
+    userchatid2=str(userchatid)
+    context.bot.send_message(chat_id=userchatid2, text=remindertext)
+    print(userchatid2)
 
 def scheduletest(update,context):
-    schedule.every().day.at("12:00").do(Send_Reminder_Message, update,context)
+    schedule.every(10).seconds.do(Send_Reminder_Message, update,context)
     print ("schedule set!")
     while True:
         schedule.run_pending()
@@ -96,7 +104,7 @@ def main():
     dp.add_handler(CommandHandler("schedule", schedule_command))
     dp.add_handler(CommandHandler("list", list_command))
     dp.add_handler(CommandHandler("apple", scheduletest))
-    dp.add_handler(CommandHandler("pear", get_chat_id))
+    dp.add_handler(CommandHandler("pear", Send_Reminder_Message))
     dp.add_handler(MessageHandler(Filters.text, handle_message))
 
 
