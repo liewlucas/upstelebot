@@ -1,7 +1,7 @@
 import time
 from datetime import datetime
-
 from telegram import bot
+
 
 now = datetime.now()
 current_time= now.strftime("%H:%M:%S")
@@ -30,7 +30,7 @@ def sample_responses(input_text):
     return "Sorry i dont understand"
 
 def day_response(input_day):
-    user_day = str(input_day).lower()
+    user_day = str(input_day)
 
     try:
         time.strptime(user_day, '%A')

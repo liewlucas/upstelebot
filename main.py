@@ -1,3 +1,4 @@
+from telegram import ReplyKeyboardMarkup, Update, ReplyKeyboardRemove
 import constants as keys
 from telegram.ext import *
 import responses as R
@@ -5,6 +6,7 @@ from datetime import datetime
 import telebot
 import schedule
 import time
+import logging
 
 now = datetime.now()
 current_time= now.strftime("%H:%M:%S")
@@ -12,6 +14,12 @@ current_time= now.strftime("%H:%M:%S")
 print("Current Time =",current_time)
 print ("Bot started...")
 
+logging.basicConfig(
+    format='%(message)s', level=logging.INFO
+)
+logger = logging.getLogger(__name__)
+
+DAY = range(1)
 
 
 def start_command(update, context):
@@ -36,29 +44,60 @@ def help_command(update, context):
                               "/setaddress to set link of paradestate")
 
 def handle_message(update, context):
+    #global text
     text = str(update.message.text)#.lower() #receive text from user
 
 
 
 
+
+
+def cancel(update: Update, _: CallbackContext) -> int:
+    user = update.message.from_user
+    logger.info("User %s canceled the conversation.", user.first_name)
+    update.message.reply_text(
+        'Bye! I hope we can talk again some day.', reply_markup=ReplyKeyboardRemove()
+    )
+
+    return ConversationHandler.END
+
+def dayfromuser (update:Update, _: CallbackContext) -> int:
+    global dayusertext
+    dayusertext = str(update.message.text)
+    #update.message.reply_text(dayusertext)
+    dayresponse = R.day_response(dayusertext)  # process the text under responses.py
+    update.message.reply_text(dayresponse)  # first reply
+    scheduletest(update, CallbackContext)
+
+
+
 def schedule_command(update,context):
-    update.message.reply_text("Which day would you like me to send the Reminder? (Format: Monday or Wednesday)")
-    text = str(update.message.text) #receive text from user
-    dayresponse = R.day_response(text) #process the text under responses.py
-    update.message.reply_text(dayresponse) #first reply
+    reply_keyboard = [['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']]
+    update.message.reply_text("Which day would you like me to send the Reminder? (Format: Monday or Wednesday)",
+    reply_markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),)
 
-    update.message.reply_text("Now, at what time would you like me to send the Reminder? (Format: e.g 17:30 for 5.30pm)")
-    text = update.message.text.lower()  # receive text from user
-    response = R.sample_responses(text)  # process the text under responses.py
-    update.message.reply_text(response)  #second reply
-
-    global userchatid                   # create a global variable
-    userchatid= update.message.chat.id  # assign global variable to get chatID
+    global userchatid  # create a global variable
+    userchatid = update.message.chat.id  # assign global variable to get chatID
     print(userchatid)
+    #scheduletest(update, context)
+
+    return DAY
+
+
+    #text = str(update.message.text) #receive text from user
+    #dayresponse = R.day_response(dayusertext) #process the text under responses.py
+    #update.message.reply_text(dayresponse) #first reply
+
+    #update.message.reply_text("Now, at what time would you like me to send the Reminder? (Format: e.g 17:30 for 5.30pm)")
+    #text = update.message.text.lower()  # receive text from user
+    #response = R.sample_responses(text)  # process the text under responses.py
+    #update.message.reply_text(response)  #second reply
+
+
     #schedule.every(10).seconds.do(Send_Reminder_Message, update, context)
     #update.message.reply_text(R.sample_responses(R.reply))
     #schedule.every(10).seconds.do(print("hello"))
-    scheduletest(update,context)        # call schedule test function
+          # call schedule test function
 
 def list_command(update,context):
     #update.message.reply_text("hello! here are your set reminders : (work in progress)")
@@ -107,13 +146,23 @@ def main():
     updater = Updater(keys.API_KEY, use_context=True)
     dp = updater.dispatcher
 
+    conv_handler =(ConversationHandler(
+        entry_points=[CommandHandler('schedule',schedule_command)],
+        states={
+        DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday)$'), dayfromuser)],
+        },
+        fallbacks=[CommandHandler('cancel', cancel)],
+        ))
+
     dp.add_handler(CommandHandler("start", start_command))
     dp.add_handler(CommandHandler("help", help_command))
-    dp.add_handler(CommandHandler("schedule", schedule_command))
+    #dp.add_handler(CommandHandler("schedule", schedule_command))
+    dp.add_handler(conv_handler)
     dp.add_handler(CommandHandler("list", list_command))
     dp.add_handler(CommandHandler("apple", scheduletest))
     dp.add_handler(CommandHandler("pear", Send_Reminder_Message))
     dp.add_handler(MessageHandler(Filters.text, handle_message))
+
 
 
 
