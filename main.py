@@ -1,3 +1,4 @@
+
 from telegram import ReplyKeyboardMarkup, Update, ReplyKeyboardRemove
 import constants as keys
 from telegram.ext import *
@@ -61,13 +62,13 @@ def cancel(update: Update, _: CallbackContext) -> int:
 
     return ConversationHandler.END
 
-def dayfromuser (update:Update, _: CallbackContext) -> int:
+def dayfromuser (update:Update, context: CallbackContext) -> int:
     global dayusertext
     dayusertext = str(update.message.text)
     #update.message.reply_text(dayusertext)
     dayresponse = R.day_response(dayusertext)  # process the text under responses.py
     update.message.reply_text(dayresponse)  # first reply
-    scheduletest(update, CallbackContext)
+    scheduletest(update, context)
 
 
 
@@ -109,7 +110,9 @@ def Send_Reminder_Message(update, context):
     #context.bot.send_message(chat_id=update.effective_chat.id, text=remindertext)
     global userchatid
     userchatid2=str(userchatid)
+    bot = context.bot
     context.bot.send_message(chat_id=userchatid2, text=remindertext)
+    #update.message.reply_text(text=remindertext)
     print(userchatid2)
 
 def scheduletest(update,context):
