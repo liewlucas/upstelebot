@@ -36,14 +36,22 @@ def help_command(update, context):
                               "/setaddress to set link of paradestate")
 
 def handle_message(update, context):
-    text = str(update.message.text).lower() #receive text from user
-    response = R.sample_responses(text) #process the text
+    text = str(update.message.text)#.lower() #receive text from user
 
-    update.message.reply_text(response) # reply the text
+
+
 
 def schedule_command(update,context):
-    update.message.reply_text("What time would you like me to send the Reminder? (Format: e.g 17:30 for 5.30pm)")
+    update.message.reply_text("Which day would you like me to send the Reminder? (Format: Monday or Wednesday)")
+    text = str(update.message.text) #receive text from user
+    dayresponse = R.day_response(text) #process the text under responses.py
+    update.message.reply_text(dayresponse) #first reply
+
+    update.message.reply_text("Now, at what time would you like me to send the Reminder? (Format: e.g 17:30 for 5.30pm)")
     text = update.message.text.lower()  # receive text from user
+    response = R.sample_responses(text)  # process the text under responses.py
+    update.message.reply_text(response)  #second reply
+
     global userchatid                   # create a global variable
     userchatid= update.message.chat.id  # assign global variable to get chatID
     print(userchatid)
