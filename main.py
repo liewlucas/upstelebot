@@ -118,6 +118,7 @@ def Send_Reminder_Message(update, context):
 def scheduletest(update,context):
     schedule.every(10).seconds.do(Send_Reminder_Message, update,context)
     print ("schedule set!")
+
     while True:
         schedule.run_pending()
         time.sleep(1)
