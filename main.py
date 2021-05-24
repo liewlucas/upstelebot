@@ -20,7 +20,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-DAY = range(1)
+DAY, TIME = range(2)
 
 
 def start_command(update, context):
@@ -67,14 +67,29 @@ def dayfromuser (update:Update, context: CallbackContext) -> int:
     dayusertext = str(update.message.text)
     #update.message.reply_text(dayusertext)
     dayresponse = R.day_response(dayusertext)  # process the text under responses.py
-    update.message.reply_text(dayresponse)  # first reply
-    scheduletest(update, context)
+    test(update,context)
+    return TIME
+
+def test (update, context):
+    update.message.reply_text("At what time do you want to set the reminder?")  # first reply
+    #timefromuser(update,context)
+    return TIME
+
+def timefromuser (update:Update, context: CallbackContext) -> int:
+    print("hello")
+    global timeusertext
+    timeusertext = str(update.message.text)
+    update.message.reply_text(timeusertext),
+
+    #timeresponse = R.time_response(timeusertext)
+    #update.message.reply_text(timeresponse)
+    #scheduletest(update,context)
 
 
 
 def schedule_command(update,context):
     reply_keyboard = [['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']]
-    update.message.reply_text("Which day would you like me to send the Reminder? (Format: Monday or Wednesday)",
+    update.message.reply_text("Which day would you like me to send the Reminder?",
     reply_markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),)
 
     global userchatid  # create a global variable
@@ -105,7 +120,7 @@ def list_command(update,context):
     print(update.message.chat.id)
 
 def Send_Reminder_Message(update, context):
-    remindertext = "This is a Reminder to Update your Parade State by Wednesday, 2200H"
+    remindertext = "This is a Reminder to Update your Parade State by '(dayusertext)', 2200H"
     #update.message.text = remindertext
     #context.bot.send_message(chat_id=update.effective_chat.id, text=remindertext)
     global userchatid
@@ -153,9 +168,12 @@ def main():
         entry_points=[CommandHandler('schedule',schedule_command)],
         states={
         DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday)$'), dayfromuser)],
-        },
+
+        TIME: [MessageHandler(Filters.regex(r'^[0-2]\d:[0-5]\d$'), timefromuser)],},
+
         fallbacks=[CommandHandler('cancel', cancel)],
         ))
+
 
     dp.add_handler(CommandHandler("start", start_command))
     dp.add_handler(CommandHandler("help", help_command))
