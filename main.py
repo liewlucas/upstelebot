@@ -77,9 +77,9 @@ def test (update, context):
 
 def timefromuser (update:Update, context: CallbackContext) -> int:
     print("hello")
-    global timeusertext
-    timeusertext = str(update.message.text)
-    update.message.reply_text(timeusertext),
+    #global timeusertext
+    #timeusertext = str(update.message.text)
+    #update.message.reply_text(timeusertext)
 
     #timeresponse = R.time_response(timeusertext)
     #update.message.reply_text(timeresponse)
@@ -138,7 +138,6 @@ def scheduletest(update,context):
         time.sleep(1)
 
 
-
     #Send_Reminder_Message(update,context)
 
 def get_chat_id(update, context):
@@ -169,7 +168,7 @@ def main():
         states={
         DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday)$'), dayfromuser)],
 
-        TIME: [MessageHandler(Filters.regex(r'^[0-2]\d:[0-5]\d$'), timefromuser)],},
+        TIME: [MessageHandler(Filters.regex('^([0-2]\d):([0-5]\d)$'), timefromuser)],},
 
         fallbacks=[CommandHandler('cancel', cancel)],
         ))
@@ -181,9 +180,9 @@ def main():
     dp.add_handler(conv_handler)
     dp.add_handler(CommandHandler("list", list_command))
     dp.add_handler(CommandHandler("apple", scheduletest))
-    dp.add_handler(CommandHandler("pear", Send_Reminder_Message))
+    dp.add_handler(CommandHandler("pear", test))
     dp.add_handler(MessageHandler(Filters.text, handle_message))
-
+    #dp.add_handler(MessageHandler(Filters.regex('^([01]\d|2[0-3]):([0-5]\d)$'), timefromuser))
 
 
 
