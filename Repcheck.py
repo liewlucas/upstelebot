@@ -1,9 +1,10 @@
 import json
 import os
 
-db_name = 'C:/Users/Antho/Desktop/DBfile/db.txt'
-IDList = []
-ID = 3
+# Use '/root/File_DB/db.txt' when migrated to windows remote desktop
+db_name = 'C:/Users/Antho/Desktop/Telebot/DBfile/db.txt'
+ID_List = []
+
 
 
 # Function to check if file database available
@@ -48,26 +49,9 @@ def update_db(newdata):
 
 # Defining repetition checking function
 x: object
-
-def repcheck(ID, IDList):
-    for x in IDList:
-        if IDList.count(ID) > 0:
+def repcheck(ID, ID_List):
+    for x in ID_List:
+        if ID_List.count(ID) > 0:
             return True
         return False
 
-
-# Using Repetition checking function
-# To prepopulate the IDlist from a file
-IDList = read_db()
-print("afterlist")
-print(IDList)
-if repcheck(ID, IDList):
-    print("There are duplicates.")
-else:
-    print("No duplicates.")
-
-    # Adding new ID to IDList
-    IDList.append(ID)
-    print("after append")
-    update_db(IDList)
-    print(IDList)
