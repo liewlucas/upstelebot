@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-DAY = range(1)
+DAY, TIME = range(2)
 
 
 def start_command(update, context):
@@ -63,6 +63,17 @@ def cancel(update: Update, _: CallbackContext) -> int:
     )
 
     return ConversationHandler.END
+
+def test (update, context):
+    update.message.reply_text("At what time do you want to set the reminder?")  # first reply
+    #timefromuser(update,context)
+    return TIME
+
+def timefromuser (update:Update, context: CallbackContext) -> int:
+    print("hello")
+    global timeusertext
+    timeusertext = str(update.message.text)
+    update.message.reply_text(timeusertext)
 
 
 def dayfromuser(update: Update, context: CallbackContext) -> int:
@@ -177,7 +188,7 @@ def main():
         entry_points=[CommandHandler('schedule', schedule_command)],
         states={
             DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday)$'), dayfromuser)],
-        },
+            TIME: [MessageHandler(Filters.regex('^([0-2]\d):([0-5]\d)$'), timefromuser)],},
         fallbacks=[CommandHandler('cancel', cancel)],
     ))
 
@@ -187,7 +198,7 @@ def main():
     dp.add_handler(conv_handler)
     dp.add_handler(CommandHandler("list", list_command))
     dp.add_handler(CommandHandler("apple", scheduletest))
-    dp.add_handler(CommandHandler("pear", Send_Reminder_Message))
+    dp.add_handler(CommandHandler("pear", test))
     dp.add_handler(MessageHandler(Filters.text, handle_message))
 
     dp.add_error_handler(error)
