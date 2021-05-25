@@ -149,11 +149,13 @@ def scheduletest(update, context):
         Rep.update_db(ID_List)
         print(ID_List)
         # Add Original Schedule Function
+
     print("schedule set!")
-    schedule.every(10).seconds.do(Send_Reminder_Message, update, context)
+    schedule.every(10).seconds.do(Send_Reminder_Message, update, context,)
     while True:
         schedule.run_pending()
         time.sleep(1)
+
 
 # Send_Reminder_Message(update,context)
 
