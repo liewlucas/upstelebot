@@ -65,20 +65,19 @@ def cancel(update: Update, _: CallbackContext) -> int:
 
 
 def timefromuser (update:Update, context: CallbackContext) -> int:
-    print("hello")
     global timeusertext
     timeusertext = str(update.message.text)
-    update.message.reply_text(timeusertext)
-
+    #update.message.reply_text(timeusertext)
+    timeresponse = R.time_response(timeusertext) # process time given under responses.py
+    update.message.reply_text(timeresponse)  # first reply
+    scheduletest(update, context)
 
 def dayfromuser(update: Update, context: CallbackContext) -> int:
     global dayusertext
+    global dayresponse
     dayusertext = str(update.message.text)
     # update.message.reply_text(dayusertext)
-    #dayresponse = R.day_response(dayusertext)  # process the text under responses.py
-    #update.message.reply_text(dayresponse)  # first reply
-    update.message.reply_text(dayusertext)
-    #scheduletest(update, context)
+    dayresponse = R.day_response(dayusertext)  # process the text under responses.py
     update.message.reply_text("At what time do you want to set the reminder?", reply_markup=ForceReply())  # first reply
 
     return TIME
@@ -86,7 +85,7 @@ def dayfromuser(update: Update, context: CallbackContext) -> int:
 
 def schedule_command(update, context):
     reply_keyboard = [['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']]
-    update.message.reply_text("Which day would you like me to send the Reminder? (Format: Monday or Wednesday)",
+    update.message.reply_text("Which day would you like me to send the Reminder?",
                               reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True), )
 
     global userchatid  # create a global variable
