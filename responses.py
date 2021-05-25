@@ -5,7 +5,7 @@ from telegram import bot
 
 now = datetime.now()
 current_time= now.strftime("%H:%M:%S")
-def time_responses(input_text):
+def time_response(input_text):
     user_message = str(input_text).lower()
 
     if user_message in ("hi ups bot", "hi bot"):
@@ -13,9 +13,10 @@ def time_responses(input_text):
 
     try:
         time.strptime(user_message, '%H:%M')
-        userinput = user_message
+        global userinputtime
+        userinputtime = user_message
         replymessage = "Reminder is set at"
-        arrayofreply = [replymessage,userday, userinput]
+        arrayofreply = [replymessage,userday, userinputtime]
         fullreply = " " #empty string
         reply = (fullreply.join(arrayofreply))
         return reply
@@ -37,7 +38,7 @@ def day_response(input_day):
         global userday
         userday = user_day
         replymessage = "Reminder is set on"
-        arrayofreply= [replymessage, userday]
+        arrayofreply= [replymessage, userday, userinputtime]
         fullreply = " "
         reply = (fullreply.join(arrayofreply))
         return reply
