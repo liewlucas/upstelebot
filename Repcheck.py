@@ -2,7 +2,7 @@ import json
 import os
 
 # Use '/root/File_DB/db.txt' when migrated to windows remote desktop
-db_name = 'C:/Users/Antho/Desktop/Telebot/DBfile/db.txt'
+db_name = "db"
 ID_List = []
 
 
