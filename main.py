@@ -1,6 +1,5 @@
 from telegram import ReplyKeyboardMarkup, Update, ReplyKeyboardRemove
 
-import Repcheck
 import constants as keys
 from telegram.ext import *
 import responses as R
