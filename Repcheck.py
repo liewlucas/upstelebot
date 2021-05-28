@@ -55,3 +55,74 @@ def repcheck(ID, ID_List):
             return True
         return False
 
+
+
+#data = {'another_dict': {'a': 0, 'b': 1}, 'a_list': [0, 1, 2, 3]}
+#Dictfile = "db"
+#with open(Dictfile, 'w') as f:
+    #json.dump(data, f)
+
+#with open(Dictfile, 'r') as f:
+   #data = json.load(f)
+   #print(data)
+
+
+dict_db = "db"
+namex = 34567
+dayresponse = 'Thu'
+timeresponse = '16:30'
+textresponse = 'UPS'
+
+#Inputs.append({'ID': namex, 'DAY': dayresponse, 'Time': timeresponse, 'Text': textresponse})
+#print(Inputs)
+
+
+
+# Function to check if file database available
+def dict_check(Fname=dict_db):
+    # Checking if file exist, then creating if it does not
+    if not os.path.isfile(Fname):
+        print('File does not exist\nCreating New File')
+        udb = open(dict_db, 'w')
+        print(Fname)
+        udb.close()
+
+
+# Function to read file database
+def dict_read():
+    try:
+        udb = open(dict_db, "r")
+    except:
+        dict_check()
+        dict_read()
+
+    # Loading json format list from file database
+    try:
+        with open(dict_db, 'r') as fr:
+            global Inputs
+            Inputs = json.load(fr)
+            print(Inputs)
+
+            # Checking if file database empty, creating list to input data
+            if len(Inputs) == 0:
+                return []
+            else:
+                return Inputs
+    except:
+        return []
+
+def dict_update(newdata):
+    with open(dict_db, 'w') as fr:
+
+        Inputs.append({'ID': namex, 'DAY': dayresponse, 'Time': timeresponse, 'Text': textresponse})
+        # indent=2 is not needed but makes the file human-readable
+        json.dump(newdata, fr, indent=2)
+        print(Inputs)
+
+Inputs = []
+dict_read()
+print(Inputs)
+dict_update(Inputs)
+
+
+
