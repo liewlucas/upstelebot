@@ -1,11 +1,12 @@
 import json
 import os
 
+
 # Use '/root/File_DB/db.txt' when migrated to windows remote desktop
-db_name = "db"
+
+db_name = "db_ID"
 ID_List = []
-
-
+Inputs = []
 
 # Function to check if file database available
 def check_db(Fname=db_name):
@@ -67,11 +68,11 @@ def repcheck(ID, ID_List):
    #print(data)
 
 
-dict_db = "db"
-namex = 34567
-dayresponse = 'Thu'
-timeresponse = '16:30'
-textresponse = 'UPS'
+dict_db = "C:/Users/Antho/PycharmProjects/upstelebot/db_info"
+IDchat = ""
+day_r = ""
+time_r = ""
+text_r = ""
 
 #Inputs.append({'ID': namex, 'DAY': dayresponse, 'Time': timeresponse, 'Text': textresponse})
 #print(Inputs)
@@ -114,15 +115,11 @@ def dict_read():
 def dict_update(newdata):
     with open(dict_db, 'w') as fr:
 
-        Inputs.append({'ID': namex, 'DAY': dayresponse, 'Time': timeresponse, 'Text': textresponse})
+        Inputs.append({'ID': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r})
         # indent=2 is not needed but makes the file human-readable
         json.dump(newdata, fr, indent=2)
         print(Inputs)
 
-Inputs = []
-dict_read()
-print(Inputs)
-dict_update(Inputs)
 
 
 

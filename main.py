@@ -130,6 +130,12 @@ def Send_Reminder_Message(update, context):
 def scheduletest(update, context):
 
     global userchatid
+    Rep.IDchat = userchatid
+    Rep.day_r = dayusertext
+    Rep.time_r = timeusertext
+    Rep.text_r = 'Text'
+
+
     # To prepopulate the IDlist from a file
     ID_List = Rep.read_db()
     print("afterlist")
@@ -138,16 +144,22 @@ def scheduletest(update, context):
     # Using Repetition checking function
     if Rep.repcheck(userchatid, ID_List):
         print("There are duplicates.")
+        print("Override original schedule or add 1 more schedule")
+        # Add user option to choose
+
     else:
         print("No duplicates.")
-        # Later to add multi-schedule function
 
         # Adding new ID to IDList
         ID_List.append(userchatid)
-        print("after append")
         Rep.update_db(ID_List)
         print(ID_List)
-        # Add Original Schedule Function
+
+        # Adding to dictionary database
+        Rep.dict_read()
+        Rep.dict_update(Rep.Inputs)
+        print(Rep.Inputs)
+
 
     print("schedule set!")
     schedule.every(10).seconds.do(Send_Reminder_Message, update, context,)
