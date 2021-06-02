@@ -9,7 +9,6 @@ import schedule
 import time
 import logging
 import Repcheck as Rep
-import sched
 
 now = datetime.now()
 current_time = now.strftime("%H:%M:%S")
@@ -76,7 +75,7 @@ def timefromuser (update:Update, context: CallbackContext) -> int:
 def dayfromuser(update: Update, context: CallbackContext) -> int:
     global dayusertext
     global dayresponse
-    dayusertext = update.message.text
+    dayusertext = str(update.message.text)
     # update.message.reply_text(dayusertext)
     dayresponse = R.day_response(dayusertext)  # process the text under responses.py
     update.message.reply_text("At what time do you want to set the reminder?", reply_markup=ForceReply())  # first reply
@@ -85,7 +84,7 @@ def dayfromuser(update: Update, context: CallbackContext) -> int:
 
 
 def schedule_command(update, context):
-    reply_keyboard = [['Monday'], ['Tuesday'], ['Wednesday'], ['Thursday'], ['Friday'], ['Saturday'], ['Sunday']]
+    reply_keyboard = [['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']]
     update.message.reply_text("Which day would you like me to send the Reminder?",
                               reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True), )
 
@@ -118,7 +117,6 @@ def list_command(update, context):
 
 def Send_Reminder_Message(update, context):
     remindertext = "This is a Reminder to Update your Parade State by Wednesday, 2200H"
-    yanen = str(dayusertext)
     # update.message.text = remindertext
     # context.bot.send_message(chat_id=update.effective_chat.id, text=remindertext)
     global userchatid
@@ -132,6 +130,12 @@ def Send_Reminder_Message(update, context):
 def scheduletest(update, context):
 
     global userchatid
+    Rep.IDchat = userchatid
+    Rep.day_r = dayusertext
+    Rep.time_r = timeusertext
+    Rep.text_r = 'Text'
+
+
     # To prepopulate the IDlist from a file
     ID_List = Rep.read_db()
     print("afterlist")
@@ -140,28 +144,29 @@ def scheduletest(update, context):
     # Using Repetition checking function
     if Rep.repcheck(userchatid, ID_List):
         print("There are duplicates.")
+        print("Override original schedule or add 1 more schedule")
+        # Add user option to choose
+
     else:
         print("No duplicates.")
-        # Later to add multi-schedule function
 
         # Adding new ID to IDList
         ID_List.append(userchatid)
-        print("after append")
         Rep.update_db(ID_List)
         print(ID_List)
-        # Add Original Schedule Function
+
+        # Adding to dictionary database
+        Rep.dict_read()
+        Rep.dict_update(Rep.Inputs)
+        print(Rep.Inputs)
+
+
     print("schedule set!")
-    global dayusertext
-    global timeusertext
-    #set[dayusertext] = set()
-    userdaytext=(dayusertext)
-    #schedule.every(10).seconds.do(Send_Reminder_Message, update, context)
-    print(dayusertext)
-    print(userdaytext)
-    test = schedule.every().at(timeusertext).do(Send_Reminder_Message,update,context)
+    schedule.every(10).seconds.do(Send_Reminder_Message, update, context,)
     while True:
         schedule.run_pending()
         time.sleep(1)
+
 
 # Send_Reminder_Message(update,context)
 
@@ -194,7 +199,7 @@ def main():
     conv_handler = (ConversationHandler(
         entry_points=[CommandHandler('schedule', schedule_command)],
         states={
-            DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)$'), dayfromuser)],
+            DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday)$'), dayfromuser)],
             TIME: [MessageHandler(Filters.regex('^([01]\d|2[0-3]):([0-5]\d)$'), timefromuser)], },
         fallbacks=[CommandHandler('cancel', cancel)],
     ))
