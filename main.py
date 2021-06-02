@@ -9,6 +9,7 @@ import schedule
 import time
 import logging
 import Repcheck as Rep
+import sched
 
 now = datetime.now()
 current_time = now.strftime("%H:%M:%S")
@@ -75,7 +76,7 @@ def timefromuser (update:Update, context: CallbackContext) -> int:
 def dayfromuser(update: Update, context: CallbackContext) -> int:
     global dayusertext
     global dayresponse
-    dayusertext = str(update.message.text)
+    dayusertext = update.message.text
     # update.message.reply_text(dayusertext)
     dayresponse = R.day_response(dayusertext)  # process the text under responses.py
     update.message.reply_text("At what time do you want to set the reminder?", reply_markup=ForceReply())  # first reply
@@ -84,7 +85,7 @@ def dayfromuser(update: Update, context: CallbackContext) -> int:
 
 
 def schedule_command(update, context):
-    reply_keyboard = [['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']]
+    reply_keyboard = [['Monday'], ['Tuesday'], ['Wednesday'], ['Thursday'], ['Friday'], ['Saturday'], ['Sunday']]
     update.message.reply_text("Which day would you like me to send the Reminder?",
                               reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True), )
 
@@ -117,6 +118,7 @@ def list_command(update, context):
 
 def Send_Reminder_Message(update, context):
     remindertext = "This is a Reminder to Update your Parade State by Wednesday, 2200H"
+    yanen = str(dayusertext)
     # update.message.text = remindertext
     # context.bot.send_message(chat_id=update.effective_chat.id, text=remindertext)
     global userchatid
@@ -149,7 +151,14 @@ def scheduletest(update, context):
         print(ID_List)
         # Add Original Schedule Function
     print("schedule set!")
-    schedule.every(10).seconds.do(Send_Reminder_Message, update, context)
+    global dayusertext
+    global timeusertext
+    #set[dayusertext] = set()
+    userdaytext=(dayusertext)
+    #schedule.every(10).seconds.do(Send_Reminder_Message, update, context)
+    print(dayusertext)
+    print(userdaytext)
+    test = schedule.every().at(timeusertext).do(Send_Reminder_Message,update,context)
     while True:
         schedule.run_pending()
         time.sleep(1)
@@ -185,7 +194,7 @@ def main():
     conv_handler = (ConversationHandler(
         entry_points=[CommandHandler('schedule', schedule_command)],
         states={
-            DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday)$'), dayfromuser)],
+            DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)$'), dayfromuser)],
             TIME: [MessageHandler(Filters.regex('^([01]\d|2[0-3]):([0-5]\d)$'), timefromuser)], },
         fallbacks=[CommandHandler('cancel', cancel)],
     ))
