@@ -22,9 +22,9 @@ print("Current Time =", current_time)
 print("Bot started...")
 
 #logging.basicConfig(
-   # format='%(message)s', level=logging.INFO
+ #   format='%(message)s', level=logging.INFO
 #)
-#logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 DAY, TIME = range(2)
 
@@ -100,29 +100,14 @@ def schedule_command(update, context):
 
         return DAY
 
-    # text = str(update.message.text) #receive text from user
-    # dayresponse = R.day_response(dayusertext) #process the text under responses.py
-    # update.message.reply_text(dayresponse) #first reply
-
-    # update.message.reply_text("Now, at what time would you like me to send the Reminder? (Format: e.g 17:30 for 5.30pm)")
-    # text = update.message.text.lower()  # receive text from user
-    # response = R.sample_responses(text)  # process the text under responses.py
-    # update.message.reply_text(response)  #second reply
-
-    # schedule.every(10).seconds.do(Send_Reminder_Message, update, context)
-    # update.message.reply_text(R.sample_responses(R.reply))
-    # schedule.every(10).seconds.do(print("hello"))
-    # call schedule test function
-
-
 def list_command(update, context):
     # update.message.reply_text("hello! here are your set reminders : (work in progress)")
     print(update.message.chat.id)
 
 
 def Send_Reminder_Message(update, context):
-    #remindertext = "This is a Reminder to Update your Parade State by Wednesday, 2200H"
-    remindertext = "Time and Date is working"
+    remindertext = "This is a Reminder to Update your Parade State by Wednesday, 2200H"
+    #remindertext = "Time and Date is working"
     # update.message.text = remindertext
     # context.bot.send_message(chat_id=update.effective_chat.id, text=remindertext)
     #global userchatid
@@ -147,7 +132,8 @@ def schedulecheck(context:CallbackContext):
                 Send_Reminder_Message(update,context)
                 print("sucess")
         else:
-            print("Today not Thurs")
+            print(IDitem)
+            print("This ChatID's Reminder is not Now ")
 
 
 
