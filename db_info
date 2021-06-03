@@ -1,14 +1,68 @@
 [
   {
-    "IDitem": -551111942,
-    "DAY": "Monday",
-    "Time": "12:45",
+    "IDitem": -473469885,
+    "DAY": "Thursday",
+    "Time": "14:48",
+    "Text": "Text"
+  },
+  {
+    "IDitem": -507296765,
+    "DAY": "Thursday",
+    "Time": "14:48",
+    "Text": "Text"
+  },
+  {
+    "IDitem": -507296765,
+    "DAY": "Thursday",
+    "Time": "17:30",
     "Text": "Text"
   },
   {
     "IDitem": -473469885,
-    "DAY": "Monday",
-    "Time": "15:15",
+    "DAY": "Thursday",
+    "Time": "17:30",
+    "Text": "Text"
+  },
+  {
+    "IDitem": -473469885,
+    "DAY": "Thursday",
+    "Time": "17:30",
+    "Text": "Text"
+  },
+  {
+    "IDitem": -507296765,
+    "DAY": "Thursday",
+    "Time": "18:30",
+    "Text": "Text"
+  },
+  {
+    "IDitem": -507296765,
+    "DAY": "Thursday",
+    "Time": "17:30",
+    "Text": "Text"
+  },
+  {
+    "IDitem": -507296765,
+    "DAY": "Thursday",
+    "Time": "17:30",
+    "Text": "Text"
+  },
+  {
+    "IDitem": -507296765,
+    "DAY": "Thursday",
+    "Time": "17:30",
+    "Text": "Text"
+  },
+  {
+    "IDitem": -507296765,
+    "DAY": "Thursday",
+    "Time": "17:30",
+    "Text": "Text"
+  },
+  {
+    "IDitem": -507296765,
+    "DAY": "Thursday",
+    "Time": "17:30",
     "Text": "Text"
   }
 ]
