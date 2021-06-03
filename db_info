@@ -1,20 +1,14 @@
 [
   {
-    "ID": -551111942,
-    "DAY": 0,
-    "Time": 1,
-    "Text": "Text"
-  },
-  {
-    "ID": -473469885,
-    "DAY": 0,
-    "Time": 1,
-    "Text": "Text"
-  },
-  {
-    "ID": -551111942,
+    "IDitem": -551111942,
     "DAY": "Monday",
     "Time": "12:45",
+    "Text": "Text"
+  },
+  {
+    "IDitem": -473469885,
+    "DAY": "Monday",
+    "Time": "15:15",
     "Text": "Text"
   }
 ]
