@@ -140,8 +140,8 @@ def schedulecheck(context:CallbackContext):
         now = datetime.now()
         today = now.strftime("%A") #return today's day
         tdytime = now.strftime("%H:%M")
-        if(today == DAY):
-            if(tdytime == Time):
+        if today == DAY:
+            if tdytime == Time:
                 global dbchatid
                 dbchatid = str(IDitem)
                 Send_Reminder_Message(update,context)
