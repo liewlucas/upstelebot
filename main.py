@@ -9,10 +9,11 @@ import schedule
 import time
 import logging
 import Repcheck as Rep
+import crontier import crontier
 
 now = datetime.now()
 current_time = now.strftime("%H:%M:%S")
-
+print(hash("timeusertext "))
 print("Current Time =", current_time)
 print("Bot started...")
 
@@ -149,7 +150,8 @@ def scheduletest(update, context):
         print(ID_List)
         # Add Original Schedule Function
     print("schedule set!")
-    schedule.every(10).seconds.do(Send_Reminder_Message, update, context)
+    set[dayusertext] = set()
+    schedule.every().minute.do(schedulecheck)
     while True:
         schedule.run_pending()
         time.sleep(1)
@@ -210,3 +212,4 @@ def main():
 # schedule.every().friday.at("17:26").do(print('hello'))
 # print('hello')
 main()
+
