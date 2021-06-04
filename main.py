@@ -59,7 +59,7 @@ def handle_message(update, context):
     text = str(update.message.text)  # .lower() #receive text from user
 
 
-def cancel(update: Update, _: CallbackContext) -> int:
+def cancel(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     logger.info("User %s canceled the conversation.", user.first_name)
     update.message.reply_text(
@@ -86,6 +86,7 @@ def dayfromuser(update: Update, context: CallbackContext) -> int:
     update.message.reply_text("At what time do you want to set the reminder?", reply_markup=ForceReply())  # first reply
 
     return TIME
+    #return ConversationHandler.END
 
 
 def schedule_command(update, context):
@@ -138,7 +139,7 @@ def schedulecheck(context:CallbackContext):
 
 
 
-def scheduletest(update, context):
+def scheduletest(update: Update, context: CallbackContext):
         global userchatid
         Rep.IDchat = userchatid
         Rep.day_r = dayusertext
@@ -179,7 +180,8 @@ def scheduletest(update, context):
 
 
         print("schedule set!")
-
+        #return ConversationHandler.END
+        cancel(update, context)
 
 
 
@@ -220,6 +222,7 @@ def main():
             states={
                 DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday)$'), dayfromuser)],
                 TIME: [MessageHandler(Filters.regex('^([01]\d|2[0-3]):([0-5]\d)$'), timefromuser)], },
+
             fallbacks=[CommandHandler('cancel', cancel)],
         ))
 
