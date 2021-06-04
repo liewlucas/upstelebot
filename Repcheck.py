@@ -68,7 +68,7 @@ def repcheck(ID, ID_List):
    #print(data)
 
 
-dict_db = "C:/Users/Antho/PycharmProjects/upstelebot/db_info"
+dict_db = "db_info"
 IDchat = ""
 day_r = ""
 time_r = ""
@@ -131,7 +131,7 @@ def dict_Ex():
 
     ...
 
-dict_Ex()
+#dict_Ex()
 
 
 
