@@ -73,6 +73,7 @@ IDchat = ""
 day_r = ""
 time_r = ""
 text_r = ""
+reno = 1
 
 #Inputs.append({'ID': namex, 'DAY': dayresponse, 'Time': timeresponse, 'Text': textresponse})
 #print(Inputs)
@@ -115,7 +116,7 @@ def dict_read():
 def dict_update(newdata):
     with open(dict_db, 'w') as fr:
 
-        Inputs.append({'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r})
+        Inputs.append({'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r, 'Remindernum': reno})
         # indent=2 is not needed but makes the file human-readable
         json.dump(newdata, fr, indent=2)
         print(Inputs)

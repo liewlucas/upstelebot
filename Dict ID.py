@@ -19,7 +19,7 @@ def listy():
 # [(i,) + item for i, item in enumerate(dict.items(), 1)]
 
 
-for key in list:
-    Rep.dict_read()
-    Rep.dict_update(Rep.Inputs)
-    Rep.reno = Rep.reno + 1
+#for key in list:
+    #Rep.dict_read()
+    # Rep.dict_update(Rep.Inputs)
+    # Rep.reno = Rep.reno + 1

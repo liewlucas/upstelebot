@@ -114,6 +114,7 @@ def scheduletest(update, context):
             print("Override original schedule or add 1 more schedule")
             Rep.dict_read()
             Rep.dict_update(Rep.Inputs)
+            Rep.reno = Rep.reno + 1
             print(Rep.Inputs)
 
             # Add user option to choose
@@ -129,6 +130,7 @@ def scheduletest(update, context):
             # Adding to dictionary database
             Rep.dict_read()
             Rep.dict_update(Rep.Inputs)
+            Rep.reno = Rep.reno + 1
             print(Rep.Inputs)
 
         print("schedule set!")
