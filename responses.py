@@ -15,7 +15,7 @@ def time_response(input_text):
         time.strptime(user_message, '%H:%M')
         global userinputtime
         userinputtime = user_message
-        replymessage = "Reminder is set at"
+        replymessage = "Reminder is set on"
         arrayofreply = [replymessage,userday, userinputtime]
         fullreply = " " #empty string
         reply = (fullreply.join(arrayofreply))

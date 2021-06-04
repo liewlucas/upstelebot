@@ -59,11 +59,11 @@ def handle_message(update, context):
     text = str(update.message.text)  # .lower() #receive text from user
 
 
-def cancel(update: Update, context: CallbackContext) -> int:
+def cancel(update: Update, _: CallbackContext) -> int:
     user = update.message.from_user
     logger.info("User %s canceled the conversation.", user.first_name)
     update.message.reply_text(
-        'Bye! I hope we can talk again some day.', reply_markup=ReplyKeyboardRemove()
+        'Set reminder cancelled. Hope to talk to you again. Bye!', reply_markup=ReplyKeyboardRemove()
     )
 
     return ConversationHandler.END
@@ -76,6 +76,10 @@ def timefromuser (update:Update, context: CallbackContext) -> int:
     timeresponse = R.time_response(timeusertext) # process time given under responses.py
     update.message.reply_text(timeresponse)  # first reply
     scheduletest(update, context)
+    update.message.reply_text('Type /schedule again if you want to set another reminder.')
+
+    return ConversationHandler.END
+
 
 def dayfromuser(update: Update, context: CallbackContext) -> int:
     global dayusertext
@@ -86,10 +90,10 @@ def dayfromuser(update: Update, context: CallbackContext) -> int:
     update.message.reply_text("At what time do you want to set the reminder?", reply_markup=ForceReply())  # first reply
 
     return TIME
-    #return ConversationHandler.END
 
 
 def schedule_command(update, context):
+
         reply_keyboard = [['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']]
         update.message.reply_text("Which day would you like me to send the Reminder?",
                                   reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True), )
@@ -139,7 +143,7 @@ def schedulecheck(context:CallbackContext):
 
 
 
-def scheduletest(update: Update, context: CallbackContext):
+def scheduletest(update, context):
         global userchatid
         Rep.IDchat = userchatid
         Rep.day_r = dayusertext
@@ -178,10 +182,8 @@ def scheduletest(update: Update, context: CallbackContext):
 
 
 
-
         print("schedule set!")
-        #return ConversationHandler.END
-        cancel(update, context)
+
 
 
 
@@ -221,14 +223,13 @@ def main():
             entry_points=[CommandHandler('schedule', schedule_command)],
             states={
                 DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday)$'), dayfromuser)],
-                TIME: [MessageHandler(Filters.regex('^([01]\d|2[0-3]):([0-5]\d)$'), timefromuser)], },
-
+                TIME: [MessageHandler(Filters.regex('^([01]\d|2[0-3]):([0-5]\d)$'), timefromuser)]},
             fallbacks=[CommandHandler('cancel', cancel)],
         ))
 
         dp.add_handler(CommandHandler("start", start_command))
         dp.add_handler(CommandHandler("help", help_command))
-        # dp.add_handler(CommandHandler("schedule", schedule_command))
+        #dp.add_handler(CommandHandler("schedule", schedule_command))
         dp.add_handler(conv_handler)
         dp.add_handler(CommandHandler("list", list_command))
         dp.add_handler(CommandHandler("apple", scheduletest))
