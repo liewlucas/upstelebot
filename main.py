@@ -32,10 +32,9 @@ DAY, TIME = range(2)
 def start_command(update, context):
     update.message.reply_text("Welcome to the UpdateParadeStateBot! Here is a list of our commands to get you started!")
     update.message.reply_text("/help will show what each command does!"
-                              "/schedule helps to schedule new reminders!"
-                              "/list shows you all your set reminders!"
-                              )
-
+                            #  "/schedule helps to schedule new reminders!"
+                             # "/list shows you all your set reminders!"
+                             # )
 
 # while current_time == '17:28:00':
 #  send_reminder_message()
