@@ -16,7 +16,7 @@ print("Bot started...")
 
 logger = logging.getLogger(__name__)
 
-DAY, TIME, MESSAGE = range(3)
+NAME, DAY, TIME, MESSAGE = range(4)
 
 def start_command(update, context):
     update.message.reply_text("Welcome to the UpdateParadeStateBot!")
@@ -34,18 +34,19 @@ def list_command(update, context):
     userchatid = update.message.chat.id
     #for IDitem, DAY, Time, Text in Rep.Inputs:
     replylist = []
-    for IDitem, DAY, Time, Text in sorted([(d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],key=lambda t: t[1]):
+    for ReminderName,IDitem, DAY, Time, Text in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],key=lambda t: t[1]):
         if(userchatid == IDitem): #check userchatid against db id
+            dbRemName = str(ReminderName)
             dbday = str(DAY)
             dbtime= str(Time)
             dbmsg = str(Text)
-            stringreply = "Day: " + dbday  + "\n" + "Time: " + dbtime + "\n" +  "Message: "  + dbmsg +"\n\n" #crafting string
+            stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday  + "\n" + "Time: " + dbtime + "\n" +  "Message: "  + dbmsg + "\n\n" #crafting string
             replylist.append(stringreply) #append into the list
 
     if not replylist: #checking if list is empty
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
     else:
-        update.message.reply_text("Here are your List of Reminders: \n\n" + " ".join(replylist)) #sentence + joining the list
+        update.message.reply_text("Here are your List of Reminders: \n\n" + "".join(replylist)) #sentence + joining the list
 
 def schedule_command(update, context):
         reply_keyboard = [['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']]
@@ -58,6 +59,19 @@ def schedule_command(update, context):
         # scheduletest(update, context)
 
         return DAY
+
+def namefromuser(update: Update, context: CallbackContext)-> int:
+    global userchatid
+    userchatid = update.message.chat.id
+    global nameusertext
+    nameusertext = str(update.message.text)
+    #update.message.reply_text(nameusertext)
+    scheduletest(update, context)
+    update.message.reply_text("Reminder Name: " + nameusertext + "\n\n" + timeresponse + "\n\nYour Reminder Message: " + messagefromuser)
+    successtext = 'Feel free to type /schedule again if you want to set another reminder.\nAlternatively, you could type /list to view all your set reminders'
+    context.bot.send_message(chat_id=userchatid, text=successtext)
+
+    return ConversationHandler.END
 
 def dayfromuser(update: Update, context: CallbackContext) -> int:
     global dayusertext
@@ -87,16 +101,19 @@ def messagefromuser (update:Update, context: CallbackContext) -> int:
     global messagefromuser
     messagefromuser = str(update.message.text)
      # process time given under responses.py
-    update.message.reply_text(timeresponse + "\n\nYour Reminder Message: " + messagefromuser)
-    scheduletest(update, context)
-    successtext = 'Feel free to type /schedule again if you want to set another reminder.\nAlternatively, you could type /list to view all your set reminders'
-    context.bot.send_message(chat_id=userchatid, text=successtext)
+    update.message.reply_text("Lastly, what would you like to name this Reminder?", reply_markup=ForceReply())
+    return NAME
+    #update.message.reply_text(timeresponse + "\n\nYour Reminder Message: " + messagefromuser)
+    #scheduletest(update, context)
+    #successtext = 'Feel free to type /schedule again if you want to set another reminder.\nAlternatively, you could type /list to view all your set reminders'
+    #context.bot.send_message(chat_id=userchatid, text=successtext)
 
 
-    return ConversationHandler.END
+    #return ConversationHandler.END
 
 def scheduletest(update, context):
         global userchatid
+        Rep.RemName = nameusertext
         Rep.IDchat = userchatid
         Rep.day_r = dayusertext
         Rep.time_r = timeusertext
@@ -212,6 +229,7 @@ def main():
         conv_handler = (ConversationHandler(
             entry_points=[CommandHandler('schedule', schedule_command)],
             states={
+                NAME:[MessageHandler(Filters.all, namefromuser)],
                 DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday)$'), dayfromuser)],
                 TIME: [MessageHandler(Filters.regex('^([01]\d|2[0-3]):([0-5]\d)$'), timefromuser)],
                 MESSAGE: [MessageHandler(Filters.all, messagefromuser)],

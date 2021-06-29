@@ -1,37 +1,16 @@
 [
   {
-    "IDitem": -473469885,
-    "DAY": "Friday",
-    "Time": "17:45",
-    "Text": "sdfghjkl;",
-    "RemName": 2
-  },
-  {
-    "IDitem": -473469885,
-    "DAY": "Friday",
-    "Time": "18:35",
-    "Text": "afgqggqegqegqe",
-    "RemName": 1
-  },
-  {
-    "IDitem": -507296765,
-    "DAY": "Thursday",
-    "Time": "15:45",
-    "Text": "qeffqergwgwz123fwe",
-    "RemName": 2
-  },
-  {
-    "IDitem": -473469885,
-    "DAY": "Friday",
-    "Time": "17:35",
-    "Text": "DASFVZdxb",
-    "RemName": 3
-  },
-  {
-    "IDitem": -473469885,
+    "ReminderName": "Reminder Name Test Two",
+    "IDitem": -558414218,
     "DAY": "Tuesday",
-    "Time": "16:35",
-    "Text": "dsaGFD",
-    "RemName": 1
+    "Time": "17:30",
+    "Text": "NameTesting is in Effect"
+  },
+  {
+    "ReminderName": "Moose",
+    "IDitem": -558414218,
+    "DAY": "Tuesday",
+    "Time": "17:45",
+    "Text": "Hello"
   }
 ]

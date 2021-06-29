@@ -69,11 +69,11 @@ def repcheck(ID, ID_List):
 
 
 dict_db = "db_info"
+RemName = ""
 IDchat = ""
 day_r = ""
 time_r = ""
 text_r = ""
-reno = 1
 
 #Inputs.append({'ID': namex, 'DAY': dayresponse, 'Time': timeresponse, 'Text': textresponse})
 #print(Inputs)
@@ -116,7 +116,7 @@ def dict_read():
 def dict_update(newdata):
     with open(dict_db, 'w') as fr:
 
-        Inputs.append({'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r, 'RemName': reno})
+        Inputs.append({'ReminderName': RemName, 'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r})
         # indent=2 is not needed but makes the file human-readable
         json.dump(newdata, fr, indent=2)
         print(Inputs)
@@ -124,31 +124,15 @@ def dict_update(newdata):
 
 def dict_Ex():
     dict_read()
-    for IDitem, DAY, Time, RemName in sorted([(d['IDitem'], d['DAY'], d['Time'], d["RemName"]) for d in Inputs], key=lambda t: t[1]):
-        print('{}: {}: {}: {}'.format(IDitem, DAY, Time, reno))
+    for RemName,IDitem, DAY, Time in sorted([(d['IDitem'], d['DAY'], d['Time']) for d in Inputs], key=lambda t: t[1]):
+        print('{}: {}: {}'.format(IDitem, DAY, Time))
         print(IDitem)
         print(DAY)
         print(Time)
-        print(RemName)
-
-
-def dict_del():
-    f = open(dict_db)
-    output = []
-    str = "The string i wish to delete"
-    for line in f:
-        if not line.startswith(str):
-            output.append(line)
-    f.close()
-    f = open(dict_db, 'w')
-    f.writelines(output)
-    f.close()
-
-
 
     ...
 
-# dict_Ex()
+#dict_Ex()
 
 
 
