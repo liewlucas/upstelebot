@@ -4,34 +4,34 @@
     "DAY": "Friday",
     "Time": "17:45",
     "Text": "sdfghjkl;",
-    "Remindernum": 2
+    "RemName": 2
   },
   {
     "IDitem": -473469885,
     "DAY": "Friday",
     "Time": "18:35",
     "Text": "afgqggqegqegqe",
-    "Remindernum": 1
+    "RemName": 1
   },
   {
     "IDitem": -507296765,
     "DAY": "Thursday",
     "Time": "15:45",
     "Text": "qeffqergwgwz123fwe",
-    "Remindernum": 2
+    "RemName": 2
   },
   {
     "IDitem": -473469885,
     "DAY": "Friday",
     "Time": "17:35",
     "Text": "DASFVZdxb",
-    "Remindernum": 3
+    "RemName": 3
   },
   {
     "IDitem": -473469885,
     "DAY": "Tuesday",
     "Time": "16:35",
     "Text": "dsaGFD",
-    "Remindernum": 1
+    "RemName": 1
   }
 ]

@@ -45,17 +45,34 @@ def get_var_value(filename="RemIDcounter"):
         f.write(str(val))
         return val
 
-def RemIDcheck():
-    for obj in Listo:
+def RemIDcheck(dictionary):
+    for obj in dictionary:
         nu = str(get_var_value())
         Listi.append({"Reminder_ID": nu})
         print(Listi)
         print("This script has been run {} times.".format(nu))
+        print("Reminder ID No. is {}.".format(nu))
 
 
 
-RemIDcheck()
+# RemIDcheck(Listo)
 # your_counter = get_var_value()
 # print("This script has been run {} times.".format(your_counter))
 
+test_list = [{"id": 1, "data": "HappY"},
+             {"id": 2, "data": "BirthDaY"},
+             {"id": 3, "data": "Rash"}]
 
+# printing original list
+print("The original list is : " + str(test_list))
+
+# using del + loop
+# to delete dictionary in list
+for i in range(len(test_list)):
+    if test_list[i]['IDItem'] == n:
+        if test_list[i]['RemName'] == n1:
+            del test_list[i]
+            break
+
+# printing result
+print("List after deletion of dictionary : " + str(test_list))

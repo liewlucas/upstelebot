@@ -116,7 +116,7 @@ def dict_read():
 def dict_update(newdata):
     with open(dict_db, 'w') as fr:
 
-        Inputs.append({'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r, 'Remindernum': reno})
+        Inputs.append({'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r, 'RemName': reno})
         # indent=2 is not needed but makes the file human-readable
         json.dump(newdata, fr, indent=2)
         print(Inputs)
@@ -124,15 +124,31 @@ def dict_update(newdata):
 
 def dict_Ex():
     dict_read()
-    for IDitem, DAY, Time in sorted([(d['IDitem'], d['DAY'], d['Time']) for d in Inputs], key=lambda t: t[1]):
-        print('{}: {}: {}'.format(IDitem, DAY, Time))
+    for IDitem, DAY, Time, RemName in sorted([(d['IDitem'], d['DAY'], d['Time'], d["RemName"]) for d in Inputs], key=lambda t: t[1]):
+        print('{}: {}: {}: {}'.format(IDitem, DAY, Time, reno))
         print(IDitem)
         print(DAY)
         print(Time)
+        print(RemName)
+
+
+def dict_del():
+    f = open(dict_db)
+    output = []
+    str = "The string i wish to delete"
+    for line in f:
+        if not line.startswith(str):
+            output.append(line)
+    f.close()
+    f = open(dict_db, 'w')
+    f.writelines(output)
+    f.close()
+
+
 
     ...
 
-#dict_Ex()
+# dict_Ex()
 
 
 
