@@ -26,6 +26,7 @@ RemID = "RemIDcounter"
 Listo = ["a", "b", "c", "d", "e"]
 Listi = [{"apples": "oranges"}]
 obj = object
+stats = "db_ID"
 
 # Function to check if Reminder ID file available
 def check_db(Fname=RemID):
@@ -45,17 +46,19 @@ def get_var_value(filename="RemIDcounter"):
         f.write(str(val))
         return val
 
-def RemIDcheck():
-    for obj in Listo:
+def RemIDcheck(dictionary):
+    for obj in dictionary:
         nu = str(get_var_value())
         Listi.append({"Reminder_ID": nu})
         print(Listi)
         print("This script has been run {} times.".format(nu))
+        print("Reminder ID No. is {}.".format(nu))
 
 
 
-RemIDcheck()
+# RemIDcheck(Listo)
 # your_counter = get_var_value()
 # print("This script has been run {} times.".format(your_counter))
 
-
+# with is like your try .. finally block in this case
+w
