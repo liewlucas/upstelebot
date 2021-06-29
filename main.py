@@ -28,7 +28,7 @@ def help_command(update, context):
 
 def list_command(update, context):
     # update.message.reply_text("hello! here are your set reminders : (work in progress)")
-    #print(update.message.chat.id)
+    #print(update.message.chat.idj)
     Rep.dict_read()  # read DB
     global userchatid
     userchatid = update.message.chat.id
@@ -48,8 +48,40 @@ def list_command(update, context):
     else:
         update.message.reply_text("Here are your List of Reminders: \n\n" + "".join(replylist)) #sentence + joining the list
 
+def del_command(update,context):
+    namelist = []
+    Rep.dict_read()  # read DB
+    global userchatid
+    userchatid = update.message.chat.id
+    # for IDitem, DAY, Time, Text in Rep.Inputs:
+    replylist = []
+    for ReminderName, IDitem, DAY, Time, Text in sorted(
+            [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs], key=lambda t: t[1]):
+        if (userchatid == IDitem):  # check userchatid against db id
+            dbRemName = str(ReminderName)
+            dbday = str(DAY)
+            dbtime = str(Time)
+            dbmsg = str(Text)
+            stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+            replylist.append(stringreply)  # append into the list
+        namelist.append(dbRemName) #append all names relating to this chatid into local list
+
+    if not replylist:  # checking if list is empty
+        update.message.reply_text("Sorry, you do not appear to have set any Reminders")
+    else:
+        reply_keyboard = [[name] for name in namelist] # get each item in namelist and put in custom keyboard
+        update.message.reply_text(
+            "Here are your List of Reminders: \n\n" + "".join(replylist) + "\n\nPlease Select the Reminder you would like to delete according to ReminderName", reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),)  # sentence + joining the list
+
+
+
+
+
+
+
+
 def schedule_command(update, context):
-        reply_keyboard = [['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']]
+        reply_keyboard = [['Monday'], ['Tuesday'], ['Wednesday'], ['Thursday'], ['Friday']]
         update.message.reply_text("Which day would you like me to set the Reminder?",
                                   reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True), )
 
@@ -241,6 +273,7 @@ def main():
         dp.add_handler(CommandHandler("help", help_command))
         #dp.add_handler(CommandHandler("schedule", schedule_command))
         dp.add_handler(conv_handler)
+        dp.add_handler(CommandHandler("delete", del_command))
         dp.add_handler(CommandHandler("list", list_command))
         dp.add_handler(CommandHandler("apple", scheduletest))
         dp.add_handler(CommandHandler("pear", schedulecheck))
