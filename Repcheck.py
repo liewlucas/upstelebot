@@ -117,7 +117,6 @@ def dict_read():
 
 def dict_update(newdata):
     with open(dict_db, 'w') as fr:
-
         Inputs.append({'ReminderName': RemName, 'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r})
         # indent=2 is not needed but makes the file human-readable
         json.dump(newdata, fr, indent=2)
@@ -133,23 +132,11 @@ def dict_Ex():
         print(Time)
 
 
-def dict_del():
-    for i in range(len(Inputs)):
-        if Inputs[i]['IDItem'] == usercid_r:
-            if Inputs[i]['ReminderName'] == name_r:
-                del Inputs[i]
-                break
-
-
-def dict_edit():
-
-
-
-
-#dict_Ex()
-
-
-
-
-
-
+def dict_del(datadel):
+    with open(dict_db, 'w') as fr:
+        for i in range(len(Inputs)):
+            if Inputs[i]['IDitem'] == usercid_r:
+                if Inputs[i]['ReminderName'] == name_r:
+                    del Inputs[i]
+                    json.dump(datadel,fr, indent=2)
+                    break

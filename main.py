@@ -16,7 +16,7 @@ print("Bot started...")
 
 logger = logging.getLogger(__name__)
 
-NAME, DAY, TIME, MESSAGE = range(4)
+DELETE, NAME, DAY, TIME, MESSAGE = range(5)
 
 def start_command(update, context):
     update.message.reply_text("Welcome to the UpdateParadeStateBot!")
@@ -71,11 +71,30 @@ def del_command(update,context):
     else:
         reply_keyboard = [[name] for name in namelist] # get each item in namelist and put in custom keyboard
         update.message.reply_text(
-            "Here are your List of Reminders: \n\n" + "".join(replylist) + "\n\nPlease Select the Reminder you would like to delete according to ReminderName", reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),)  # sentence + joining the list
+            "Here are your List of Reminders: \n\n" + "".join(replylist) + "\n\nPlease Select the Reminder you would like to delete according to ReminderName", reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),)  # sentence + joining the list + custom keyboard
+
+        return DELETE
 
 
-
-
+def deletefromdb(update: Update, context: CallbackContext)-> int:
+    global usernamechoice
+    usernamechoice = str(update.message.text)
+    Rep.usercid_r = userchatid
+    Rep.name_r = usernamechoice
+    Rep.dict_del(Rep.Inputs)
+    Rep.dict_read()  # read DB
+    replylist = []
+    for ReminderName, IDitem, DAY, Time, Text in sorted(
+            [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs], key=lambda t: t[1]):
+        if (userchatid == IDitem):  # check userchatid against db id
+            dbRemName = str(ReminderName)
+            dbday = str(DAY)
+            dbtime = str(Time)
+            dbmsg = str(Text)
+            stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+            replylist.append(stringreply)  # append into the list
+    update.message.reply_text(
+        "Your Reminder has been deleted, Here is your Updated List of Reminders: \n\n" + "".join(replylist))
 
 
 
@@ -151,7 +170,6 @@ def scheduletest(update, context):
         Rep.time_r = timeusertext
         Rep.text_r = messagefromuser
 
-
         # To prepopulate the IDlist from a file
         ID_List = Rep.read_db()
         print("afterlist")
@@ -163,7 +181,7 @@ def scheduletest(update, context):
             print("Override original schedule or add 1 more schedule")
             Rep.dict_read()
             Rep.dict_update(Rep.Inputs)
-            Rep.reno = Rep.reno + 1
+            #Rep.reno = Rep.reno + 1
             print(Rep.Inputs)
 
             # Add user option to choose
@@ -179,7 +197,7 @@ def scheduletest(update, context):
             # Adding to dictionary database
             Rep.dict_read()
             Rep.dict_update(Rep.Inputs)
-            Rep.reno = Rep.reno + 1
+            #Rep.reno = Rep.reno + 1
             print(Rep.Inputs)
 
         print("schedule set!")
@@ -258,7 +276,7 @@ def main():
         job_minute = j.run_repeating(schedulecheck, interval=10, first=0)
         print("checking on DB started")
 
-        conv_handler = (ConversationHandler(
+        scheduleconv_handler = (ConversationHandler(
             entry_points=[CommandHandler('schedule', schedule_command)],
             states={
                 NAME:[MessageHandler(Filters.all, namefromuser)],
@@ -269,11 +287,18 @@ def main():
             fallbacks=[CommandHandler('cancel', cancel)],
         ))
 
+        deleteconvhandler = (ConversationHandler(
+            entry_points=[CommandHandler('delete', del_command)],
+            states={DELETE:[MessageHandler(Filters.all, deletefromdb)],},
+            fallbacks=[CommandHandler('cancel', cancel)],
+        ))
+
+
         dp.add_handler(CommandHandler("start", start_command))
         dp.add_handler(CommandHandler("help", help_command))
         #dp.add_handler(CommandHandler("schedule", schedule_command))
-        dp.add_handler(conv_handler)
-        dp.add_handler(CommandHandler("delete", del_command))
+        dp.add_handler(scheduleconv_handler)
+        dp.add_handler(deleteconvhandler)
         dp.add_handler(CommandHandler("list", list_command))
         dp.add_handler(CommandHandler("apple", scheduletest))
         dp.add_handler(CommandHandler("pear", schedulecheck))

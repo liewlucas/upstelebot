@@ -1,16 +1,9 @@
 [
   {
-    "ReminderName": "Reminder Name Test Two",
+    "ReminderName": "Loop",
     "IDitem": -558414218,
-    "DAY": "Tuesday",
-    "Time": "17:30",
-    "Text": "NameTesting is in Effect"
-  },
-  {
-    "ReminderName": "Moose",
-    "IDitem": -558414218,
-    "DAY": "Tuesday",
-    "Time": "17:45",
-    "Text": "Hello"
+    "DAY": "Wednesday",
+    "Time": "19:00",
+    "Text": "Work in Progress"
   }
 ]
