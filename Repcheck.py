@@ -69,6 +69,7 @@ def repcheck(ID, ID_List):
 
 
 dict_db = "db_info"
+RemName = ""
 IDchat = ""
 day_r = ""
 time_r = ""
@@ -115,7 +116,7 @@ def dict_read():
 def dict_update(newdata):
     with open(dict_db, 'w') as fr:
 
-        Inputs.append({'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r})
+        Inputs.append({'ReminderName': RemName, 'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r})
         # indent=2 is not needed but makes the file human-readable
         json.dump(newdata, fr, indent=2)
         print(Inputs)
@@ -123,7 +124,7 @@ def dict_update(newdata):
 
 def dict_Ex():
     dict_read()
-    for IDitem, DAY, Time in sorted([(d['IDitem'], d['DAY'], d['Time']) for d in Inputs], key=lambda t: t[1]):
+    for RemName,IDitem, DAY, Time in sorted([(d['IDitem'], d['DAY'], d['Time']) for d in Inputs], key=lambda t: t[1]):
         print('{}: {}: {}'.format(IDitem, DAY, Time))
         print(IDitem)
         print(DAY)
