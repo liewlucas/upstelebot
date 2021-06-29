@@ -74,6 +74,8 @@ IDchat = ""
 day_r = ""
 time_r = ""
 text_r = ""
+usercid_r = ""
+name_r = ""
 
 #Inputs.append({'ID': namex, 'DAY': dayresponse, 'Time': timeresponse, 'Text': textresponse})
 #print(Inputs)
@@ -124,13 +126,25 @@ def dict_update(newdata):
 
 def dict_Ex():
     dict_read()
-    for RemName,IDitem, DAY, Time in sorted([(d['IDitem'], d['DAY'], d['Time']) for d in Inputs], key=lambda t: t[1]):
+    for RemName, IDitem, DAY, Time in sorted([(d['IDitem'], d['DAY'], d['Time']) for d in Inputs], key=lambda t: t[1]):
         print('{}: {}: {}'.format(IDitem, DAY, Time))
         print(IDitem)
         print(DAY)
         print(Time)
 
-    ...
+
+def dict_del():
+    for i in range(len(Inputs)):
+        if Inputs[i]['IDItem'] == usercid_r:
+            if Inputs[i]['ReminderName'] == name_r:
+                del Inputs[i]
+                break
+
+
+def dict_edit():
+
+
+
 
 #dict_Ex()
 
