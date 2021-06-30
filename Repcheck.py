@@ -133,10 +133,11 @@ def dict_Ex():
 
 
 def dict_del(datadel):
-    with open(dict_db, 'w') as fr:
+    with open(dict_db, 'w') as frc:
         for i in range(len(Inputs)):
             if Inputs[i]['IDitem'] == usercid_r:
                 if Inputs[i]['ReminderName'] == name_r:
                     del Inputs[i]
-                    json.dump(datadel,fr, indent=2)
-                    break
+                    print(Inputs)
+                    json.dump(datadel, frc, indent=2)
+                    print(Inputs)
