@@ -141,3 +141,4 @@ def dict_del(datadel):
                     print(Inputs)
                     json.dump(datadel, frc, indent=2)
                     print(Inputs)
+                    break
