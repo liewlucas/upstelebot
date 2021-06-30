@@ -69,10 +69,13 @@ def repcheck(ID, ID_List):
 
 
 dict_db = "db_info"
+RemName = ""
 IDchat = ""
 day_r = ""
 time_r = ""
 text_r = ""
+usercid_r = ""
+name_r = ""
 
 #Inputs.append({'ID': namex, 'DAY': dayresponse, 'Time': timeresponse, 'Text': textresponse})
 #print(Inputs)
@@ -114,8 +117,7 @@ def dict_read():
 
 def dict_update(newdata):
     with open(dict_db, 'w') as fr:
-
-        Inputs.append({'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r})
+        Inputs.append({'ReminderName': RemName, 'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r})
         # indent=2 is not needed but makes the file human-readable
         json.dump(newdata, fr, indent=2)
         print(Inputs)
@@ -123,18 +125,32 @@ def dict_update(newdata):
 
 def dict_Ex():
     dict_read()
-    for IDitem, DAY, Time in sorted([(d['IDitem'], d['DAY'], d['Time']) for d in Inputs], key=lambda t: t[1]):
+    for RemName, IDitem, DAY, Time in sorted([(d['IDitem'], d['DAY'], d['Time']) for d in Inputs], key=lambda t: t[1]):
         print('{}: {}: {}'.format(IDitem, DAY, Time))
         print(IDitem)
         print(DAY)
         print(Time)
 
-    ...
 
-#dict_Ex()
+def dict_del(datadel):
+    with open(dict_db, 'w') as frc:
+        for i in range(len(datadel)):
+            if datadel[i]['IDitem'] == usercid_r:
+                if datadel[i]['ReminderName'] == name_r:
+                    del datadel[i]
+                    json.dump(datadel, frc, indent=2)
+                    print(datadel)
+                    break
 
-
-
-
-
-
+#def dict_edit(dataed):
+    #for ed in range(len(dataed)):
+        #if dataed[ed]['IDitem'] == usercid_r:
+           # if dataed[ed]['ReminderName'] == name_r:
+               # with open(dict_db, 'w') as fre:
+                    #edit dataed[ed] with user parameters
+                    #dataed[ed]['ReminderName'] = #usereditremindername
+                    #dataed[ed]['DAY'] = #usereditDAY
+                    #dataed[ed]['TIME'] = #usereditTIME
+                    #dataed[ed]['TEXT'] = #usereditTEXT
+                    #json.dump(dataed, fre, indent=2)
+                    #print(dataed)
