@@ -134,11 +134,23 @@ def dict_Ex():
 
 def dict_del(datadel):
     with open(dict_db, 'w') as frc:
-        for i in range(len(Inputs)):
-            if Inputs[i]['IDitem'] == usercid_r:
-                if Inputs[i]['ReminderName'] == name_r:
-                    del Inputs[i]
-                    print(Inputs)
+        for i in range(len(datadel)):
+            if datadel[i]['IDitem'] == usercid_r:
+                if datadel[i]['ReminderName'] == name_r:
+                    del datadel[i]
                     json.dump(datadel, frc, indent=2)
-                    print(Inputs)
+                    print(datadel)
                     break
+
+#def dict_edit(dataed):
+    #for ed in range(len(dataed)):
+        #if dataed[ed]['IDitem'] == usercid_r:
+           # if dataed[ed]['ReminderName'] == name_r:
+               # with open(dict_db, 'w') as fre:
+                    #edit dataed[ed] with user parameters
+                    #dataed[ed]['ReminderName'] = #usereditremindername
+                    #dataed[ed]['DAY'] = #usereditDAY
+                    #dataed[ed]['TIME'] = #usereditTIME
+                    #dataed[ed]['TEXT'] = #usereditTEXT
+                    #json.dump(dataed, fre, indent=2)
+                    #print(dataed)
