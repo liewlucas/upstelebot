@@ -96,6 +96,7 @@ def deletefromdb(update: Update, context: CallbackContext)-> int:
     update.message.reply_text(
         "Your Reminder has been deleted, Here is your Updated List of Reminders: \n\n" + "".join(replylist))
 
+    #return ConversationHandler.END
 
 
 
