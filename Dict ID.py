@@ -1,4 +1,5 @@
 import os
+import json
 
 # n = []
 # list = [{'n': 'apple'}, {'n': 'banana'}, {'n': 'cow'}, {'n': 'donkey'},]
@@ -27,6 +28,13 @@ Listo = ["a", "b", "c", "d", "e"]
 Listi = [{"apples": "oranges"}]
 obj = object
 stats = "db_ID"
+xx = -558414218
+yy = 'Test'
+
+#-473469885
+#dsfghjkl
+
+
 
 # Function to check if Reminder ID file available
 def check_db(Fname=RemID):
@@ -55,17 +63,30 @@ def RemIDcheck(dictionary):
         print("Reminder ID No. is {}.".format(nu))
 
 
+def test_read():
+    # Loading json format list from file database
+    try:
+        with open(stats, 'r') as frc:
+            global Inputs_test
+            Inputs_test = json.load(frc)
+            print(Inputs_test)
+    except:
+        return []
+
 def dict_del(datadel):
-    with open(dict_db, 'w') as frc:
-        for i in range(len(Inputs)):
-            if Inputs[i]['IDitem'] == usercid_r:
-                if Inputs[i]['ReminderName'] == name_r:
-                    del Inputs[i]
-                    print(Inputs)
-                    json.dump(datadel, frc, indent=2)
-                    print(Inputs)
+        for i in range(len(datadel)):
+            if datadel[i]['IDitem'] == xx:
+                if datadel[i]['ReminderName'] == yy:
+                    with open(stats, 'w') as frc:
+                        del datadel[i]
+                        json.dump(datadel, frc, indent=2)
+                        print(datadel)
 
 
+
+
+test_read()
+dict_del(Inputs_test)
 
 
 # RemIDcheck(Listo)
@@ -73,4 +94,3 @@ def dict_del(datadel):
 # print("This script has been run {} times.".format(your_counter))
 
 # with is like your try .. finally block in this case
-w

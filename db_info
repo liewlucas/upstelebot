@@ -1,0 +1,30 @@
+[
+  {
+    "ReminderName": "Test2",
+    "IDitem": -473469885,
+    "DAY": "Thursday", "Wednesday"
+    "Time": "19:10",
+    "Text": "testtesttest"
+  },
+  {
+    "ReminderName": "asdasdasd",
+    "IDitem": -473469885,
+    "DAY": "Wednesday",
+    "Time": "12:30",
+    "Text": "asdasd"
+  },
+  {
+    "ReminderName": "daads",
+    "IDitem": -473469885,
+    "DAY": "Tuesday",
+    "Time": "19:30",
+    "Text": "sdasad"
+  },
+  {
+    "ReminderName": "Testq1",
+    "IDitem": 25057684,
+    "DAY": "Thursday",
+    "Time": "15:40",
+    "Text": "Test"
+  }
+]
