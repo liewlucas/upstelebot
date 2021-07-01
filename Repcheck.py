@@ -76,6 +76,7 @@ time_r = ""
 text_r = ""
 usercid_r = ""
 name_r = ""
+useredit_r = ""
 
 #Inputs.append({'ID': namex, 'DAY': dayresponse, 'Time': timeresponse, 'Text': textresponse})
 #print(Inputs)
@@ -142,15 +143,15 @@ def dict_del(datadel):
                     print(datadel)
                     break
 
-#def dict_edit(dataed):
-    #for ed in range(len(dataed)):
-        #if dataed[ed]['IDitem'] == usercid_r:
-           # if dataed[ed]['ReminderName'] == name_r:
-               # with open(dict_db, 'w') as fre:
+def dict_edit(dataed):
+    for ed in range(len(dataed)):
+        if dataed[ed]['IDitem'] == usercid_r:
+            if dataed[ed]['ReminderName'] == name_r:
+                with open(dict_db, 'w') as fre:
                     #edit dataed[ed] with user parameters
-                    #dataed[ed]['ReminderName'] = #usereditremindername
-                    #dataed[ed]['DAY'] = #usereditDAY
-                    #dataed[ed]['TIME'] = #usereditTIME
-                    #dataed[ed]['TEXT'] = #usereditTEXT
-                    #json.dump(dataed, fre, indent=2)
-                    #print(dataed)
+                    dataed[ed]['ReminderName'] = RemName#usereditremindername
+                    dataed[ed]['DAY'] = day_r#usereditDAY
+                    dataed[ed]['TIME'] = time_r#usereditTIME
+                    dataed[ed]['TEXT'] = text_r#usereditTEXT
+                    json.dump(dataed, fre, indent=2)
+                    print(dataed)
