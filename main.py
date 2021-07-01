@@ -149,6 +149,7 @@ def editfromuser(update: Update, context: CallbackContext)-> int:
     replylist = []
     global userchatidingroup
     userchatidingroup = update.message.message_id
+    global editnameuser
     editnameuser = str(update.message.text)
     Rep.dict_read()  # read DB
     for ReminderName,IDitem, DAY, Time, Text in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],key=lambda t: t[1]):
@@ -170,32 +171,93 @@ def useredits(update: Update, context: CallbackContext)-> int:
     global editchoiceuser
     editchoiceuser = str(update.message.text)
     if(editchoiceuser == "Time"):
-        update.message.reply_text("Please Enter the new details for " + editchoiceuser + " (Format: HH:MM, e.g: 17:30)",reply_to_message_id=userchatidingroup, reply_markup=ForceReply(userchatidingroup))
+        update.message.reply_text("Please Enter the new details for " + editchoiceuser + " (Format: HH:MM, e.g: 17:30)",reply_to_message_id=userchatidingroup, reply_markup=ForceReply(selective=True))
     if(editchoiceuser == "Day"):
         reply_keyboard = [['Monday'], ['Tuesday'], ['Wednesday'], ['Thursday'], ['Friday']]
         update.message.reply_text("Please select the new details for " + editchoiceuser, reply_to_message_id=userchatidingroup, reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
     if(editchoiceuser == "Reminder Name"):
         update.message.reply_text("Please Enter the new details for " + editchoiceuser,
-                                  reply_to_message_id=userchatidingroup, reply_markup=ForceReply(userchatidingroup))
+                                  reply_to_message_id=userchatidingroup, reply_markup=ForceReply(selective=True))
     if (editchoiceuser == "Message"):
         update.message.reply_text("Please Enter the new details for " + editchoiceuser,
-                                  reply_to_message_id=userchatidingroup, reply_markup=ForceReply(userchatidingroup))
+                                  reply_to_message_id=userchatidingroup, reply_markup=ForceReply(selective=True))
     return EDITINDB
 
 def editindb(update: Update, context: CallbackContext)-> int:
     usersconfirmationedit = str(update.message.text)
     if(editchoiceuser == "Time"):
         Rep.time_r = usersconfirmationedit
-        update.message.reply_text("Your Update is : " + usersconfirmationedit)
+        Rep.usercid_r = userchatid
+        Rep.name_r = editnameuser
+        Rep.dict_read()
+        Rep.dict_edit_Time(Rep.Inputs)
+        replylist = []
+        for ReminderName, IDitem, DAY, Time, Text in sorted(
+                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],
+                key=lambda t: t[1]):
+                    if (ReminderName == editnameuser):
+                        dbRemName = str(ReminderName)
+                        dbday = str(DAY)
+                        dbtime = str(Time)
+                        dbmsg = str(Text)
+                        stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                        replylist.append(stringreply)  # append into the list
+                        update.message.reply_text("Here are the details for the new Reminder: \n\n" + "".join(replylist))
     if(editchoiceuser == "Day"):
         Rep.day_r = usersconfirmationedit
-        update.message.reply_text("Your Update is : " + usersconfirmationedit)
+        Rep.usercid_r = userchatid
+        Rep.name_r = editnameuser
+        Rep.dict_read()
+        Rep.dict_edit_Day(Rep.Inputs)
+        replylist = []
+        for ReminderName, IDitem, DAY, Time, Text in sorted(
+                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],
+                key=lambda t: t[1]):
+            if (ReminderName == editnameuser):
+                dbRemName = str(ReminderName)
+                dbday = str(DAY)
+                dbtime = str(Time)
+                dbmsg = str(Text)
+                stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                replylist.append(stringreply)  # append into the list
+                update.message.reply_text("Here are the details for the new Reminder: \n\n" + "".join(replylist))
     if(editchoiceuser == "Reminder Name"):
         Rep.RemName = usersconfirmationedit
-        update.message.reply_text("Your Update is : " + usersconfirmationedit)
+        Rep.usercid_r = userchatid
+        Rep.name_r = editnameuser
+        Rep.dict_read()
+        Rep.dict_edit_Name(Rep.Inputs)
+        replylist = []
+        for ReminderName, IDitem, DAY, Time, Text in sorted(
+                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],
+                key=lambda t: t[1]):
+            if (ReminderName == usersconfirmationedit):
+                dbRemName = str(ReminderName)
+                dbday = str(DAY)
+                dbtime = str(Time)
+                dbmsg = str(Text)
+                stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                replylist.append(stringreply)  # append into the list
+                update.message.reply_text("Here are the details for the new Reminder: \n\n" + "".join(replylist))
+
     if(editchoiceuser == "Message"):
         Rep.text_r = usersconfirmationedit
-        update.message.reply_text("Your Update is : " + usersconfirmationedit)
+        Rep.usercid_r = userchatid
+        Rep.name_r = editnameuser
+        Rep.dict_read()
+        Rep.dict_edit_Text(Rep.Inputs)
+        replylist = []
+        for ReminderName, IDitem, DAY, Time, Text in sorted(
+                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],
+                key=lambda t: t[1]):
+            if (ReminderName == editnameuser):
+                dbRemName = str(ReminderName)
+                dbday = str(DAY)
+                dbtime = str(Time)
+                dbmsg = str(Text)
+                stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                replylist.append(stringreply)  # append into the list
+                update.message.reply_text("Here are the details for the new Reminder: \n\n" + "".join(replylist))
 
     return ConversationHandler.END
 

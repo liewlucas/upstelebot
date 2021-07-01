@@ -143,45 +143,49 @@ def dict_del(datadel):
                     print(datadel)
                     break
 
+def dict_edit_Time(dataed):
+    with open(dict_db, 'w') as fre:
+        for ed in range(len(dataed)):
+            if dataed[ed]['IDitem'] == usercid_r:
+                if dataed[ed]['ReminderName'] == name_r:
+                        #edit dataed[ed] with user parameters
+                        dataed[ed]['Time'] = time_r #usereditTIME
+                        json.dump(dataed, fre, indent=2)
+                        print(dataed)
+                        break
+
+
 def dict_edit_Name(dataed):
-    for ed in range(len(dataed)):
-        if dataed[ed]['IDitem'] == usercid_r:
-            if dataed[ed]['ReminderName'] == name_r:
-                with open(dict_db, 'w') as fre:
-                    #edit dataed[ed] with user parameters
-                    dataed[ed]['ReminderName'] = RemName #usereditremindername
-                    json.dump(dataed, fre, indent=2)
-                    print(dataed)
+    with open(dict_db, 'w') as fre:
+        for ed in range(len(dataed)):
+            if dataed[ed]['IDitem'] == usercid_r:
+                if dataed[ed]['ReminderName'] == name_r:
+                        #edit dataed[ed] with user parameters
+                        dataed[ed]['ReminderName'] = RemName #usereditremindername
+                        json.dump(dataed, fre, indent=2)
+                        print(dataed)
 
 def dict_edit_Day(dataed):
-    for ed in range(len(dataed)):
-        if dataed[ed]['IDitem'] == usercid_r:
-            if dataed[ed]['ReminderName'] == name_r:
-                with open(dict_db, 'w') as fre:
-                    #edit dataed[ed] with user parameters
-                    dataed[ed]['DAY'] = day_r  #usereditDAY
-                    json.dump(dataed, fre, indent=2)
-                    print(dataed)
+    with open(dict_db, 'w') as fre:
+        for ed in range(len(dataed)):
+            if dataed[ed]['IDitem'] == usercid_r:
+                if dataed[ed]['ReminderName'] == name_r:
+                        #edit dataed[ed] with user parameters
+                        dataed[ed]['DAY'] = day_r  #usereditDAY
+                        json.dump(dataed, fre, indent=2)
+                        print(dataed)
 
-def dict_edit_Time(dataed):
-    for ed in range(len(dataed)):
-        if dataed[ed]['IDitem'] == usercid_r:
-            if dataed[ed]['ReminderName'] == name_r:
-                with open(dict_db, 'w') as fre:
-                    #edit dataed[ed] with user parameters
-                    dataed[ed]['TIME'] = time_r #usereditTIME
-                    json.dump(dataed, fre, indent=2)
-                    print(dataed)
 
 def dict_edit_Text(dataed):
-    for ed in range(len(dataed)):
-        if dataed[ed]['IDitem'] == usercid_r:
-            if dataed[ed]['ReminderName'] == name_r:
-                with open(dict_db, 'w') as fre:
-                    #edit dataed[ed] with user parameters
-                    dataed[ed]['TEXT'] = text_r  #usereditTEXT
-                    json.dump(dataed, fre, indent=2)
-                    print(dataed)
+    with open(dict_db, 'w') as fre:
+        for ed in range(len(dataed)):
+            if dataed[ed]['IDitem'] == usercid_r:
+                if dataed[ed]['ReminderName'] == name_r:
+                    with open(dict_db, 'w') as fre:
+                        #edit dataed[ed] with user parameters
+                        dataed[ed]['Text'] = text_r  #usereditTEXT
+                        json.dump(dataed, fre, indent=2)
+                        print(dataed)
 
 
 
