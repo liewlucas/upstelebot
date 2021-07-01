@@ -142,15 +142,18 @@ def dict_del(datadel):
                     print(datadel)
                     break
 
-#def dict_edit(dataed):
-    #for ed in range(len(dataed)):
-        #if dataed[ed]['IDitem'] == usercid_r:
-           # if dataed[ed]['ReminderName'] == name_r:
-               # with open(dict_db, 'w') as fre:
-                    #edit dataed[ed] with user parameters
-                    #dataed[ed]['ReminderName'] = #usereditremindername
+def dict_edit_Name(dataed):
+    for ed in range(len(dataed)):
+        if dataed[ed]['IDitem'] == usercid_r:
+           if dataed[ed]['ReminderName'] == name_r:
+               with open(dict_db, 'w') as fre:
+                    dataed[ed]['ReminderName'] = usereditremindername
                     #dataed[ed]['DAY'] = #usereditDAY
                     #dataed[ed]['TIME'] = #usereditTIME
                     #dataed[ed]['TEXT'] = #usereditTEXT
-                    #json.dump(dataed, fre, indent=2)
-                    #print(dataed)
+                    json.dump(dataed, fre, indent=2)
+                    print(dataed)
+
+    #dataed[ed]['DAY'] = #usereditDAY
+    #dataed[ed]['TIME'] = #usereditTIME
+    #dataed[ed]['TEXT'] = #usereditTEXT
