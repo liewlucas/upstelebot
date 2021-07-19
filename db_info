@@ -1,6 +1,6 @@
 [
   {
-    "ReminderName": "Bdbhd",
+    "ReminderName": "Thank god",
     "IDitem": -473469885,
     "DAY": "Monday",
     "Time": "00:00",
@@ -26,5 +26,12 @@
     "DAY": "Thursday",
     "Time": "18:30",
     "Text": "Post"
+  },
+  {
+    "ReminderName": "deeznuts",
+    "IDitem": -473469885,
+    "DAY": "Wednesday",
+    "Time": "17:30",
+    "Text": "bendover"
   }
 ]
