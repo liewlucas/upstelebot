@@ -28,7 +28,8 @@ def help_command(update, context):
     update.message.reply_text("This bot enables you to create, delete, and edit reminders. Please follow the commands stated below to get started! \U0001f60A \n\n"
                               "/schedule is to set a new reminder\n"
                               "/list shows you a list of reminders that you have set\n"
-                              "/delete allows for you to delete reminders based on the Reminder Names")
+                              "/delete allows for you to delete reminders based on the Reminder Names\n"
+                              "/edit allows for you to edit existing reminders")
 
 def list_command(update, context):
     # update.message.reply_text("hello! here are your set reminders : (work in progress)")
@@ -132,7 +133,7 @@ def edit_command(update, context):
             dbmsg = str(Text)
             stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
             replylist.append(stringreply)  # append into the list
-        namelist.append(dbRemName)  # append all names relating to this chatid into local list
+            namelist.append(dbRemName)  # append all names relating to this chatid into local list
 
     if not replylist:  # checking if list is empty
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
@@ -455,7 +456,7 @@ def get_chat_id(update, context):
     print(chat_id)
 
 def main():
-        updater = Updater(keys.API_KEY2, use_context=True)
+        updater = Updater(keys.API_KEY3, use_context=True)
         dp = updater.dispatcher
 
         j = updater.job_queue
