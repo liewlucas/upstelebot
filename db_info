@@ -19,5 +19,12 @@
     "DAY": "Wednesday",
     "Time": "14:45",
     "Text": "Tets 3"
+  },
+  {
+    "ReminderName": "Its Working!",
+    "IDitem": 25057684,
+    "DAY": "Thursday",
+    "Time": "18:30",
+    "Text": "Post"
   }
 ]

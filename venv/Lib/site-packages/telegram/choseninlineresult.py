@@ -37,7 +37,7 @@ class ChosenInlineResult(TelegramObject):
     considered equal, if their :attr:`result_id` is equal.
 
     Note:
-        * In Python `from` is a reserved word, use `from_user` instead.
+        * In Python ``from`` is a reserved word, use ``from_user`` instead.
         * It is necessary to enable inline feedback via `@Botfather <https://t.me/BotFather>`_ in
           order to receive these objects in updates.
 
@@ -61,6 +61,8 @@ class ChosenInlineResult(TelegramObject):
 
     """
 
+    __slots__ = ('location', 'result_id', 'from_user', 'inline_message_id', '_id_attrs', 'query')
+
     def __init__(
         self,
         result_id: str,
@@ -82,7 +84,8 @@ class ChosenInlineResult(TelegramObject):
 
     @classmethod
     def de_json(cls, data: Optional[JSONDict], bot: 'Bot') -> Optional['ChosenInlineResult']:
-        data = cls.parse_data(data)
+        """See :meth:`telegram.TelegramObject.de_json`."""
+        data = cls._parse_data(data)
 
         if not data:
             return None

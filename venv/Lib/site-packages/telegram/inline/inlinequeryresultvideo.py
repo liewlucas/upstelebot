@@ -21,7 +21,8 @@
 from typing import TYPE_CHECKING, Any, Union, Tuple, List
 
 from telegram import InlineQueryResult, MessageEntity
-from telegram.utils.helpers import DEFAULT_NONE, DefaultValue
+from telegram.utils.helpers import DEFAULT_NONE
+from telegram.utils.types import ODVInput
 
 if TYPE_CHECKING:
     from telegram import InputMessageContent, ReplyMarkup
@@ -91,6 +92,22 @@ class InlineQueryResultVideo(InlineQueryResult):
 
     """
 
+    __slots__ = (
+        'video_url',
+        'reply_markup',
+        'caption_entities',
+        'caption',
+        'title',
+        'description',
+        'video_duration',
+        'parse_mode',
+        'mime_type',
+        'input_message_content',
+        'video_height',
+        'video_width',
+        'thumb_url',
+    )
+
     def __init__(
         self,
         id: str,  # pylint: disable=W0622
@@ -105,7 +122,7 @@ class InlineQueryResultVideo(InlineQueryResult):
         description: str = None,
         reply_markup: 'ReplyMarkup' = None,
         input_message_content: 'InputMessageContent' = None,
-        parse_mode: Union[str, DefaultValue] = DEFAULT_NONE,
+        parse_mode: ODVInput[str] = DEFAULT_NONE,
         caption_entities: Union[Tuple[MessageEntity, ...], List[MessageEntity]] = None,
         **_kwargs: Any,
     ):

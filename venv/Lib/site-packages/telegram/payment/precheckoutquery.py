@@ -21,7 +21,8 @@
 from typing import TYPE_CHECKING, Any, Optional
 
 from telegram import OrderInfo, TelegramObject, User
-from telegram.utils.types import JSONDict
+from telegram.utils.helpers import DEFAULT_NONE
+from telegram.utils.types import JSONDict, ODVInput
 
 if TYPE_CHECKING:
     from telegram import Bot
@@ -34,7 +35,7 @@ class PreCheckoutQuery(TelegramObject):
     considered equal, if their :attr:`id` is equal.
 
     Note:
-        In Python `from` is a reserved word, use `from_user` instead.
+        In Python ``from`` is a reserved word, use ``from_user`` instead.
 
     Args:
         id (:obj:`str`): Unique query identifier.
@@ -66,6 +67,18 @@ class PreCheckoutQuery(TelegramObject):
 
     """
 
+    __slots__ = (
+        'bot',
+        'invoice_payload',
+        'shipping_option_id',
+        'currency',
+        'order_info',
+        'total_amount',
+        'id',
+        'from_user',
+        '_id_attrs',
+    )
+
     def __init__(
         self,
         id: str,  # pylint: disable=W0622
@@ -92,7 +105,8 @@ class PreCheckoutQuery(TelegramObject):
 
     @classmethod
     def de_json(cls, data: Optional[JSONDict], bot: 'Bot') -> Optional['PreCheckoutQuery']:
-        data = cls.parse_data(data)
+        """See :meth:`telegram.TelegramObject.de_json`."""
+        data = cls._parse_data(data)
 
         if not data:
             return None
@@ -106,7 +120,7 @@ class PreCheckoutQuery(TelegramObject):
         self,
         ok: bool,
         error_message: str = None,
-        timeout: float = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
     ) -> bool:
         """Shortcut for::

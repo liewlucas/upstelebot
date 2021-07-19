@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 EDITINDB, EDITCHOICE, EDIT, DELETE, NAME, DAY, TIME, MESSAGE = range(8)
 
 def start_command(update, context):
-    update.message.reply_text("Welcome to the UpdateParadeStateBot! \U0001F917")
+    update.message.reply_text("Welcome to the Parakeet! \U0001F917")
     update.message.reply_text("To get started, simply type /help to view all the operational commands\U0001F4C4")
 
 def help_command(update, context):
@@ -121,6 +121,7 @@ def edit_command(update, context):
     userchatidingroup = update.message.message_id
     Rep.dict_read()  # read DB
     global userchatid
+    #dbRemName = ""
     userchatid = update.message.chat.id
     # for IDitem, DAY, Time, Text in Rep.Inputs:
     replylist = []
@@ -456,7 +457,7 @@ def get_chat_id(update, context):
     print(chat_id)
 
 def main():
-        updater = Updater(keys.API_KEY2, use_context=True)
+        updater = Updater(keys.API_J, use_context=True)
         dp = updater.dispatcher
 
         j = updater.job_queue

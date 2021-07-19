@@ -31,6 +31,10 @@ class InlineQueryResult(TelegramObject):
     Objects of this class are comparable in terms of equality. Two objects of this class are
     considered equal, if their :attr:`id` is equal.
 
+    Note:
+        All URLs passed in inline query results will be available to end users and therefore must
+        be assumed to be *public*.
+
     Args:
         type (:obj:`str`): Type of the result.
         id (:obj:`str`): Unique identifier for this result, 1-64 Bytes.
@@ -42,6 +46,8 @@ class InlineQueryResult(TelegramObject):
 
     """
 
+    __slots__ = ('type', 'id', '_id_attrs')
+
     def __init__(self, type: str, id: str, **_kwargs: Any):
         # Required
         self.type = str(type)
@@ -49,15 +55,8 @@ class InlineQueryResult(TelegramObject):
 
         self._id_attrs = (self.id,)
 
-    @property
-    def _has_parse_mode(self) -> bool:
-        return hasattr(self, 'parse_mode')
-
-    @property
-    def _has_input_message_content(self) -> bool:
-        return hasattr(self, 'input_message_content')
-
     def to_dict(self) -> JSONDict:
+        """See :meth:`telegram.TelegramObject.to_dict`."""
         data = super().to_dict()
 
         # pylint: disable=E1101

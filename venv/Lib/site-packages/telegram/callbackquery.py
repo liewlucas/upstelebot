@@ -21,7 +21,8 @@
 from typing import TYPE_CHECKING, Any, List, Optional, Union, Tuple, ClassVar
 
 from telegram import Message, TelegramObject, User, Location, ReplyMarkup, constants
-from telegram.utils.types import JSONDict
+from telegram.utils.helpers import DEFAULT_NONE
+from telegram.utils.types import JSONDict, ODVInput, DVInput
 
 if TYPE_CHECKING:
     from telegram import (
@@ -46,12 +47,19 @@ class CallbackQuery(TelegramObject):
     considered equal, if their :attr:`id` is equal.
 
     Note:
-        * In Python `from` is a reserved word, use `from_user` instead.
+        * In Python ``from`` is a reserved word, use ``from_user`` instead.
         * Exactly one of the fields :attr:`data` or :attr:`game_short_name` will be present.
         * After the user presses an inline button, Telegram clients will display a progress bar
           until you call :attr:`answer`. It is, therefore, necessary to react
           by calling :attr:`telegram.Bot.answer_callback_query` even if no notification to the user
           is needed (e.g., without specifying any of the optional parameters).
+        * If you're using :attr:`Bot.arbitrary_callback_data`, :attr:`data` may be an instance
+          of :class:`telegram.ext.InvalidCallbackData`. This will be the case, if the data
+          associated with the button triggering the :class:`telegram.CallbackQuery` was already
+          deleted or if :attr:`data` was manipulated by a malicious client.
+
+          .. versionadded:: 13.6
+
 
     Args:
         id (:obj:`str`): Unique identifier for this query.
@@ -76,13 +84,25 @@ class CallbackQuery(TelegramObject):
             the message with the callback button was sent.
         message (:class:`telegram.Message`): Optional. Message with the callback button that
             originated the query.
-        data (:obj:`str`): Optional. Data associated with the callback button.
+        data (:obj:`str` | :obj:`object`): Optional. Data associated with the callback button.
         inline_message_id (:obj:`str`): Optional. Identifier of the message sent via the bot in
                 inline mode, that originated the query.
         game_short_name (:obj:`str`): Optional. Short name of a Game to be returned.
         bot (:class:`telegram.Bot`, optional): The Bot to use for instance methods.
 
     """
+
+    __slots__ = (
+        'bot',
+        'game_short_name',
+        'message',
+        'chat_instance',
+        'id',
+        'from_user',
+        'inline_message_id',
+        'data',
+        '_id_attrs',
+    )
 
     def __init__(
         self,
@@ -112,7 +132,8 @@ class CallbackQuery(TelegramObject):
 
     @classmethod
     def de_json(cls, data: Optional[JSONDict], bot: 'Bot') -> Optional['CallbackQuery']:
-        data = cls.parse_data(data)
+        """See :meth:`telegram.TelegramObject.de_json`."""
+        data = cls._parse_data(data)
 
         if not data:
             return None
@@ -128,7 +149,7 @@ class CallbackQuery(TelegramObject):
         show_alert: bool = False,
         url: str = None,
         cache_time: int = None,
-        timeout: float = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
     ) -> bool:
         """Shortcut for::
@@ -155,10 +176,10 @@ class CallbackQuery(TelegramObject):
     def edit_message_text(
         self,
         text: str,
-        parse_mode: str = None,
-        disable_web_page_preview: bool = None,
+        parse_mode: ODVInput[str] = DEFAULT_NONE,
+        disable_web_page_preview: ODVInput[bool] = DEFAULT_NONE,
         reply_markup: 'InlineKeyboardMarkup' = None,
-        timeout: float = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
         entities: Union[List['MessageEntity'], Tuple['MessageEntity', ...]] = None,
     ) -> Union[Message, bool]:
@@ -172,7 +193,7 @@ class CallbackQuery(TelegramObject):
                                 *args, **kwargs)
 
         For the documentation of the arguments, please see
-        :meth:`telegram.Bot.edit_message_text`.
+        :meth:`telegram.Bot.edit_message_text` and :meth:`telegram.Message.edit_text`.
 
         Returns:
             :class:`telegram.Message`: On success, if edited message is sent by the bot, the
@@ -206,8 +227,8 @@ class CallbackQuery(TelegramObject):
         self,
         caption: str = None,
         reply_markup: 'InlineKeyboardMarkup' = None,
-        timeout: float = None,
-        parse_mode: str = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
+        parse_mode: ODVInput[str] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
         caption_entities: Union[List['MessageEntity'], Tuple['MessageEntity', ...]] = None,
     ) -> Union[Message, bool]:
@@ -222,7 +243,7 @@ class CallbackQuery(TelegramObject):
                                    *args, **kwargs)
 
         For the documentation of the arguments, please see
-        :meth:`telegram.Bot.edit_message_caption`.
+        :meth:`telegram.Bot.edit_message_caption` and :meth:`telegram.Message.edit_caption`.
 
         Returns:
             :class:`telegram.Message`: On success, if edited message is sent by the bot, the
@@ -253,7 +274,7 @@ class CallbackQuery(TelegramObject):
     def edit_message_reply_markup(
         self,
         reply_markup: Optional['InlineKeyboardMarkup'] = None,
-        timeout: float = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
     ) -> Union[Message, bool]:
         """Shortcut for either::
@@ -274,7 +295,8 @@ class CallbackQuery(TelegramObject):
             )
 
         For the documentation of the arguments, please see
-        :meth:`telegram.Bot.edit_message_reply_markup`.
+        :meth:`telegram.Bot.edit_message_reply_markup` and
+        :meth:`telegram.Message.edit_reply_markup`.
 
         Returns:
             :class:`telegram.Message`: On success, if edited message is sent by the bot, the
@@ -300,7 +322,7 @@ class CallbackQuery(TelegramObject):
         self,
         media: 'InputMedia' = None,
         reply_markup: 'InlineKeyboardMarkup' = None,
-        timeout: float = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
     ) -> Union[Message, bool]:
         """Shortcut for either::
@@ -313,7 +335,7 @@ class CallbackQuery(TelegramObject):
                                    *args, **kwargs)
 
         For the documentation of the arguments, please see
-        :meth:`telegram.Bot.edit_message_media`.
+        :meth:`telegram.Bot.edit_message_media` and :meth:`telegram.Message.edit_media`.
 
         Returns:
             :class:`telegram.Message`: On success, if edited message is sent by the bot, the
@@ -343,7 +365,7 @@ class CallbackQuery(TelegramObject):
         longitude: float = None,
         location: Location = None,
         reply_markup: 'InlineKeyboardMarkup' = None,
-        timeout: float = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
         horizontal_accuracy: float = None,
         heading: int = None,
@@ -361,7 +383,8 @@ class CallbackQuery(TelegramObject):
             )
 
         For the documentation of the arguments, please see
-        :meth:`telegram.Bot.edit_message_live_location`.
+        :meth:`telegram.Bot.edit_message_live_location` and
+        :meth:`telegram.Message.edit_live_location`.
 
         Returns:
             :class:`telegram.Message`: On success, if edited message is sent by the bot, the
@@ -398,7 +421,7 @@ class CallbackQuery(TelegramObject):
     def stop_message_live_location(
         self,
         reply_markup: 'InlineKeyboardMarkup' = None,
-        timeout: float = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
     ) -> Union[Message, bool]:
         """Shortcut for either::
@@ -413,7 +436,8 @@ class CallbackQuery(TelegramObject):
             )
 
         For the documentation of the arguments, please see
-        :meth:`telegram.Bot.stop_message_live_location`.
+        :meth:`telegram.Bot.stop_message_live_location` and
+        :meth:`telegram.Message.stop_live_location`.
 
         Returns:
             :class:`telegram.Message`: On success, if edited message is sent by the bot, the
@@ -441,7 +465,7 @@ class CallbackQuery(TelegramObject):
         score: int,
         force: bool = None,
         disable_edit_message: bool = None,
-        timeout: float = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
     ) -> Union[Message, bool]:
         """Shortcut for either::
@@ -454,7 +478,7 @@ class CallbackQuery(TelegramObject):
                                *args, **kwargs)
 
         For the documentation of the arguments, please see
-        :meth:`telegram.Bot.set_game_score`.
+        :meth:`telegram.Bot.set_game_score` and :meth:`telegram.Message.set_game_score`.
 
         Returns:
             :class:`telegram.Message`: On success, if edited message is sent by the bot, the
@@ -485,7 +509,7 @@ class CallbackQuery(TelegramObject):
     def get_game_high_scores(
         self,
         user_id: Union[int, str],
-        timeout: float = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
     ) -> List['GameHighScore']:
         """Shortcut for either::
@@ -498,7 +522,7 @@ class CallbackQuery(TelegramObject):
                                      *args, **kwargs)
 
         For the documentation of the arguments, please see
-        :meth:`telegram.Bot.get_game_high_scores`.
+        :meth:`telegram.Bot.get_game_high_scores` and :meth:`telegram.Message.get_game_high_score`.
 
         Returns:
             List[:class:`telegram.GameHighScore`]
@@ -521,7 +545,7 @@ class CallbackQuery(TelegramObject):
 
     def delete_message(
         self,
-        timeout: float = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
     ) -> bool:
         """Shortcut for::
@@ -529,7 +553,7 @@ class CallbackQuery(TelegramObject):
             update.callback_query.message.delete(*args, **kwargs)
 
         For the documentation of the arguments, please see
-        :meth:`telegram.Bot.delete_message`.
+        :meth:`telegram.Message.delete`.
 
         Returns:
             :obj:`bool`: On success, :obj:`True` is returned.
@@ -542,19 +566,16 @@ class CallbackQuery(TelegramObject):
 
     def pin_message(
         self,
-        disable_notification: bool = None,
-        timeout: float = None,
+        disable_notification: ODVInput[bool] = DEFAULT_NONE,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
     ) -> bool:
         """Shortcut for::
 
-             bot.pin_chat_message(chat_id=message.chat_id,
-                                  message_id=message.message_id,
-                                  *args,
-                                  **kwargs)
+             update.callback_query.message.pin(*args, **kwargs)
 
         For the documentation of the arguments, please see
-        :meth:`telegram.Bot.pin_chat_message`.
+        :meth:`telegram.Message.pin`.
 
         Returns:
             :obj:`bool`: On success, :obj:`True` is returned.
@@ -568,18 +589,15 @@ class CallbackQuery(TelegramObject):
 
     def unpin_message(
         self,
-        timeout: float = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
     ) -> bool:
         """Shortcut for::
 
-             bot.unpin_chat_message(chat_id=message.chat_id,
-                                    message_id=message.message_id,
-                                    *args,
-                                    **kwargs)
+             update.callback_query.message.unpin(*args, **kwargs)
 
         For the documentation of the arguments, please see
-        :meth:`telegram.Bot.unpin_chat_message`.
+        :meth:`telegram.Message.unpin`.
 
         Returns:
             :obj:`bool`: On success, :obj:`True` is returned.
@@ -594,13 +612,13 @@ class CallbackQuery(TelegramObject):
         self,
         chat_id: Union[int, str],
         caption: str = None,
-        parse_mode: str = None,
+        parse_mode: ODVInput[str] = DEFAULT_NONE,
         caption_entities: Union[Tuple['MessageEntity', ...], List['MessageEntity']] = None,
-        disable_notification: bool = False,
-        reply_to_message_id: Union[int, str] = None,
-        allow_sending_without_reply: bool = False,
+        disable_notification: DVInput[bool] = DEFAULT_NONE,
+        reply_to_message_id: int = None,
+        allow_sending_without_reply: DVInput[bool] = DEFAULT_NONE,
         reply_markup: ReplyMarkup = None,
-        timeout: float = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
     ) -> 'MessageId':
         """Shortcut for::
@@ -613,7 +631,7 @@ class CallbackQuery(TelegramObject):
                 **kwargs)
 
         For the documentation of the arguments, please see
-        :meth:`telegram.Bot.copy_message`.
+        :meth:`telegram.Message.copy`.
 
         Returns:
             :class:`telegram.MessageId`: On success, returns the MessageId of the sent message.

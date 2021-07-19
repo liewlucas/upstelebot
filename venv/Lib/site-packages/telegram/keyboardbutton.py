@@ -20,7 +20,7 @@
 
 from typing import Any
 
-from telegram import TelegramObject
+from telegram import TelegramObject, KeyboardButtonPollType
 
 
 class KeyboardButton(TelegramObject):
@@ -58,12 +58,14 @@ class KeyboardButton(TelegramObject):
 
     """
 
+    __slots__ = ('request_location', 'request_contact', 'request_poll', 'text', '_id_attrs')
+
     def __init__(
         self,
         text: str,
         request_contact: bool = None,
         request_location: bool = None,
-        request_poll: bool = None,
+        request_poll: KeyboardButtonPollType = None,
         **_kwargs: Any,
     ):
         # Required
