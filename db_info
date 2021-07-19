@@ -1,9 +1,30 @@
 [
   {
-    "ReminderName": "Bdbhd",
+    "ReminderName": "Deployment Test 1",
     "IDitem": -473469885,
-    "DAY": "Monday",
-    "Time": "00:00",
-    "Text": "Taggh"
+    "DAY": "Wednesday",
+    "Time": "16:30",
+    "Text": "Deployment is Done"
+  },
+  {
+    "ReminderName": "Update GoogleCal",
+    "IDitem": -1001252293224,
+    "DAY": "Wednesday",
+    "Time": "16:00",
+    "Text": "Reminder: Update Google Cal for OFF/LL/MA for the next two weeks by 1600H today. Urgent and last minute requests, please PM SY"
+  },
+  {
+    "ReminderName": "Update ParadeState and IndentRation",
+    "IDitem": -1001252293224,
+    "DAY": "Thursday",
+    "Time": "16:00",
+    "Text": "Reminder: Update Parade State for the next two weeks and Indent Ration by 1600H today. \nhttps://indentyourration.web.app"
+  },
+  {
+    "ReminderName": "Name",
+    "IDitem": -473469885,
+    "DAY": "Tuesday",
+    "Time": "17:00",
+    "Text": "sdfklsdlkfl"
   }
 ]

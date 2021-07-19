@@ -19,14 +19,15 @@ logger = logging.getLogger(__name__)
 EDITINDB, EDITCHOICE, EDIT, DELETE, NAME, DAY, TIME, MESSAGE = range(8)
 
 def start_command(update, context):
-    update.message.reply_text("Welcome to the UpdateParadeStateBot! \U0001F917")
+    update.message.reply_text("Welcome to the ParakeetBot! \U0001F917")
     update.message.reply_text("To get started, simply type /help to view all the operational commands\U0001F4C4")
 
 def help_command(update, context):
     update.message.reply_text("This bot enables you to create, delete, and edit reminders. Please follow the commands stated below to get started! \U0001f60A \n\n"
                               "/schedule is to set a new reminder\n"
                               "/list shows you a list of reminders that you have set\n"
-                              "/delete allows for you to delete reminders based on the Reminder Names")
+                              "/delete allows for you to delete reminders based on the Reminder Names\n"
+                              "/edit enables you to edit your reminders based on Reminder Names")
 
 def list_command(update, context):
     # update.message.reply_text("hello! here are your set reminders : (work in progress)")
