@@ -1,32 +1,30 @@
 [
   {
+    "ReminderName": "Deployment Test 1",
     "IDitem": -473469885,
-    "DAY": "Thursday",
-    "Time": "17:30",
-    "Text": "Reminder: The bot is working"
-  },
-  {
-    "IDitem": -473469885,
-    "DAY": "Friday",
-    "Time": "16:00",
-    "Text": "Please remember to book in"
-  },
-  {
-    "IDitem": -522445387,
-    "DAY": "Friday",
-    "Time": "16:00",
-    "Text": "Please be reminded to book in"
-  },
-  {
-    "IDitem": -522445387,
     "DAY": "Wednesday",
-    "Time": "13:00",
-    "Text": "Update Google Cal (OFF/LL/MA) for two weeks in advance by 1600H today. It\u2019ll be approved this evening. \nFor urgent and last minute requests, please PM PC"
+    "Time": "16:30",
+    "Text": "Deployment is Done"
   },
   {
-    "IDitem": -522445387,
+    "ReminderName": "Update GoogleCal",
+    "IDitem": -1001252293224,
+    "DAY": "Wednesday",
+    "Time": "16:00",
+    "Text": "Reminder: Update Google Cal for OFF/LL/MA for the next two weeks by 1600H today. Urgent and last minute requests, please PM SY"
+  },
+  {
+    "ReminderName": "Update ParadeState and IndentRation",
+    "IDitem": -1001252293224,
     "DAY": "Thursday",
-    "Time": "13:00",
-    "Text": "Update PARADE STATE up to the next two weeks and indent RATION by 1600H TODAY \ud83e\udd66"
+    "Time": "16:00",
+    "Text": "Reminder: Update Parade State for the next two weeks and Indent Ration by 1600H today. \nhttps://indentyourration.web.app"
+  },
+  {
+    "ReminderName": "Name",
+    "IDitem": -473469885,
+    "DAY": "Tuesday",
+    "Time": "17:00",
+    "Text": "sdfklsdlkfl"
   }
 ]
