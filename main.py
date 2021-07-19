@@ -1,3 +1,5 @@
+import time
+
 from telegram import ReplyKeyboardMarkup, Update, ReplyKeyboardRemove, ForceReply, bot, update
 import constants as keys
 from telegram.ext import *
@@ -19,7 +21,7 @@ logger = logging.getLogger(__name__)
 EDITINDB, EDITCHOICE, EDIT, DELETE, NAME, DAY, TIME, MESSAGE = range(8)
 
 def start_command(update, context):
-    update.message.reply_text("Welcome to the ParakeetBot! \U0001F917")
+    update.message.reply_text("Welcome to the Parakeet! \U0001F917")
     update.message.reply_text("To get started, simply type /help to view all the operational commands\U0001F4C4")
 
 def help_command(update, context):
@@ -27,7 +29,7 @@ def help_command(update, context):
                               "/schedule is to set a new reminder\n"
                               "/list shows you a list of reminders that you have set\n"
                               "/delete allows for you to delete reminders based on the Reminder Names\n"
-                              "/edit enables you to edit your reminders based on Reminder Names")
+                              "/edit allows for you to edit existing reminders")
 
 def list_command(update, context):
     # update.message.reply_text("hello! here are your set reminders : (work in progress)")
@@ -119,6 +121,7 @@ def edit_command(update, context):
     userchatidingroup = update.message.message_id
     Rep.dict_read()  # read DB
     global userchatid
+    #dbRemName = ""
     userchatid = update.message.chat.id
     # for IDitem, DAY, Time, Text in Rep.Inputs:
     replylist = []
@@ -187,23 +190,28 @@ def useredits(update: Update, context: CallbackContext)-> int:
 def editindb(update: Update, context: CallbackContext)-> int:
     usersconfirmationedit = str(update.message.text)
     if(editchoiceuser == "Time"):
-        Rep.time_r = usersconfirmationedit
-        Rep.usercid_r = userchatid
-        Rep.name_r = editnameuser
-        Rep.dict_read()
-        Rep.dict_edit_Time(Rep.Inputs)
-        replylist = []
-        for ReminderName, IDitem, DAY, Time, Text in sorted(
-                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],
-                key=lambda t: t[1]):
-                    if (ReminderName == editnameuser):
-                        dbRemName = str(ReminderName)
-                        dbday = str(DAY)
-                        dbtime = str(Time)
-                        dbmsg = str(Text)
-                        stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
-                        replylist.append(stringreply)  # append into the list
-                        update.message.reply_text("Here are the details for the new Reminder: \n\n" + "".join(replylist))
+        try:
+            time.strptime(usersconfirmationedit, '%H:%M')
+            Rep.time_r = usersconfirmationedit
+            Rep.usercid_r = userchatid
+            Rep.name_r = editnameuser
+            Rep.dict_read()
+            Rep.dict_edit_Time(Rep.Inputs)
+            replylist = []
+            for ReminderName, IDitem, DAY, Time, Text in sorted(
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],
+                    key=lambda t: t[1]):
+                        if (ReminderName == editnameuser):
+                            dbRemName = str(ReminderName)
+                            dbday = str(DAY)
+                            dbtime = str(Time)
+                            dbmsg = str(Text)
+                            stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                            replylist.append(stringreply)  # append into the list
+                            update.message.reply_text("Here are the details for the new Reminder: \n\n" + "".join(replylist))
+        except:
+            return "Sorry, Your Date Time format is wrong. Please Follow Example: 17:30"
+
     if(editchoiceuser == "Day"):
         Rep.day_r = usersconfirmationedit
         Rep.usercid_r = userchatid
@@ -449,7 +457,7 @@ def get_chat_id(update, context):
     print(chat_id)
 
 def main():
-        updater = Updater(keys.API_KEY2, use_context=True)
+        updater = Updater(keys.API_J, use_context=True)
         dp = updater.dispatcher
 
         j = updater.job_queue

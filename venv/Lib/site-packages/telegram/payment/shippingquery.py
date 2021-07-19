@@ -21,7 +21,8 @@
 from typing import TYPE_CHECKING, Any, Optional, List
 
 from telegram import ShippingAddress, TelegramObject, User, ShippingOption
-from telegram.utils.types import JSONDict
+from telegram.utils.helpers import DEFAULT_NONE
+from telegram.utils.types import JSONDict, ODVInput
 
 if TYPE_CHECKING:
     from telegram import Bot
@@ -34,7 +35,7 @@ class ShippingQuery(TelegramObject):
     considered equal, if their :attr:`id` is equal.
 
     Note:
-        In Python `from` is a reserved word, use `from_user` instead.
+        In Python ``from`` is a reserved word, use ``from_user`` instead.
 
     Args:
         id (:obj:`str`): Unique query identifier.
@@ -52,6 +53,8 @@ class ShippingQuery(TelegramObject):
         bot (:class:`telegram.Bot`): Optional. The Bot to use for instance methods.
 
     """
+
+    __slots__ = ('bot', 'invoice_payload', 'shipping_address', 'id', 'from_user', '_id_attrs')
 
     def __init__(
         self,
@@ -73,7 +76,8 @@ class ShippingQuery(TelegramObject):
 
     @classmethod
     def de_json(cls, data: Optional[JSONDict], bot: 'Bot') -> Optional['ShippingQuery']:
-        data = cls.parse_data(data)
+        """See :meth:`telegram.TelegramObject.de_json`."""
+        data = cls._parse_data(data)
 
         if not data:
             return None
@@ -88,7 +92,7 @@ class ShippingQuery(TelegramObject):
         ok: bool,
         shipping_options: List[ShippingOption] = None,
         error_message: str = None,
-        timeout: float = None,
+        timeout: ODVInput[float] = DEFAULT_NONE,
         api_kwargs: JSONDict = None,
     ) -> bool:
         """Shortcut for::
