@@ -3,6 +3,7 @@ import os
 
 
 # Use '/root/File_DB/db.txt' when migrated to windows remote desktop
+from typing import TextIO
 
 db_name = "db_ID"
 ID_List = []
@@ -143,25 +144,26 @@ def dict_del(datadel):
                     print(datadel)
                     break
 
+
+#Edit Functions
 def dict_edit_Time(dataed):
     with open(dict_db, 'w') as fre:
         for ed in range(len(dataed)):
             if dataed[ed]['IDitem'] == usercid_r:
                 if dataed[ed]['ReminderName'] == name_r:
-                        #edit dataed[ed] with user parameters
-                        dataed[ed]['Time'] = time_r #usereditTIME
+                        #Fill list[dictionary] with user input parameters
+                        dataed[ed]['Time'] = time_r  #usereditTime
                         json.dump(dataed, fre, indent=2)
                         print(dataed)
                         break
-
 
 def dict_edit_Name(dataed):
     with open(dict_db, 'w') as fre:
         for ed in range(len(dataed)):
             if dataed[ed]['IDitem'] == usercid_r:
                 if dataed[ed]['ReminderName'] == name_r:
-                        #edit dataed[ed] with user parameters
-                        dataed[ed]['ReminderName'] = RemName #usereditremindername
+                        #Fill list[dictionary] with user input parameters
+                        dataed[ed]['ReminderName'] = RemName  #usereditReminderName
                         json.dump(dataed, fre, indent=2)
                         print(dataed)
 
@@ -170,20 +172,18 @@ def dict_edit_Day(dataed):
         for ed in range(len(dataed)):
             if dataed[ed]['IDitem'] == usercid_r:
                 if dataed[ed]['ReminderName'] == name_r:
-                        #edit dataed[ed] with user parameters
-                        dataed[ed]['DAY'] = day_r  #usereditDAY
+                        #Fill list[dictionary] with user input parameters
+                        dataed[ed]['DAY'] = day_r  #usereditDay
                         json.dump(dataed, fre, indent=2)
                         print(dataed)
-
 
 def dict_edit_Text(dataed):
     with open(dict_db, 'w') as fre:
         for ed in range(len(dataed)):
             if dataed[ed]['IDitem'] == usercid_r:
                 if dataed[ed]['ReminderName'] == name_r:
-                    with open(dict_db, 'w') as fre:
-                        #edit dataed[ed] with user parameters
-                        dataed[ed]['Text'] = text_r  #usereditTEXT
+                        #Fill list[dictionary] with user input parameters
+                        dataed[ed]['Text'] = text_r  #usereditText
                         json.dump(dataed, fre, indent=2)
                         print(dataed)
 
