@@ -62,6 +62,7 @@ def del_command(update,context):
     Rep.dict_read()  # read DB
     global userchatid
     userchatid = update.message.chat.id
+    dbRemName = ""
     # for IDitem, DAY, Time, Text in Rep.Inputs:
     replylist = []
     for ReminderName, IDitem, DAY, Time, Text in sorted(
@@ -121,7 +122,7 @@ def edit_command(update, context):
     userchatidingroup = update.message.message_id
     Rep.dict_read()  # read DB
     global userchatid
-    #dbRemName = ""
+    dbRemName = ""
     userchatid = update.message.chat.id
     # for IDitem, DAY, Time, Text in Rep.Inputs:
     replylist = []
