@@ -8,6 +8,7 @@ from datetime import datetime
 import logging
 import Repcheck as Rep
 
+
 now = datetime.now()
 current_time = now.strftime("%H:%M:%S")
 
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 EDITINDB, EDITCHOICE, EDIT, DELETE, NAME, DAY, TIME, MESSAGE = range(8)
 
 def start_command(update, context):
-    update.message.reply_text("Welcome to the UpdateParadeStateBot! \U0001F917")
+    update.message.reply_text("Welcome to the Parakeet! \U0001F917")
     update.message.reply_text("To get started, simply type /help to view all the operational commands\U0001F4C4")
 
 def help_command(update, context):
@@ -73,7 +74,7 @@ def del_command(update,context):
             dbmsg = str(Text)
             stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
             replylist.append(stringreply)  # append into the list
-        namelist.append(dbRemName) #append all names relating to this chatid into local list
+            namelist.append(dbRemName) #append all names relating to this chatid into local list
 
     if not replylist:  # checking if list is empty
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
@@ -456,7 +457,7 @@ def get_chat_id(update, context):
     print(chat_id)
 
 def main():
-        updater = Updater(keys.API_KEY3, use_context=True)
+        updater = Updater(keys.API_MAINKEY, use_context=True)
         dp = updater.dispatcher
 
         j = updater.job_queue

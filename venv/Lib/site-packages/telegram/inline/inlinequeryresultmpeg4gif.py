@@ -21,7 +21,8 @@
 from typing import TYPE_CHECKING, Any, Union, Tuple, List
 
 from telegram import InlineQueryResult, MessageEntity
-from telegram.utils.helpers import DEFAULT_NONE, DefaultValue
+from telegram.utils.helpers import DEFAULT_NONE
+from telegram.utils.types import ODVInput
 
 if TYPE_CHECKING:
     from telegram import InputMessageContent, ReplyMarkup
@@ -84,6 +85,21 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
 
     """
 
+    __slots__ = (
+        'reply_markup',
+        'thumb_mime_type',
+        'caption_entities',
+        'mpeg4_duration',
+        'mpeg4_width',
+        'title',
+        'caption',
+        'parse_mode',
+        'input_message_content',
+        'mpeg4_url',
+        'mpeg4_height',
+        'thumb_url',
+    )
+
     def __init__(
         self,
         id: str,  # pylint: disable=W0622
@@ -96,7 +112,7 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
         reply_markup: 'ReplyMarkup' = None,
         input_message_content: 'InputMessageContent' = None,
         mpeg4_duration: int = None,
-        parse_mode: Union[str, DefaultValue] = DEFAULT_NONE,
+        parse_mode: ODVInput[str] = DEFAULT_NONE,
         thumb_mime_type: str = None,
         caption_entities: Union[Tuple[MessageEntity, ...], List[MessageEntity]] = None,
         **_kwargs: Any,

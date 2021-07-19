@@ -30,8 +30,8 @@ from telegram import (
     Video,
     MessageEntity,
 )
-from telegram.utils.helpers import DEFAULT_NONE, DefaultValue, parse_file_input
-from telegram.utils.types import FileInput, JSONDict
+from telegram.utils.helpers import DEFAULT_NONE, parse_file_input
+from telegram.utils.types import FileInput, JSONDict, ODVInput
 
 
 class InputMedia(TelegramObject):
@@ -43,9 +43,11 @@ class InputMedia(TelegramObject):
 
     """
 
+    __slots__ = ()
     caption_entities: Union[List[MessageEntity], Tuple[MessageEntity, ...], None] = None
 
     def to_dict(self) -> JSONDict:
+        """See :meth:`telegram.TelegramObject.to_dict`."""
         data = super().to_dict()
 
         if self.caption_entities:
@@ -112,12 +114,24 @@ class InputMediaAnimation(InputMedia):
 
     """
 
+    __slots__ = (
+        'caption_entities',
+        'width',
+        'media',
+        'thumb',
+        'caption',
+        'duration',
+        'parse_mode',
+        'height',
+        'type',
+    )
+
     def __init__(
         self,
         media: Union[FileInput, Animation],
         thumb: FileInput = None,
         caption: str = None,
-        parse_mode: Union[str, DefaultValue] = DEFAULT_NONE,
+        parse_mode: ODVInput[str] = DEFAULT_NONE,
         width: int = None,
         height: int = None,
         duration: int = None,
@@ -184,11 +198,13 @@ class InputMediaPhoto(InputMedia):
 
     """
 
+    __slots__ = ('caption_entities', 'media', 'caption', 'parse_mode', 'type')
+
     def __init__(
         self,
         media: Union[FileInput, PhotoSize],
         caption: str = None,
-        parse_mode: Union[str, DefaultValue] = DEFAULT_NONE,
+        parse_mode: ODVInput[str] = DEFAULT_NONE,
         caption_entities: Union[List[MessageEntity], Tuple[MessageEntity, ...]] = None,
         filename: str = None,
     ):
@@ -264,6 +280,19 @@ class InputMediaVideo(InputMedia):
 
     """
 
+    __slots__ = (
+        'caption_entities',
+        'width',
+        'media',
+        'thumb',
+        'supports_streaming',
+        'caption',
+        'duration',
+        'parse_mode',
+        'height',
+        'type',
+    )
+
     def __init__(
         self,
         media: Union[FileInput, Video],
@@ -272,7 +301,7 @@ class InputMediaVideo(InputMedia):
         height: int = None,
         duration: int = None,
         supports_streaming: bool = None,
-        parse_mode: Union[str, DefaultValue] = DEFAULT_NONE,
+        parse_mode: ODVInput[str] = DEFAULT_NONE,
         thumb: FileInput = None,
         caption_entities: Union[List[MessageEntity], Tuple[MessageEntity, ...]] = None,
         filename: str = None,
@@ -363,12 +392,24 @@ class InputMediaAudio(InputMedia):
 
     """
 
+    __slots__ = (
+        'caption_entities',
+        'media',
+        'thumb',
+        'caption',
+        'title',
+        'duration',
+        'type',
+        'parse_mode',
+        'performer',
+    )
+
     def __init__(
         self,
         media: Union[FileInput, Audio],
         thumb: FileInput = None,
         caption: str = None,
-        parse_mode: Union[str, DefaultValue] = DEFAULT_NONE,
+        parse_mode: ODVInput[str] = DEFAULT_NONE,
         duration: int = None,
         performer: str = None,
         title: str = None,
@@ -451,12 +492,22 @@ class InputMediaDocument(InputMedia):
 
     """
 
+    __slots__ = (
+        'caption_entities',
+        'media',
+        'thumb',
+        'caption',
+        'parse_mode',
+        'type',
+        'disable_content_type_detection',
+    )
+
     def __init__(
         self,
         media: Union[FileInput, Document],
         thumb: FileInput = None,
         caption: str = None,
-        parse_mode: Union[str, DefaultValue] = DEFAULT_NONE,
+        parse_mode: ODVInput[str] = DEFAULT_NONE,
         disable_content_type_detection: bool = None,
         caption_entities: Union[List[MessageEntity], Tuple[MessageEntity, ...]] = None,
         filename: str = None,

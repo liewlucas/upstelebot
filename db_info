@@ -1,37 +1,37 @@
 [
   {
-    "ReminderName": "Bdbhd",
-    "IDitem": -473469885,
+    "ReminderName": "Testing 1",
+    "IDitem": -558414218,
+    "DAY": "Monday",
+    "Time": "16:45",
+    "Text": "Testing"
+  },
+  {
+    "ReminderName": "3 yest",
+    "IDitem": -558414218,
+    "DAY": "Wednesday",
+    "Time": "14:45",
+    "Text": "Tets 3"
+  },
+  {
+    "ReminderName": "Its Working!",
+    "IDitem": 25057684,
     "DAY": "Thursday",
-    "Time": "20:15",
-    "Text": "HELLO"
+    "Time": "18:30",
+    "Text": "Post"
   },
   {
-    "ReminderName": "11010",
-    "IDitem": -597035251,
-    "DAY": "Monday",
-    "Time": "17:00",
-    "Text": "17777"
-  },
-  {
-    "ReminderName": "2 Test",
-    "IDitem": -558414218,
-    "DAY": "Monday",
-    "Time": "12:30",
-    "Text": "Test 2"
-  },
-  {
-    "ReminderName": "3 test",
-    "IDitem": -558414218,
+    "ReminderName": "huyijn",
+    "IDitem": -473469885,
     "DAY": "Tuesday",
-    "Time": "03:03",
-    "Text": "Test 3"
+    "Time": "02:45",
+    "Text": "gnhyb"
   },
   {
-    "ReminderName": "Test",
-    "IDitem": -507296765,
-    "DAY": "Monday",
-    "Time": "17:00",
-    "Text": "1717174"
+    "ReminderName": "uhjn",
+    "IDitem": -473469885,
+    "DAY": "Tuesday",
+    "Time": "03:35",
+    "Text": "ytgfivub"
   }
 ]

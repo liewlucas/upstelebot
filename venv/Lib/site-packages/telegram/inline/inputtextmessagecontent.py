@@ -21,8 +21,8 @@
 from typing import Any, Union, Tuple, List
 
 from telegram import InputMessageContent, MessageEntity
-from telegram.utils.helpers import DEFAULT_NONE, DefaultValue
-from telegram.utils.types import JSONDict
+from telegram.utils.helpers import DEFAULT_NONE
+from telegram.utils.types import JSONDict, ODVInput
 
 
 class InputTextMessageContent(InputMessageContent):
@@ -59,11 +59,13 @@ class InputTextMessageContent(InputMessageContent):
 
     """
 
+    __slots__ = ('disable_web_page_preview', 'parse_mode', 'entities', 'message_text', '_id_attrs')
+
     def __init__(
         self,
         message_text: str,
-        parse_mode: Union[str, DefaultValue] = DEFAULT_NONE,
-        disable_web_page_preview: Union[bool, DefaultValue] = DEFAULT_NONE,
+        parse_mode: ODVInput[str] = DEFAULT_NONE,
+        disable_web_page_preview: ODVInput[bool] = DEFAULT_NONE,
         entities: Union[Tuple[MessageEntity, ...], List[MessageEntity]] = None,
         **_kwargs: Any,
     ):
@@ -77,6 +79,7 @@ class InputTextMessageContent(InputMessageContent):
         self._id_attrs = (self.message_text,)
 
     def to_dict(self) -> JSONDict:
+        """See :meth:`telegram.TelegramObject.to_dict`."""
         data = super().to_dict()
 
         if self.entities:
