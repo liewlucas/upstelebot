@@ -1,12 +1,5 @@
 [
   {
-    "ReminderName": "Bdbhd",
-    "IDitem": -473469885,
-    "DAY": "Monday",
-    "Time": "00:00",
-    "Text": "Taggh"
-  },
-  {
     "ReminderName": "Testing 1",
     "IDitem": -558414218,
     "DAY": "Monday",
@@ -26,5 +19,19 @@
     "DAY": "Thursday",
     "Time": "18:30",
     "Text": "Post"
+  },
+  {
+    "ReminderName": "huyijn",
+    "IDitem": -473469885,
+    "DAY": "Tuesday",
+    "Time": "02:45",
+    "Text": "gnhyb"
+  },
+  {
+    "ReminderName": "uhjn",
+    "IDitem": -473469885,
+    "DAY": "Tuesday",
+    "Time": "03:35",
+    "Text": "ytgfivub"
   }
 ]

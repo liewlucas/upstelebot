@@ -8,6 +8,7 @@ from datetime import datetime
 import logging
 import Repcheck as Rep
 
+
 now = datetime.now()
 current_time = now.strftime("%H:%M:%S")
 
@@ -62,7 +63,6 @@ def del_command(update,context):
     Rep.dict_read()  # read DB
     global userchatid
     userchatid = update.message.chat.id
-    dbRemName = ""
     # for IDitem, DAY, Time, Text in Rep.Inputs:
     replylist = []
     for ReminderName, IDitem, DAY, Time, Text in sorted(
@@ -74,7 +74,7 @@ def del_command(update,context):
             dbmsg = str(Text)
             stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
             replylist.append(stringreply)  # append into the list
-        namelist.append(dbRemName) #append all names relating to this chatid into local list
+            namelist.append(dbRemName) #append all names relating to this chatid into local list
 
     if not replylist:  # checking if list is empty
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
@@ -122,7 +122,6 @@ def edit_command(update, context):
     userchatidingroup = update.message.message_id
     Rep.dict_read()  # read DB
     global userchatid
-    dbRemName = ""
     userchatid = update.message.chat.id
     # for IDitem, DAY, Time, Text in Rep.Inputs:
     replylist = []
@@ -135,7 +134,7 @@ def edit_command(update, context):
             dbmsg = str(Text)
             stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
             replylist.append(stringreply)  # append into the list
-        namelist.append(dbRemName)  # append all names relating to this chatid into local list
+            namelist.append(dbRemName)  # append all names relating to this chatid into local list
 
     if not replylist:  # checking if list is empty
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
@@ -458,7 +457,7 @@ def get_chat_id(update, context):
     print(chat_id)
 
 def main():
-        updater = Updater(keys.API_J, use_context=True)
+        updater = Updater(keys.API_MAINKEY, use_context=True)
         dp = updater.dispatcher
 
         j = updater.job_queue
