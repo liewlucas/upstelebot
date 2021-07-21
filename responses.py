@@ -34,7 +34,7 @@ def day_response(input_day):
     user_day = str(input_day)
 
     try:
-        time.strptime(user_day, '%A')
+        #time.strptime(user_day, '%A')
         global userday
         userday = user_day
         replymessage = "Reminder is set on"
