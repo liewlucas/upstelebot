@@ -1,19 +1,5 @@
 [
   {
-    "ReminderName": "Testing 1",
-    "IDitem": -558414218,
-    "DAY": "Monday",
-    "Time": "16:45",
-    "Text": "Testing"
-  },
-  {
-    "ReminderName": "3 yest",
-    "IDitem": -558414218,
-    "DAY": "Wednesday",
-    "Time": "14:45",
-    "Text": "Tets 3"
-  },
-  {
     "ReminderName": "Its Working!",
     "IDitem": 25057684,
     "DAY": "Thursday",
@@ -21,80 +7,24 @@
     "Text": "Post"
   },
   {
+    "ReminderName": "huyijn",
+    "IDitem": -473469885,
+    "DAY": "Tuesday",
+    "Time": "02:45",
+    "Text": "gnhyb"
+  },
+  {
     "ReminderName": "uhjn",
     "IDitem": -473469885,
     "DAY": "Tuesday",
-    "Time": "17:54",
-    "Text": "YEEEEEEEEET"
+    "Time": "03:35",
+    "Text": "ytgfivub"
   },
   {
-    "ReminderName": "7777",
-    "IDitem": -473469885,
-    "DAY": "Monday",
-    "Time": "17:54",
-    "Text": "Yeeeeet"
-  },
-  {
-    "ReminderName": "Monday",
-    "IDitem": -507296765,
-    "DAY": "Monday",
-    "Time": "17:00",
-    "Text": "Monday"
-  },
-  {
-    "ReminderName": "Neyabsv",
-    "IDitem": -507296765,
-    "DAY": "Monday",
-    "Time": "16:22",
-    "Text": "Yessss"
-  },
-  {
-    "ReminderName": "Hwvdjrb",
-    "IDitem": -507296765,
-    "DAY": "Tuesday",
-    "Time": "17:00",
-    "Text": "Ahhagega"
-  },
-  {
-    "ReminderName": "YYDZHSH",
-    "IDitem": -507296765,
-    "DAY": "Wednesday",
-    "Time": "17:02",
-    "Text": "TEST IF WORKING"
-  },
-  {
-    "ReminderName": "Yesdsss",
-    "IDitem": -507296765,
-    "DAY": "Everyday",
-    "Time": "17:03",
-    "Text": "Yes"
-  },
-  {
-    "ReminderName": "Hejsbdbwjbs",
-    "IDitem": -507296765,
-    "DAY": "Everyday",
-    "Time": "17:05",
-    "Text": "HAHAVSHA"
-  },
-  {
-    "ReminderName": "/cancel",
-    "IDitem": -507296765,
-    "DAY": "Everyday",
-    "Time": "17:09",
-    "Text": "/cancel"
-  },
-  {
-    "ReminderName": "Iqdbqfiabfiabuf",
-    "IDitem": -507296765,
-    "DAY": "Everyday",
-    "Time": "17:10",
-    "Text": "Gd7vcsucbs"
-  },
-  {
-    "ReminderName": "Wh7abbsud",
-    "IDitem": -507296765,
-    "DAY": "Everyday",
-    "Time": "17:12",
-    "Text": "IF YOU SEE THIS TOMORROW IT WORKS"
+    "ReminderName": "Jejd",
+    "IDitem": -558414218,
+    "DAY": "Friday",
+    "Time": "18:50",
+    "Text": "Hsjqjsrhsvfud"
   }
 ]
