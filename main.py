@@ -353,7 +353,7 @@ def dayfromuser(update: Update, context: CallbackContext) -> int:
     dayusertext = str(update.message.text)
     # update.message.reply_text(dayusertext)
     dayresponse = R.day_response(dayusertext)  # process the text under responses.py
-    update.message.reply_text("At what time do you want to set the reminder? (Format: HH:MM, e.g: 17:30)", reply_to_message_id=userchatidingroup, reply_markup=ForceReply(selective=True))  # first reply
+    update.message.reply_text("At  what time do you want to set the reminder? (Format: HH:MM, e.g: 17:30)", reply_to_message_id=userchatidingroup, reply_markup=ForceReply(selective=True))  # first reply
 
     return TIME
 
