@@ -19,7 +19,7 @@ print("Bot started...")
 
 logger = logging.getLogger(__name__)
 
-EDITCON, EDITINDB, EDITCHOICE, EDIT, DELETE, NAME, DAY, TIME, MESSAGE = range(8)
+EDITCON, EDITINDB, EDITCHOICE, EDIT, DELETE, NAME, DAY, TIME, MESSAGE = range(9)
 
 def start_command(update, context):
     update.message.reply_text("Welcome to the Parakeet! \U0001F917")
@@ -180,7 +180,7 @@ def useredits(update: Update, context: CallbackContext)-> int:
     if(editchoiceuser == "Time"):
         update.message.reply_text("Please Enter the new details for " + editchoiceuser + " (Format: HH:MM, e.g: 17:30)",reply_to_message_id=userchatidingroup, reply_markup=ForceReply(selective=True))
     if(editchoiceuser == "Day"):
-        reply_keyboard = [['Monday'], ['Tuesday'], ['Wednesday'], ['Thursday'], ['Friday']]
+        reply_keyboard = [['Monday'], ['Tuesday'], ['Wednesday'], ['Thursday'], ['Friday'], ['Saturday'], ['Sunday'], ['Everyday']]
         update.message.reply_text("Please select the new details for " + editchoiceuser, reply_to_message_id=userchatidingroup, reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
     if(editchoiceuser == "Reminder Name"):
         update.message.reply_text("Please Enter the new details for " + editchoiceuser,
@@ -497,7 +497,7 @@ def get_chat_id(update, context):
     print(chat_id)
 
 def main():
-        updater = Updater(keys.API_MAINKEY, use_context=True)
+        updater = Updater(keys.API_KEY2, use_context=True)
         dp = updater.dispatcher
 
         j = updater.job_queue

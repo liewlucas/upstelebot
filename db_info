@@ -26,5 +26,12 @@
     "DAY": "Friday",
     "Time": "18:50",
     "Text": "Hsjqjsrhsvfud"
+  },
+  {
+    "ReminderName": "FOR EDITING",
+    "IDitem": -507296765,
+    "DAY": "Everyday",
+    "Time": "00:01",
+    "Text": "TEST"
   }
 ]
