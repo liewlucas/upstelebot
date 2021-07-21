@@ -278,7 +278,7 @@ def editindb(update: Update, context: CallbackContext)-> int:
 def schedule_command(update, context):
         global userchatidingroup
         userchatidingroup = update.message.message_id
-        reply_keyboard = [['Monday'], ['Tuesday'], ['Wednesday'], ['Thursday'], ['Friday']]
+        reply_keyboard = [['Monday'], ['Tuesday'], ['Wednesday'], ['Thursday'], ['Friday'], ['Saturday'], ['Sunday'], ['Everyday']]
         update.message.reply_text(
             "\U0001F570 SCHEDULE \U0001F570 \n\n"
             "Which day would you like me to set the Reminder?",
@@ -423,14 +423,15 @@ def schedulecheck(context:CallbackContext):
         now = datetime.now()
         today = now.strftime("%A") #return today's day
         tdytime = now.strftime("%H:%M")
-        if(today == DAY):
+        if(today == DAY or DAY == 'Everyday'):
             if(tdytime == Time):
                 global dbchatid
                 dbchatid = str(IDitem)
                 global dbremindermsg
                 dbremindermsg = str(Text)
                 Send_Reminder_Message(update,context)
-                print("sucess")
+                print("success")
+
         else:
             print(IDitem)
             print("This ChatID's Reminder is not Now ")
@@ -457,7 +458,7 @@ def get_chat_id(update, context):
     print(chat_id)
 
 def main():
-        updater = Updater(keys.API_MAINKEY, use_context=True)
+        updater = Updater(keys.API_KEY2, use_context=True)
         dp = updater.dispatcher
 
         j = updater.job_queue
@@ -468,7 +469,7 @@ def main():
             entry_points=[CommandHandler('schedule', schedule_command)],
             states={
                 NAME:[MessageHandler(Filters.all, namefromuser)],
-                DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday)$'), dayfromuser)],
+                DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Everyday)$'), dayfromuser)],
                 TIME: [MessageHandler(Filters.regex('^([01]\d|2[0-3]):([0-5]\d)$'), timefromuser)],
                 MESSAGE: [MessageHandler(Filters.all, messagefromuser)],
             },
