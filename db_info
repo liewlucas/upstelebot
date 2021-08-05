@@ -40,5 +40,12 @@
     "DAY": "Wednesday",
     "Time": "10:00",
     "Text": "Test"
+  },
+  {
+    "ReminderName": "Anthony Care Package",
+    "IDitem": -473469885,
+    "DAY": "Everyday",
+    "Time": "10:00",
+    "Text": "Anthony Care Package"
   }
 ]
