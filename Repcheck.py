@@ -78,6 +78,7 @@ text_r = ""
 usercid_r = ""
 name_r = ""
 useredit_r = ""
+username_r = ""
 
 #Inputs.append({'ID': namex, 'DAY': dayresponse, 'Time': timeresponse, 'Text': textresponse})
 #print(Inputs)
@@ -120,7 +121,7 @@ def dict_read():
 
 def dict_update(newdata):
     with open(dict_db, 'w') as fr:
-        Inputs.append({'ReminderName': RemName, 'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r})
+        Inputs.append({'ReminderName': RemName, 'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r, 'User': username_r})
         # indent=2 is not needed but makes the file human-readable
         json.dump(newdata, fr, indent=2)
         print(Inputs)
