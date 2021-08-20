@@ -68,7 +68,7 @@ def repcheck(ID, ID_List):
    #data = json.load(f)
    #print(data)
 
-
+dict_grp = "db_grpID"
 dict_db = "db_info"
 RemName = ""
 IDchat = ""
@@ -81,6 +81,7 @@ useredit_r = ""
 
 #Inputs.append({'ID': namex, 'DAY': dayresponse, 'Time': timeresponse, 'Text': textresponse})
 #print(Inputs)
+
 
 
 

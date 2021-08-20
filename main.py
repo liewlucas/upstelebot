@@ -7,6 +7,7 @@ import responses as R
 from datetime import datetime
 import logging
 import Repcheck as Rep
+import GrpIDUpdate as Gid
 
 
 now = datetime.now()
@@ -19,11 +20,19 @@ print("Bot started...")
 
 logger = logging.getLogger(__name__)
 
-EDITCON, EDITINDB, EDITCHOICE, EDIT, DELETE, NAME, DAY, TIME, MESSAGE = range(9)
+EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE = range(10)
 
 def start_command(update, context):
     update.message.reply_text("Welcome to the Parakeet! \U0001F917")
     update.message.reply_text("To get started, simply type /help to view all the operational commands\U0001F4C4")
+    groupname = update.message.chat.title
+    groupchatid = update.message.chat.id
+    groupusername = update.message.from_user.username
+    Gid.grpchatname = groupname
+    Gid.grpchatid = groupchatid
+    Gid.grpusername = groupusername
+    Gid.dict_read()
+    Gid.dict_update(Gid.Inputs)
 
 def help_command(update, context):
     update.message.reply_text("This bot enables you to create, delete, and edit reminders. Please follow the commands stated below to get started! \U0001f60A \n\n"
@@ -53,6 +62,7 @@ def list_command(update, context):
 
     if not replylist: #checking if list is empty
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
+        print(userchatid)
     else:
         update.message.reply_text("\U0001F4D1Here are your List of Reminders: \n\n" + "".join(replylist),reply_to_message_id=userchatidingroup) #sentence + joining the list
 
@@ -330,6 +340,8 @@ def schedule_command(update, context):
 
         return DAY
 
+
+
 def namefromuser(update: Update, context: CallbackContext)-> int:
     global userchatidingroup
     userchatidingroup = update.message.message_id
@@ -337,11 +349,46 @@ def namefromuser(update: Update, context: CallbackContext)-> int:
     userchatid = update.message.chat.id
     global nameusertext
     nameusertext = str(update.message.text)
+    usernameofuser = update.message.from_user.username
+    Gid.dict_read()
+    namelist = []
+    for chatid, grpname, username in sorted(
+            [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+        if (usernameofuser == username):
+            dbchatid = str(chatid)
+            dbchatname = str(grpname)
+            dbusername = str(username)
+            namelist.append(dbchatname)
+
+    reply_keyboard = [[name] for name in namelist]  # get each item in namelist and put in custom keyboard
+    update.message.reply_text(
+        "Lastly, where would you like to set this Reminder?",
+        reply_to_message_id=userchatidingroup,
+        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True,
+                                         selective=True), )  # sentence + joining the list + custom keyboard
+    return GRP
+
+
+def grpfromuser(update: Update, context: CallbackContext)-> int:
+    global chatidforschedule
     #update.message.reply_text(nameusertext)
+    thisuserchatid = update.message.chat.id
+    grpusertext = str(update.message.text)
+    usernameofuser = update.message.from_user.username
+    Gid.dict_read()
+    for chatid, grpname, username in sorted(
+            [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+        if (grpusertext == grpname):
+            dbchatid = str(chatid)
+            dbchatname = str(grpname)
+            dbusername = str(username)
+            chatidforschedule = chatid
+        #if(dbusername == usernameofuser)
+
     scheduletest(update, context)
-    update.message.reply_text("\u2705Your Reminder has been scheduled! Here are the details: \n\n" + "Reminder Name: " + nameusertext + "\n\n" + timeresponse + "\n\nYour Reminder Message: " + messagefromuser, reply_to_message_id=userchatidingroup)
+    update.message.reply_text("\u2705Your Reminder has been scheduled! Here are the details: \n\n" + "Group: " + dbchatname +  "\n\nReminder Name: " + nameusertext + "\n\n" + timeresponse + "\n\nYour Reminder Message: " + messagefromuser, reply_to_message_id=userchatidingroup)
     successtext = 'Feel free to type /schedule again if you want to set another reminder.\nAlternatively, you could type /list to view all your set reminders'
-    context.bot.send_message(chat_id=userchatid, text=successtext)
+    context.bot.send_message(chat_id=thisuserchatid, text=successtext)
 
     return ConversationHandler.END
 
@@ -390,9 +437,9 @@ def messagefromuser (update:Update, context: CallbackContext) -> int:
     #return ConversationHandler.END
 
 def scheduletest(update, context):
-        global userchatid
+        global chatidforschedule
         Rep.RemName = nameusertext
-        Rep.IDchat = userchatid
+        Rep.IDchat = chatidforschedule
         Rep.day_r = dayusertext
         Rep.time_r = timeusertext
         Rep.text_r = messagefromuser
@@ -479,6 +526,40 @@ def error(update, context):
     print(f"update {update} caused error {context.error}")
 
 
+def masterlist_command(update, context):
+    # update.message.reply_text("hello! here are your set reminders : (work in progress)")
+    #print(update.message.chat.idj)
+    global userchatidingroup
+    userchatidingroup = update.message.message_id
+    Rep.dict_read()  # read DB
+    global userchatid
+    userchatid = update.message.chat.id
+    #for IDitem, DAY, Time, Text in Rep.Inputs:
+    replylist = []
+    for ReminderName,IDitem, DAY, Time, Text in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],key=lambda t: t[1]):
+        dbRemName = str(ReminderName)
+        dbIDitem = str(IDitem)
+        dbday = str(DAY)
+        dbtime= str(Time)
+        dbmsg = str(Text)
+        grpname = update.message.chat.title # get group name
+        global chatname
+        if(dbIDitem == "-1001252293224"):
+            chatname = "New Alpha One"
+        elif(dbIDitem == "-473469885"):
+            chatname = "Parakeet Testing"
+        else:
+            chatname = dbIDitem
+
+        stringreply = "Group/ID: " + chatname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday  + "\n" + "Time: " + dbtime + "\n" +  "Message: "  + dbmsg + "\n\n" #crafting string
+        replylist.append(stringreply) #append into the list
+
+    if not replylist: #checking if list is empty
+        update.message.reply_text("Sorry, you do not appear to have set any Reminders")
+    else:
+        update.message.reply_text("\U0001F4D1Here are your List of Reminders: \n\n" + "".join(replylist),reply_to_message_id=userchatidingroup) #sentence + joining the list
+        update.message.reply_text(grpname)
+
 # Function Not in Use
 def get_chat_id(update, context):
     chat_id = -1
@@ -497,7 +578,7 @@ def get_chat_id(update, context):
     print(chat_id)
 
 def main():
-        updater = Updater(keys.API_MAINKEY, use_context=True)
+        updater = Updater(keys.API_J, use_context=True)
         dp = updater.dispatcher
 
         j = updater.job_queue
@@ -511,6 +592,7 @@ def main():
                 DAY: [MessageHandler(Filters.regex('^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Everyday)$'), dayfromuser)],
                 TIME: [MessageHandler(Filters.regex('^([01]\d|2[0-3]):([0-5]\d)$'), timefromuser)],
                 MESSAGE: [MessageHandler(Filters.all, messagefromuser)],
+                GRP: [MessageHandler(Filters.all, grpfromuser)],
             },
             fallbacks=[CommandHandler('cancel', cancel)],
         ))
@@ -538,7 +620,7 @@ def main():
         dp.add_handler(editconvhandler)
         dp.add_handler(CommandHandler("list", list_command))
         dp.add_handler(CommandHandler("apple", scheduletest))
-        dp.add_handler(CommandHandler("pear", edit_command))
+        dp.add_handler(CommandHandler("masterlist", masterlist_command))
         dp.add_handler(MessageHandler(Filters.text, handle_message))
 
         dp.add_error_handler(error)
