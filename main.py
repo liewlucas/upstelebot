@@ -122,12 +122,8 @@ def del_command(update,context):
 
 
 def deletefromdb(update: Update, context: CallbackContext)-> int:
+    replylist = []
     usernameofuser = update.message.from_user.username
-    for chatid, grpname, username in sorted(
-            [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-        if (usernameofuser == username):
-            dbchatid = chatid
-            dbgrpname = grpname
     global userchatidingroup
     userchatidingroup = update.message.message_id
     global usernamechoice
@@ -136,25 +132,34 @@ def deletefromdb(update: Update, context: CallbackContext)-> int:
     Rep.usercid_r = dbreminderchatid
     Rep.name_r = usernamechoice
     Rep.dict_del(Rep.Inputs)
-    Rep.dict_read()  # read DB
-    replylist = []
-    for ReminderName, IDitem, DAY, Time, Text in sorted(
-            [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs], key=lambda t: t[1]):
-        if (dbchatid == IDitem):  # check userchatid against db id
-            dbRemName = str(ReminderName)
-            dbday = str(DAY)
-            dbtime = str(Time)
-            dbmsg = str(Text)
-            stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
-            replylist.append(stringreply)  # append into the list
-            update.message.reply_text(
-                "Your Reminder has been deleted, Here is your Updated List of Reminders: \n\n" + "".join(replylist), reply_to_message_id=userchatidingroup)
-            userchatidingroup = str(update.message.from_user.id)
+    Gid.dict_read()
+    for chatid, grpname, username in sorted(
+            [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+        if (usernameofuser == username):
+            dbchatid = chatid
+            dbgrpname = grpname
+
+            for ReminderName, IDitem, DAY, Time, Text in sorted(
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs], key=lambda t: t[1]):
+                if (dbchatid == IDitem):  # check userchatid against db id
+                    dbRemName = str(ReminderName)
+                    dbday = str(DAY)
+                    dbtime = str(Time)
+                    dbmsg = str(Text)
+                    stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                    replylist.append(stringreply)  # append into the list
+
 
     if not replylist:
         update.message.reply_text("Your Reminder has been deleted and you currently do not have any Reminders.")
     #update.message.reply_text(userchatidingroup)
     #update.message.reply_text(userchatid)
+
+    else:
+        update.message.reply_text(
+            "Your Reminder has been deleted, Here is your Updated List of Reminders: \n\n" + "".join(replylist),
+            reply_to_message_id=userchatidingroup)
+        userchatidingroup = str(update.message.from_user.id)
 
     return ConversationHandler.END
 
@@ -644,13 +649,14 @@ def masterlist_command(update, context):
     userchatid = update.message.chat.id
     #for IDitem, DAY, Time, Text in Rep.Inputs:
     replylist = []
-    for ReminderName,IDitem, DAY, Time, Text in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],key=lambda t: t[1]):
+    for ReminderName,IDitem, DAY, Time, Text, User in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Rep.Inputs],key=lambda t: t[1]):
         dbRemName = str(ReminderName)
         dbIDitem = str(IDitem)
         dbday = str(DAY)
         dbtime= str(Time)
         dbmsg = str(Text)
         grpname = update.message.chat.title # get group name
+        dbuser = User
         global chatname
         if(dbIDitem == "-1001252293224"):
             chatname = "New Alpha One"
@@ -659,7 +665,7 @@ def masterlist_command(update, context):
         else:
             chatname = dbIDitem
 
-        stringreply = "Group/ID: " + chatname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday  + "\n" + "Time: " + dbtime + "\n" +  "Message: "  + dbmsg + "\n\n" #crafting string
+        stringreply = "Group/ID: " + chatname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday  + "\n" + "Time: " + dbtime + "\n" +  "Message: "  + dbmsg + "\nUser: " + dbuser +  "\n\n" #crafting string
         replylist.append(stringreply) #append into the list
 
     if not replylist: #checking if list is empty
