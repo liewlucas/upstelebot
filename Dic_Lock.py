@@ -206,13 +206,12 @@ def lock_edit_Text(dataed):
 
 
 
-dict_lock_check(zip_db)
-dict_lock_read()
+#dict_lock_check(zip_db)
+#dict_lock_read()
 #dict_lock_update(Inputs)
 #dict_del(Inputs)
-lock_edit_Name(Inputs)
-lock_edit_Day(Inputs)
-lock_edit_Time(Inputs)
-lock_edit_Text(Inputs)
+#lock_edit_Day(Inputs)
+#lock_edit_Time(Inputs)
+#lock_edit_Text(Inputs)
 
 
