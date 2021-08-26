@@ -522,7 +522,7 @@ def namefromuser(update: Update, context: CallbackContext)-> int:
 def grpfromuser(update: Update, context: CallbackContext)-> int:
     global chatidforschedule
     global userchatid
-
+    global dbchatname
     userchatid = update.message.chat.id
     #update.message.reply_text(nameusertext)
     thisuserchatid = update.message.chat.id
@@ -665,7 +665,7 @@ def masterlist_command(update, context):
         else:
             chatname = dbIDitem
 
-        stringreply = "Group/ID: " + chatname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday  + "\n" + "Time: " + dbtime + "\n" +  "Message: "  + dbmsg + "\nUser: " + dbuser +  "\n\n" #crafting string
+        stringreply = "Group/ID: " + chatname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday  + "\n" + "Time: " + dbtime + "\n" +  "Message: "  + dbmsg + "\n User: " + dbuser +  "\n\n" #crafting string
         replylist.append(stringreply) #append into the list
 
     if not replylist: #checking if list is empty
