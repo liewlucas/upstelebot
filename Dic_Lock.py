@@ -3,14 +3,13 @@ import os
 import zipfile
 import hashlib, uuid, base64
 
-RemName = "Coding Fk"
+RemName = ""
 IDchat = ""
-day_r = "Monday"
-time_r = "4269"
-text_r = "Fk Coding"
-usercid_r = -507296765
-name_r = "Coding Fk"
-#name_rtesting = "Testing"
+day_r = ""
+time_r = ""
+text_r = ""
+usercid_r = ""
+name_r = ""
 useredit_r = ""
 ID_List = []
 Inputs = []
@@ -211,7 +210,6 @@ dict_lock_check(zip_db)
 dict_lock_read()
 #dict_lock_update(Inputs)
 #dict_del(Inputs)
-#lock_edit_Name(Inputs)
 lock_edit_Name(Inputs)
 lock_edit_Day(Inputs)
 lock_edit_Time(Inputs)
