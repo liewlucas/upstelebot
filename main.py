@@ -8,6 +8,7 @@ from datetime import datetime
 import logging
 import Repcheck as Rep
 import GrpIDUpdate as Gid
+import Dic_Lock as Loc
 
 
 now = datetime.now()
@@ -60,8 +61,8 @@ def list_command(update, context):
             Rep.dict_read()  # read DB
             #global userchatid
             #userchatid = update.message.chat.id
-            #for IDitem, DAY, Time, Text in Rep.Inputs:
-            for ReminderName,IDitem, DAY, Time, Text, dbusername in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Rep.Inputs],key=lambda t: t[1]):
+            #for IDitem, DAY, Time, Text in Loc.Inputs:
+            for ReminderName,IDitem, DAY, Time, Text, dbusername in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs],key=lambda t: t[1]):
                 if(IDitem == dbchatid): #check userchatid against db id
                     if(usernameofuser == dbusername):
                         dbRemName = str(ReminderName)
@@ -98,7 +99,7 @@ def del_command(update,context):
             userchatidingroup = update.message.message_id
             Rep.dict_read()  # read DB
             for ReminderName, IDitem, DAY, Time, Text, dbUser in sorted(
-                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Rep.Inputs], key=lambda t: t[1]):
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs], key=lambda t: t[1]):
                 if (IDitem == dbchatid):  # check userchatid against db id
                     if(usernameofuser == dbUser):
                         dbreminderchatid = IDitem
@@ -131,7 +132,7 @@ def deletefromdb(update: Update, context: CallbackContext)-> int:
     userchatidingroup = str(update.message.message_id)
     Rep.usercid_r = dbreminderchatid
     Rep.name_r = usernamechoice
-    Rep.dict_del(Rep.Inputs)
+    Loc.dict_del(Loc.Inputs)
     Gid.dict_read()
     for chatid, grpname, username in sorted(
             [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
@@ -140,7 +141,7 @@ def deletefromdb(update: Update, context: CallbackContext)-> int:
             dbgrpname = grpname
 
             for ReminderName, IDitem, DAY, Time, Text in sorted(
-                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs], key=lambda t: t[1]):
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs], key=lambda t: t[1]):
                 if (dbchatid == IDitem):  # check userchatid against db id
                     dbRemName = str(ReminderName)
                     dbday = str(DAY)
@@ -179,13 +180,13 @@ def edit_command(update, context):
 
             global userchatidingroup
             userchatidingroup = update.message.message_id
-            Rep.dict_read()  # read DB
+            Loc.dict_lock_read()  # read DB
             global userchatid
             userchatid = update.message.chat.id
-            # for IDitem, DAY, Time, Text in Rep.Inputs:
+            # for IDitem, DAY, Time, Text in Loc.Inputs:
 
             for ReminderName, IDitem, DAY, Time, Text, username in sorted(
-                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Rep.Inputs], key=lambda t: t[1]):
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs], key=lambda t: t[1]):
                 if (IDitem == dbchatid):  # check userchatid against db id
                     if(usernameofuser == username):
                         dbRemName = str(ReminderName)
@@ -222,8 +223,8 @@ def editfromuser(update: Update, context: CallbackContext)-> int:
     userchatidingroup = update.message.message_id
     global editnameuser
     editnameuser = str(update.message.text)
-    Rep.dict_read()  # read DB
-    for ReminderName,IDitem, DAY, Time, Text in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],key=lambda t: t[1]):
+    Loc.dict_lock_read()  # read DB
+    for ReminderName,IDitem, DAY, Time, Text in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs],key=lambda t: t[1]):
         if(ReminderName == editnameuser):
             dbRemName = str(ReminderName)
             dbday = str(DAY)
@@ -283,11 +284,11 @@ def editindb(update: Update, context: CallbackContext)-> int:
             Rep.time_r = usersconfirmationedit
             Rep.usercid_r = reminderchatid
             Rep.name_r = editnameuser
-            Rep.dict_read()
-            Rep.dict_edit_Time(Rep.Inputs)
+            Loc.dict_lock_read()
+            Loc.lock_edit_Time(Loc.Inputs)
             replylist = []
             for ReminderName, IDitem, DAY, Time, Text in sorted(
-                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs],
                     key=lambda t: t[1]):
                         if (ReminderName == editnameuser):
                             dbRemName = str(ReminderName)
@@ -307,14 +308,14 @@ def editindb(update: Update, context: CallbackContext)-> int:
 
     if(editchoiceuser == "Day"):
         usernameofuser = update.message.from_user.username
-        Rep.dict_read()
+        Loc.dict_lock_read()
         Rep.day_r = usersconfirmationedit
         Rep.usercid_r = reminderchatid
         Rep.name_r = editnameuser
-        Rep.dict_edit_Day(Rep.Inputs)
+        Loc.lock_edit_Day(Loc.Inputs)
         replylist = []
         for ReminderName, IDitem, DAY, Time, Text in sorted(
-                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],
+                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs],
                 key=lambda t: t[1]):
             if (ReminderName == editnameuser):
                 dbRemName = str(ReminderName)
@@ -330,15 +331,15 @@ def editindb(update: Update, context: CallbackContext)-> int:
 
     if(editchoiceuser == "Reminder Name"):
         usernameofuser = update.message.from_user.username
-        Rep.dict_read()
+        Loc.dict_lock_read()
         Rep.usercid_r = reminderchatid
         Rep.name_r = editnameuser
         Rep.RemName = usersconfirmationedit
-        Rep.dict_edit_Name(Rep.Inputs)
+        Loc.lock_edit_Name(Loc.Inputs)
         replylist = []
 
         for ReminderName, IDitem, DAY, Time, Text, username in sorted(
-                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d["User"]) for d in Rep.Inputs],
+                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d["User"]) for d in Loc.Inputs],
                 key=lambda t: t[1]):
             if (ReminderName == usersconfirmationedit):
                 dbRemName = str(ReminderName)
@@ -355,15 +356,15 @@ def editindb(update: Update, context: CallbackContext)-> int:
     if(editchoiceuser == "Message"):
 
         usernameofuser = update.message.from_user.username
-        Rep.dict_read()
+        Loc.dict_lock_read()
         Rep.text_r = usersconfirmationedit
         Rep.usercid_r = reminderchatid
         Rep.name_r = editnameuser
 
-        Rep.dict_edit_Text(Rep.Inputs)
+        Loc.lock_edit_Text(Loc.Inputs)
         replylist = []
         for ReminderName, IDitem, DAY, Time, Text in sorted(
-                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Rep.Inputs],
+                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs],
                 key=lambda t: t[1]):
             if (ReminderName == editnameuser):
                 dbRemName = str(ReminderName)
@@ -394,10 +395,10 @@ def editcontinue(update: Update, context: CallbackContext)-> int:
     if(usereditcon == "Yes"):
         return edit_command(update,context)
     if (usereditcon == "No"):
-        Rep.dict_read()
+        Loc.dict_lock_read()
         replylist = []
         for ReminderName, IDitem, DAY, Time, Text, username in sorted(
-                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'],d['User']) for d in Rep.Inputs],
+                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'],d['User']) for d in Loc.Inputs],
                 key=lambda t: t[1]):
                 if(editchoiceuser != "Reminder Name"):
                     if (ReminderName == editnameuser):
@@ -550,43 +551,16 @@ def grpfromuser(update: Update, context: CallbackContext)-> int:
 
 def scheduletest(update, context):
         global chatidforschedule
-        Rep.RemName = nameusertext
-        Rep.IDchat = chatidforschedule
-        Rep.day_r = dayusertext
-        Rep.time_r = timeusertext
-        Rep.text_r = messagefromuser
-        Rep.username_r = usernamefromuser
+        Loc.RemName = nameusertext
+        Loc.IDchat = chatidforschedule
+        Loc.day_r = dayusertext
+        Loc.time_r = timeusertext
+        Loc.text_r = messagefromuser
+        Loc.username_r = usernamefromuser
 
-        # To prepopulate the IDlist from a file
-        ID_List = Rep.read_db()
-        print("afterlist")
-        print(ID_List)
-
-        # Using Repetition checking function
-        if Rep.repcheck(userchatid, ID_List):
-            print("There are duplicates.")
-            print("Override original schedule or add 1 more schedule")
-            Rep.dict_read()
-            Rep.dict_update(Rep.Inputs)
-            #Rep.reno = Rep.reno + 1
-            print(Rep.Inputs)
-
-            # Add user option to choose
-
-        else:
-            print("No duplicates.")
-
-            # Adding new ID to IDList
-            ID_List.append(userchatid)
-            Rep.update_db(ID_List)
-            print(ID_List)
-
-            # Adding to dictionary database
-            Rep.dict_read()
-            Rep.dict_update(Rep.Inputs)
-            #Rep.reno = Rep.reno + 1
-            print(Rep.Inputs)
-
+        Loc.dict_lock_read()
+        Loc.dict_lock_update(Loc.Inputs)
+        print(Loc.Inputs)
         print("schedule set!")
 
 def Send_Reminder_Message(update, context):
@@ -616,9 +590,9 @@ def handle_message(update, context):
     text = str(update.message.text)  # .lower() #receive text from user
 
 def schedulecheck(context:CallbackContext):
-    Rep.dict_read() # read DB
+    Loc.dict_lock_read() # read DB
     print("DB Reading....")
-    for IDitem, DAY, Time, Text in sorted([(d['IDitem'],d['DAY'],d['Time'],d['Text']) for d in Rep.Inputs], key=lambda t: t[1] ):
+    for IDitem, DAY, Time, Text in sorted([(d['IDitem'],d['DAY'],d['Time'],d['Text']) for d in Loc.Inputs], key=lambda t: t[1] ):
         now = datetime.now()
         today = now.strftime("%A") #return today's day
         tdytime = now.strftime("%H:%M")
@@ -644,12 +618,12 @@ def masterlist_command(update, context):
     #print(update.message.chat.idj)
     global userchatidingroup
     userchatidingroup = update.message.message_id
-    Rep.dict_read()  # read DB
+    Loc.dict_lock_read()  # read DB
     global userchatid
     userchatid = update.message.chat.id
     #for IDitem, DAY, Time, Text in Rep.Inputs:
     replylist = []
-    for ReminderName,IDitem, DAY, Time, Text, User in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Rep.Inputs],key=lambda t: t[1]):
+    for ReminderName,IDitem, DAY, Time, Text, User in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs],key=lambda t: t[1]):
         dbRemName = str(ReminderName)
         dbIDitem = str(IDitem)
         dbday = str(DAY)
