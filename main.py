@@ -533,7 +533,7 @@ def grpfromuser(update: Update, context: CallbackContext)-> int:
     Gid.dict_read()
     for chatid, grpname, username in sorted(
             [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-        if (grpusertext == grpname):
+        if grpusertext == grpname:
             dbchatid = str(chatid)
             dbchatname = str(grpname)
             dbusername = str(username)
