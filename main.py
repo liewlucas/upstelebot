@@ -9,7 +9,7 @@ import logging
 import Repcheck as Rep
 import GrpIDUpdate as Gid
 import Dic_Lock as Loc
-
+import WhitelistUpdate as wlu
 
 now = datetime.now()
 current_time = now.strftime("%H:%M:%S")
@@ -26,16 +26,23 @@ EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE = ran
 def start_command(update, context):
     update.message.reply_text("Welcome to the Parakeet! \U0001F917")
     update.message.reply_text("To get started, simply type /help to view all the operational commands\U0001F4C4")
+
+
+def register_command(update, context):
     groupname = str(update.message.chat.title)
     groupchatid = update.message.chat.id
     groupusername = update.message.from_user.username
-    Gid.grpchatid = groupchatid
-    Gid.grpusername = groupusername
-    if (groupname == "None"):
-        Gid.grpchatname = "PM Chat"
-    else:
-        Gid.grpchatname = groupname
     Gid.dict_read()
+    wlu.dict_read() # reads whitelist update db
+    for chatid, grpname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in wlu.Inputs], key=lambda t: t[1]):
+        if(groupusername == username):
+            Gid.grpchatid = groupchatid
+            Gid.grpusername = groupusername
+        if (groupname == "None"):
+            Gid.grpchatname = "PM Chat"
+        else:
+            Gid.grpchatname = groupname
+
     Gid.dict_update(Gid.Inputs)
 
 
@@ -611,7 +618,6 @@ def schedulecheck(context:CallbackContext):
 
 def error(update, context):
     print(f"update {update} caused error {context.error}")
-
 
 def masterlist_command(update, context):
     # update.message.reply_text("hello! here are your set reminders : (work in progress)")
