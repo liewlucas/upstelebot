@@ -31,19 +31,39 @@ def start_command(update, context):
 def register_command(update, context):
     groupname = str(update.message.chat.title)
     groupchatid = update.message.chat.id
+    groupchatid2 = str(update.message.chat.id)
     groupusername = update.message.from_user.username
     Gid.dict_read()
     wlu.dict_read() # reads whitelist update db
-    for chatid, grpname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in wlu.Inputs], key=lambda t: t[1]):
-        if(groupusername == username):
-            Gid.grpchatid = groupchatid
-            Gid.grpusername = groupusername
-        if (groupname == "None"):
-            Gid.grpchatname = "PM Chat"
+    #update.message.reply_text(groupchatid)
+    for chatid, grpname, username in sorted(
+            [(d['CHATID'], d['GRPNAME'], d['USER']) for d in wlu.Inputs], key=lambda t: t[1]):
+        if(groupchatid in chatid):
+            update.message.reply_text("Group Whitelisted!")
+            if(groupusername in username):
+                Gid.grpchatid = groupchatid
+                Gid.grpusername = groupusername
+                if (groupname == "None"):
+                    Gid.grpchatname = "PM Chat"
+                else:
+                    Gid.grpchatname = groupname
+                Gid.dict_update(Gid.Inputs)
+                update.message.reply_text("registered! you are authorised")
+            elif(groupusername != username):
+                update.message.reply_text("sorry you are not authorised HAHA WEAK")
         else:
-            Gid.grpchatname = groupname
+            #update.message.reply_text("group not whitelisted")
+            print("group is not whitelisted")
+            update.message.reply_text("Group is not Whitelisted!, you are registereds")
+            if (groupusername in username):
+                Gid.grpchatid = groupchatid
+                Gid.grpusername = groupusername
+                if (groupname == "None"):
+                    Gid.grpchatname = "PM Chat"
+                else:
+                    Gid.grpchatname = groupname
+                Gid.dict_update(Gid.Inputs)
 
-    Gid.dict_update(Gid.Inputs)
 
 
 def help_command(update, context):
@@ -672,7 +692,7 @@ def get_chat_id(update, context):
     print(chat_id)
 
 def main():
-        updater = Updater(keys.API_J, use_context=True)
+        updater = Updater(keys.API_MAINKEY, use_context=True)
         dp = updater.dispatcher
 
         j = updater.job_queue
@@ -715,6 +735,7 @@ def main():
         dp.add_handler(CommandHandler("list", list_command))
         dp.add_handler(CommandHandler("apple", scheduletest))
         dp.add_handler(CommandHandler("masterlist", masterlist_command))
+        dp.add_handler(CommandHandler("register", register_command))
         dp.add_handler(MessageHandler(Filters.text, handle_message))
 
         dp.add_error_handler(error)
