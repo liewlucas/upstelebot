@@ -11,6 +11,7 @@ text_r = ""
 usercid_r = ""
 name_r = ""
 useredit_r = ""
+username_r = ""
 ID_List = []
 Inputs = []
 zip_db = "db_info.zip"
@@ -39,6 +40,7 @@ def dict_lock_check(Fname=zip_db):
 
 
 def dict_lock_read():
+    #dict_lock_check(zip_db)
     with zipfile.ZipFile(zip_db) as zfile:
         try:
             zip_inputs = zfile.read(name=zfile.namelist()[-1], pwd=str.encode(zip))
@@ -60,7 +62,7 @@ def dict_lock_read():
 def dict_lock_update(newdata):
     with zipfile.ZipFile(zip_db) as zfile:
         try:
-            newdata.append({'ReminderName': RemName, 'IDitem': IDchat, 'DAY': day_r, 'Time': time_r, 'Text': text_r})
+            newdata.append({"ReminderName": RemName, "IDitem": IDchat, "DAY": day_r, "Time": time_r, "Text": text_r, "User": username_r})
             dict_append = json.dumps(newdata, indent=2).encode('utf-8')
             with zipfile.ZipFile(zip_db, 'w') as zwfile:
                 zwfile.writestr(zfile.namelist()[-1], dict_append)
@@ -89,10 +91,13 @@ def dict_del(datadel):
 
                     # Checking for invalid/Non-dictionary DB
                     except AttributeError:
+                        print('AE')
                         return datadel
                     except IndexError:
+                        print("IE")
                         return datadel
                     except NameError:
+                        print("NE")
                         return datadel
                     break
 
@@ -123,10 +128,13 @@ def lock_edit_Name(dataed):
 
         # Checking for invalid/Non-dictionary DB
         except AttributeError:
+            print("AE")
             return dataed
         except IndexError:
+            print("IE")
             return dataed
         except NameError:
+            print("NE")
             return dataed
 
 def lock_edit_Time(dataed):
@@ -148,10 +156,13 @@ def lock_edit_Time(dataed):
 
         # Checking for invalid/Non-dictionary DB
         except AttributeError:
+            print("AE")
             return dataed
         except IndexError:
+            print("IE")
             return dataed
         except NameError:
+            print("NE")
             return dataed
 
 def lock_edit_Day(dataed):
@@ -167,16 +178,20 @@ def lock_edit_Day(dataed):
 
         try:
             with zipfile.ZipFile(zip_db, 'w') as zwfile:
+                print(bedits_D)
                 zwfile.writestr(zefile.namelist()[-1], bedits_D)
                 zwfile.close()
                 print(dataed)
 
         # Checking for invalid/Non-dictionary DB
         except AttributeError:
+            print("AE")
             return dataed
         except IndexError:
+            print("IE")
             return dataed
         except NameError:
+            print("NE")
             return dataed
 
 def lock_edit_Text(dataed):
@@ -198,10 +213,13 @@ def lock_edit_Text(dataed):
 
         # Checking for invalid/Non-dictionary DB
         except AttributeError:
+            print("AE")
             return dataed
         except IndexError:
+            print("IE")
             return dataed
         except NameError:
+            print("NE")
             return dataed
 
 
@@ -213,5 +231,6 @@ def lock_edit_Text(dataed):
 #lock_edit_Day(Inputs)
 #lock_edit_Time(Inputs)
 #lock_edit_Text(Inputs)
+#lock_edit_Name(Inputs)
 
 
