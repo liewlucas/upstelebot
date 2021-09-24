@@ -65,28 +65,26 @@ def register_command(update, context):
         else:
             #update.message.reply_text("group not whitelisted")
             print("group is not whitelisted")
+            Gid.grpchatid = groupchatid
+            Gid.grpusername = groupusername
+            if (groupname == "None"):
+                Gid.grpchatname = "PM Chat"
+            else:
+                Gid.grpchatname = groupname
 
-            if (groupusername in username):
-                Gid.grpchatid = groupchatid
-                Gid.grpusername = groupusername
-                if (groupname == "None"):
-                    Gid.grpchatname = "PM Chat"
-                else:
-                    Gid.grpchatname = groupname
-
-                for chatid, grpname, username in sorted(
-                        [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-                    if(groupchatid == chatid and groupusername == username):
-                        duplicatevalue = True
-                        update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
+            for chatid, grpname, username in sorted(
+                    [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+                if(groupchatid == chatid and groupusername == username):
+                    duplicatevalue = True
+                    update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
 
 
-                if(duplicatevalue == False):
-                    Gid.dict_update(Gid.Inputs)
-                    update.message.reply_text("This Group is not Whitelisted, Registration Completed!")
-                    userpmid = update.message.from_user.id
-                    context.bot.send_message(chat_id=userpmid,
-                                             text="You are now a Registered Member in " + groupname + " Feel free to set Reminders!")
+            if(duplicatevalue == False):
+                Gid.dict_update(Gid.Inputs)
+                update.message.reply_text("This Group is not Whitelisted, Registration Completed!")
+                userpmid = update.message.from_user.id
+                context.bot.send_message(chat_id=userpmid,
+                                         text="You are now a Registered Member in " + groupname + " Feel free to set Reminders!")
 
 
 
