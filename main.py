@@ -8,7 +8,7 @@ from datetime import datetime
 import logging
 import Repcheck as Rep
 import GrpIDUpdate as Gid
-import Dic_Lock as Loc
+import Dict_LocK_compile as Loc
 import WhitelistUpdate as wlu
 
 now = datetime.now()
