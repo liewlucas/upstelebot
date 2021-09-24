@@ -25,8 +25,7 @@ EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE = ran
 
 def start_command(update, context):
     update.message.reply_text("Welcome to the Parakeet! \U0001F917")
-    update.message.reply_text("To get started, simply type /help to view all the operational commands\U0001F4C4")
-
+    update.message.reply_text("Parakeet is a Bot to help you with your scheduling needs! A simple registration is all it takes to do so. \n\nTo get started, simply type /help to view all operational commands \U0001F4C4")
 
 def register_command(update, context):
     global duplicatevalue
@@ -84,16 +83,14 @@ def register_command(update, context):
                 update.message.reply_text("This Group is not Whitelisted, Registration Completed!")
                 userpmid = update.message.from_user.id
                 context.bot.send_message(chat_id=userpmid,
-                                         text="You are now a Registered Member in " + groupname + " Feel free to set Reminders!")
-
-
-
+                                         text="You are now a Registered Member in " + Gid.grpchatname + " Feel free to set Reminders!")
 
 
 
 def help_command(update, context):
     update.message.reply_text("This bot enables you to create, delete, and edit reminders. Please follow the commands stated below to get started! \U0001f60A \n\n"
-                              "/schedule is to set a new reminder\n"
+                              "/register to register as a user to set reminders in that chat!\n"
+                              "/schedule to set a new reminder\n"
                               "/list shows you a list of reminders that you have set\n"
                               "/delete allows for you to delete reminders based on the Reminder Names\n"
                               "/edit allows for you to edit existing reminders")
@@ -130,8 +127,6 @@ def list_command(update, context):
     else: #checking if list is empty
         update.message.reply_text("\U0001F4D1Here are your List of Reminders: \n\n" + "".join(replylist),
                                   reply_to_message_id=userchatidingroup)  # sentence + joining the list
-
-
 
 
 def del_command(update,context):
