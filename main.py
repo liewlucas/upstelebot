@@ -130,8 +130,8 @@ def deletefromdb(update: Update, context: CallbackContext)-> int:
     global usernamechoice
     usernamechoice = str(update.message.text)
     userchatidingroup = str(update.message.message_id)
-    Rep.usercid_r = dbreminderchatid
-    Rep.name_r = usernamechoice
+    Loc.usercid_r = dbreminderchatid
+    Loc.name_r = usernamechoice
     Loc.dict_del(Loc.Inputs)
     Gid.dict_read()
     for chatid, grpname, username in sorted(
@@ -281,9 +281,9 @@ def editindb(update: Update, context: CallbackContext)-> int:
         try:
             usernameofuser = update.message.from_user.username
             time.strptime(usersconfirmationedit, '%H:%M')
-            Rep.time_r = usersconfirmationedit
-            Rep.usercid_r = reminderchatid
-            Rep.name_r = editnameuser
+            Loc.time_r = usersconfirmationedit
+            Loc.usercid_r = reminderchatid
+            Loc.name_r = editnameuser
             Loc.dict_lock_read()
             Loc.lock_edit_Time(Loc.Inputs)
             replylist = []
@@ -309,9 +309,9 @@ def editindb(update: Update, context: CallbackContext)-> int:
     if(editchoiceuser == "Day"):
         usernameofuser = update.message.from_user.username
         Loc.dict_lock_read()
-        Rep.day_r = usersconfirmationedit
-        Rep.usercid_r = reminderchatid
-        Rep.name_r = editnameuser
+        Loc.day_r = usersconfirmationedit
+        Loc.usercid_r = reminderchatid
+        Loc.name_r = editnameuser
         Loc.lock_edit_Day(Loc.Inputs)
         replylist = []
         for ReminderName, IDitem, DAY, Time, Text in sorted(
@@ -332,9 +332,9 @@ def editindb(update: Update, context: CallbackContext)-> int:
     if(editchoiceuser == "Reminder Name"):
         usernameofuser = update.message.from_user.username
         Loc.dict_lock_read()
-        Rep.usercid_r = reminderchatid
-        Rep.name_r = editnameuser
-        Rep.RemName = usersconfirmationedit
+        Loc.usercid_r = reminderchatid
+        Loc.name_r = editnameuser
+        Loc.RemName = usersconfirmationedit
         Loc.lock_edit_Name(Loc.Inputs)
         replylist = []
 
@@ -357,9 +357,9 @@ def editindb(update: Update, context: CallbackContext)-> int:
 
         usernameofuser = update.message.from_user.username
         Loc.dict_lock_read()
-        Rep.text_r = usersconfirmationedit
-        Rep.usercid_r = reminderchatid
-        Rep.name_r = editnameuser
+        Loc.text_r = usersconfirmationedit
+        Loc.usercid_r = reminderchatid
+        Loc.name_r = editnameuser
 
         Loc.lock_edit_Text(Loc.Inputs)
         replylist = []

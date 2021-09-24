@@ -3,15 +3,15 @@ import os
 import zipfile
 import hashlib, uuid, base64
 
-RemName = "Error Testing"
-IDchat = -558414218
-day_r = "Sunday"
-time_r = "12:35"
-text_r = "I love Coding"
-usercid_r = -558414218
-name_r = "Error Testing"
-useredit_r = "" #ReminderName Edits
-username_r = "xnegate"
+RemName = ""
+IDchat = ''
+day_r = ""
+time_r = ""
+text_r = ""
+usercid_r = ''
+name_r = ""
+useredit_r = ""  #ReminderName Edits
+username_r = ""
 ID_List = []
 Inputs = []
 zip_db = "db_info.zip"
@@ -241,12 +241,12 @@ def lock_edit_Text(dataed):
 
 
 #dict_lock_check(zip_db)
-dict_lock_read()
+#dict_lock_read()
 #dict_lock_update(Inputs)
 #dict_del(Inputs)
-lock_edit_Day(Inputs)
-lock_edit_Time(Inputs)
-lock_edit_Text(Inputs)
-lock_edit_Name(Inputs)
+#lock_edit_Day(Inputs)
+#lock_edit_Time(Inputs)
+#lock_edit_Text(Inputs)
+#lock_edit_Name(Inputs)
 
 
