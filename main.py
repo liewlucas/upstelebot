@@ -696,7 +696,7 @@ def main():
         dp = updater.dispatcher
 
         j = updater.job_queue
-        job_minute = j.run_repeating(schedulecheck, interval=10, first=0)
+        job_minute = j.run_repeating(schedulecheck, interval=15, first=0)
         print("checking on DB started")
 
         scheduleconv_handler = (ConversationHandler(
