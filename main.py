@@ -717,11 +717,11 @@ def get_chat_id(update, context):
     print(chat_id)
 
 def main():
-        updater = Updater(keys.API_J, use_context=True)
+        updater = Updater(keys.API_MAINKEY, use_context=True)
         dp = updater.dispatcher
 
         j = updater.job_queue
-        job_minute = j.run_repeating(schedulecheck, interval=15, first=0)
+        job_minute = j.run_repeating(schedulecheck, interval=30, first=0)
         print("checking on DB started")
 
         scheduleconv_handler = (ConversationHandler(
