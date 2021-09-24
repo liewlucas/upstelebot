@@ -1,3 +1,42 @@
 [
-
+  {
+    "ReminderName": "Parakeet Test 1",
+    "IDitem": -473469885,
+    "DAY": "Friday",
+    "Time": "10:00",
+    "Text": "Testing",
+    "User": "liewlucass"
+  },
+  {
+    "ReminderName": "Update Google Cal",
+    "IDitem": -1001252293224,
+    "DAY": "Thursday",
+    "Time": "16:00",
+    "Text": "Update Google Cal for OFF/LL/MA for the next two weeks by 1600H today. Urgent and last minute requests, please PM SY",
+    "User": "liewlucass"
+  },
+  {
+    "ReminderName": "Indent Ration Reminder",
+    "IDitem": -1001252293224,
+    "DAY": "Thursday",
+    "Time": "13:00",
+    "Text": "Reminder to Indent Ration for the following week by 1630H.\nhttps://indentyourration.web.app",
+    "User": "xnegate"
+  },
+  {
+    "ReminderName": "Paradestate Reminder",
+    "IDitem": -1001252293224,
+    "DAY": "Wednesday",
+    "Time": "13:00",
+    "Text": "Reminder to Update Parade State and update google calendar for LL/MA/OFF by 1630H. Please indicate your OFF/MA in the A1- Off Records as well.",
+    "User": "xnegate"
+  },
+  {
+    "ReminderName": "ART Result Reminder",
+    "IDitem": -1001252293224,
+    "DAY": "Friday",
+    "Time": "05:55",
+    "Text": "Reminder to sent ART result by 0700H and 1030H TODAY!\nLight green boxes by 0700H\u2757\ufe0f\nDark green boxes by 1030H\u2757\ufe0f\n\nPlease include this declaration in image: \nI, RANK name, hereby declare that the above ART result is taken on 24/09/21 at ????H. I understand that a false declaration is equivalent to an attempt to wilfully deceive and that I may be prosecuted for such offenses. (A1)\n\nIF YOUR RESULT IS POSITIVE, call SY immediately (90286521). We\u2019ll need to do contact tracing and you\u2019ll need to get a PCR swab.",
+    "User": "xnegate"
+  }
 ]
