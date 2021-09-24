@@ -9,7 +9,7 @@ import logging
 import Repcheck as Rep
 import GrpIDUpdate as Gid
 import Dic_Lock as Loc
-
+import WhitelistUpdate as wlu
 
 now = datetime.now()
 current_time = now.strftime("%H:%M:%S")
@@ -26,17 +26,71 @@ EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE = ran
 def start_command(update, context):
     update.message.reply_text("Welcome to the Parakeet! \U0001F917")
     update.message.reply_text("To get started, simply type /help to view all the operational commands\U0001F4C4")
+
+
+def register_command(update, context):
+    global duplicatevalue
+    duplicatevalue = False
     groupname = str(update.message.chat.title)
     groupchatid = update.message.chat.id
+    groupchatid2 = str(update.message.chat.id)
     groupusername = update.message.from_user.username
-    Gid.grpchatid = groupchatid
-    Gid.grpusername = groupusername
-    if (groupname == "None"):
-        Gid.grpchatname = "PM Chat"
-    else:
-        Gid.grpchatname = groupname
     Gid.dict_read()
-    Gid.dict_update(Gid.Inputs)
+    wlu.dict_read() # reads whitelist update db
+    #update.message.reply_text(groupchatid)
+    for chatid, grpname, username in sorted(
+            [(d['CHATID'], d['GRPNAME'], d['USER']) for d in wlu.Inputs], key=lambda t: t[1]):
+        if(groupchatid in chatid):
+            update.message.reply_text("This is a Whitelisted Group, Checking Authorisation.....")
+            if(groupusername in username):
+                Gid.grpchatid = groupchatid
+                Gid.grpusername = groupusername
+                if (groupname == "None"):
+                    Gid.grpchatname = "PM Chat"
+                else:
+                    Gid.grpchatname = groupname
+                for chatid, grpname, username in sorted(
+                        [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+                    if (groupchatid == chatid and groupusername == username):
+                        duplicatevalue = True
+                        update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
+                if(duplicatevalue == False):
+                    Gid.dict_update(Gid.Inputs)
+                    update.message.reply_text("You Are an Authorised User, Your details are now Registered!")
+                    userpmid = update.message.from_user.id
+                    context.bot.send_message(chat_id=userpmid,
+                                             text="You are now a Registered Member in  Whitelisted Group: " + groupname + ", Feel free to set Reminders!")
+            elif(groupusername != username):
+                update.message.reply_text("Apologies, You are not an Authorised Member")
+        else:
+            #update.message.reply_text("group not whitelisted")
+            print("group is not whitelisted")
+
+            if (groupusername in username):
+                Gid.grpchatid = groupchatid
+                Gid.grpusername = groupusername
+                if (groupname == "None"):
+                    Gid.grpchatname = "PM Chat"
+                else:
+                    Gid.grpchatname = groupname
+
+                for chatid, grpname, username in sorted(
+                        [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+                    if(groupchatid == chatid and groupusername == username):
+                        duplicatevalue = True
+                        update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
+
+
+                if(duplicatevalue == False):
+                    Gid.dict_update(Gid.Inputs)
+                    update.message.reply_text("This Group is not Whitelisted, Registration Completed!")
+                    userpmid = update.message.from_user.id
+                    context.bot.send_message(chat_id=userpmid,
+                                             text="You are now a Registered Member in " + groupname + " Feel free to set Reminders!")
+
+
+
+
 
 
 def help_command(update, context):
@@ -612,7 +666,6 @@ def schedulecheck(context:CallbackContext):
 def error(update, context):
     print(f"update {update} caused error {context.error}")
 
-
 def masterlist_command(update, context):
     # update.message.reply_text("hello! here are your set reminders : (work in progress)")
     #print(update.message.chat.idj)
@@ -666,7 +719,7 @@ def get_chat_id(update, context):
     print(chat_id)
 
 def main():
-        updater = Updater(keys.API_J, use_context=True)
+        updater = Updater(keys.API_MAINKEY, use_context=True)
         dp = updater.dispatcher
 
         j = updater.job_queue
@@ -709,6 +762,7 @@ def main():
         dp.add_handler(CommandHandler("list", list_command))
         dp.add_handler(CommandHandler("apple", scheduletest))
         dp.add_handler(CommandHandler("masterlist", masterlist_command))
+        dp.add_handler(CommandHandler("register", register_command))
         dp.add_handler(MessageHandler(Filters.text, handle_message))
 
         dp.add_error_handler(error)
