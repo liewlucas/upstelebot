@@ -112,7 +112,7 @@ def list_command(update, context):
             dbchatid = chatid
             global userchatidingroup
             userchatidingroup = update.message.message_id
-            Rep.dict_read()  # read DB
+            Loc.dict_lock_read()  # read DB
             #global userchatid
             #userchatid = update.message.chat.id
             #for IDitem, DAY, Time, Text in Loc.Inputs:
@@ -151,7 +151,7 @@ def del_command(update,context):
 
             global userchatidingroup
             userchatidingroup = update.message.message_id
-            Rep.dict_read()  # read DB
+            Loc.dict_lock_read()  # read DB
             for ReminderName, IDitem, DAY, Time, Text, dbUser in sorted(
                     [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs], key=lambda t: t[1]):
                 if (IDitem == dbchatid):  # check userchatid against db id
@@ -313,7 +313,7 @@ def useredits(update: Update, context: CallbackContext)-> int:
                                   reply_to_message_id=userchatidingroup, reply_markup=ForceReply(selective=True))
     return EDITINDB
 
-def editindb(update: Update, context: CallbackContext)-> int:
+def editindb(update: Update, context: CallbackContext)-> str:
     global usersconfirmationedit
     global usernameofuser
     global dbgrpname
