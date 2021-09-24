@@ -8,7 +8,7 @@ from datetime import datetime
 import logging
 import Repcheck as Rep
 import GrpIDUpdate as Gid
-import Dic_Lock as Loc
+import Dict_LocK_compile as Loc
 import WhitelistUpdate as wlu
 
 now = datetime.now()
@@ -29,6 +29,8 @@ def start_command(update, context):
 
 
 def register_command(update, context):
+    global duplicatevalue
+    duplicatevalue = False
     groupname = str(update.message.chat.title)
     groupchatid = update.message.chat.id
     groupchatid2 = str(update.message.chat.id)
@@ -39,7 +41,7 @@ def register_command(update, context):
     for chatid, grpname, username in sorted(
             [(d['CHATID'], d['GRPNAME'], d['USER']) for d in wlu.Inputs], key=lambda t: t[1]):
         if(groupchatid in chatid):
-            update.message.reply_text("Group Whitelisted!")
+            update.message.reply_text("This is a Whitelisted Group, Checking Authorisation.....")
             if(groupusername in username):
                 Gid.grpchatid = groupchatid
                 Gid.grpusername = groupusername
@@ -47,22 +49,45 @@ def register_command(update, context):
                     Gid.grpchatname = "PM Chat"
                 else:
                     Gid.grpchatname = groupname
-                Gid.dict_update(Gid.Inputs)
-                update.message.reply_text("registered! you are authorised")
+                for chatid, grpname, username in sorted(
+                        [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+                    if (groupchatid == chatid and groupusername == username):
+                        duplicatevalue = True
+                        update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
+                if(duplicatevalue == False):
+                    Gid.dict_update(Gid.Inputs)
+                    update.message.reply_text("You Are an Authorised User, Your details are now Registered!")
+                    userpmid = update.message.from_user.id
+                    context.bot.send_message(chat_id=userpmid,
+                                             text="You are now a Registered Member in  Whitelisted Group: " + groupname + ", Feel free to set Reminders!")
             elif(groupusername != username):
-                update.message.reply_text("sorry you are not authorised HAHA WEAK")
+                update.message.reply_text("Apologies, You are not an Authorised Member")
         else:
             #update.message.reply_text("group not whitelisted")
             print("group is not whitelisted")
-            update.message.reply_text("Group is not Whitelisted!, you are registereds")
-            if (groupusername in username):
-                Gid.grpchatid = groupchatid
-                Gid.grpusername = groupusername
-                if (groupname == "None"):
-                    Gid.grpchatname = "PM Chat"
-                else:
-                    Gid.grpchatname = groupname
+            Gid.grpchatid = groupchatid
+            Gid.grpusername = groupusername
+            if (groupname == "None"):
+                Gid.grpchatname = "PM Chat"
+            else:
+                Gid.grpchatname = groupname
+
+            for chatid, grpname, username in sorted(
+                    [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+                if(groupchatid == chatid and groupusername == username):
+                    duplicatevalue = True
+                    update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
+
+
+            if(duplicatevalue == False):
                 Gid.dict_update(Gid.Inputs)
+                update.message.reply_text("This Group is not Whitelisted, Registration Completed!")
+                userpmid = update.message.from_user.id
+                context.bot.send_message(chat_id=userpmid,
+                                         text="You are now a Registered Member in " + groupname + " Feel free to set Reminders!")
+
+
+
 
 
 
@@ -85,7 +110,7 @@ def list_command(update, context):
             dbchatid = chatid
             global userchatidingroup
             userchatidingroup = update.message.message_id
-            Rep.dict_read()  # read DB
+            Loc.dict_lock_read()  # read DB
             #global userchatid
             #userchatid = update.message.chat.id
             #for IDitem, DAY, Time, Text in Loc.Inputs:
@@ -124,7 +149,7 @@ def del_command(update,context):
 
             global userchatidingroup
             userchatidingroup = update.message.message_id
-            Rep.dict_read()  # read DB
+            Loc.dict_lock_read()  # read DB
             for ReminderName, IDitem, DAY, Time, Text, dbUser in sorted(
                     [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs], key=lambda t: t[1]):
                 if (IDitem == dbchatid):  # check userchatid against db id
@@ -157,8 +182,8 @@ def deletefromdb(update: Update, context: CallbackContext)-> int:
     global usernamechoice
     usernamechoice = str(update.message.text)
     userchatidingroup = str(update.message.message_id)
-    Rep.usercid_r = dbreminderchatid
-    Rep.name_r = usernamechoice
+    Loc.usercid_r = dbreminderchatid
+    Loc.name_r = usernamechoice
     Loc.dict_del(Loc.Inputs)
     Gid.dict_read()
     for chatid, grpname, username in sorted(
@@ -286,7 +311,7 @@ def useredits(update: Update, context: CallbackContext)-> int:
                                   reply_to_message_id=userchatidingroup, reply_markup=ForceReply(selective=True))
     return EDITINDB
 
-def editindb(update: Update, context: CallbackContext)-> int:
+def editindb(update: Update, context: CallbackContext)-> str:
     global usersconfirmationedit
     global usernameofuser
     global dbgrpname
@@ -308,9 +333,9 @@ def editindb(update: Update, context: CallbackContext)-> int:
         try:
             usernameofuser = update.message.from_user.username
             time.strptime(usersconfirmationedit, '%H:%M')
-            Rep.time_r = usersconfirmationedit
-            Rep.usercid_r = reminderchatid
-            Rep.name_r = editnameuser
+            Loc.time_r = usersconfirmationedit
+            Loc.usercid_r = reminderchatid
+            Loc.name_r = editnameuser
             Loc.dict_lock_read()
             Loc.lock_edit_Time(Loc.Inputs)
             replylist = []
@@ -336,9 +361,9 @@ def editindb(update: Update, context: CallbackContext)-> int:
     if(editchoiceuser == "Day"):
         usernameofuser = update.message.from_user.username
         Loc.dict_lock_read()
-        Rep.day_r = usersconfirmationedit
-        Rep.usercid_r = reminderchatid
-        Rep.name_r = editnameuser
+        Loc.day_r = usersconfirmationedit
+        Loc.usercid_r = reminderchatid
+        Loc.name_r = editnameuser
         Loc.lock_edit_Day(Loc.Inputs)
         replylist = []
         for ReminderName, IDitem, DAY, Time, Text in sorted(
@@ -359,9 +384,9 @@ def editindb(update: Update, context: CallbackContext)-> int:
     if(editchoiceuser == "Reminder Name"):
         usernameofuser = update.message.from_user.username
         Loc.dict_lock_read()
-        Rep.usercid_r = reminderchatid
-        Rep.name_r = editnameuser
-        Rep.RemName = usersconfirmationedit
+        Loc.usercid_r = reminderchatid
+        Loc.name_r = editnameuser
+        Loc.RemName = usersconfirmationedit
         Loc.lock_edit_Name(Loc.Inputs)
         replylist = []
 
@@ -384,9 +409,9 @@ def editindb(update: Update, context: CallbackContext)-> int:
 
         usernameofuser = update.message.from_user.username
         Loc.dict_lock_read()
-        Rep.text_r = usersconfirmationedit
-        Rep.usercid_r = reminderchatid
-        Rep.name_r = editnameuser
+        Loc.text_r = usersconfirmationedit
+        Loc.usercid_r = reminderchatid
+        Loc.name_r = editnameuser
 
         Loc.lock_edit_Text(Loc.Inputs)
         replylist = []
@@ -692,7 +717,7 @@ def get_chat_id(update, context):
     print(chat_id)
 
 def main():
-        updater = Updater(keys.API_MAINKEY, use_context=True)
+        updater = Updater(keys.API_J, use_context=True)
         dp = updater.dispatcher
 
         j = updater.job_queue
