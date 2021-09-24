@@ -83,10 +83,7 @@ def register_command(update, context):
                 update.message.reply_text("This Group is not Whitelisted, Registration Completed!")
                 userpmid = update.message.from_user.id
                 context.bot.send_message(chat_id=userpmid,
-                                         text="You are now a Registered Member in " + groupname + " Feel free to set Reminders!")
-
-
-
+                                         text="You are now a Registered Member in " + Gid.grpchatname + " Feel free to set Reminders!")
 
 
 
@@ -130,8 +127,6 @@ def list_command(update, context):
     else: #checking if list is empty
         update.message.reply_text("\U0001F4D1Here are your List of Reminders: \n\n" + "".join(replylist),
                                   reply_to_message_id=userchatidingroup)  # sentence + joining the list
-
-
 
 
 def del_command(update,context):
