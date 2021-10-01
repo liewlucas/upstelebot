@@ -8,7 +8,7 @@ from datetime import datetime
 import logging
 import Repcheck as Rep
 import GrpIDUpdate as Gid
-import Dict_Loc_compile as Loc
+import Dic_Lock as Loc  #Change to Com fdr getr Security ltrr
 import WhitelistUpdate as wlu
 
 now = datetime.now()
@@ -141,14 +141,14 @@ def del_command(update,context):
         if (usernameofuser == username):
             dbchatid = chatid
             dbgrpname = grpname
-
             global userchatidingroup
             userchatidingroup = update.message.message_id
             Loc.dict_lock_read()  # read DB
             for ReminderName, IDitem, DAY, Time, Text, dbUser in sorted(
-                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs], key=lambda t: t[1]):
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs],
+                    key=lambda t: t[1]):
                 if (IDitem == dbchatid):  # check userchatid against db id
-                    if(usernameofuser == dbUser):
+                    if (usernameofuser == dbUser):
                         dbreminderchatid = IDitem
                         dbRemName = str(ReminderName)
                         dbday = str(DAY)
@@ -156,7 +156,7 @@ def del_command(update,context):
                         dbmsg = str(Text)
                         stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
                         replylist.append(stringreply)  # append into the list
-                        namelist.append(dbRemName) #append all names relating to this chatid into local list
+                        namelist.append(dbRemName)  # append all names relating to this chatid into local list
 
     if not replylist:  # checking if list is empty
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
@@ -177,7 +177,9 @@ def deletefromdb(update: Update, context: CallbackContext)-> int:
     global usernamechoice
     usernamechoice = str(update.message.text)
     userchatidingroup = str(update.message.message_id)
-    Loc.usercid_r = dbreminderchatid
+    #print(dbreminderchatid)
+    #Loc.usercid_r = dbreminderchatid
+    print(usernamechoice)
     Loc.name_r = usernamechoice
     Loc.dict_del(Loc.Inputs)
     Gid.dict_read()
@@ -187,15 +189,16 @@ def deletefromdb(update: Update, context: CallbackContext)-> int:
             dbchatid = chatid
             dbgrpname = grpname
 
-            for ReminderName, IDitem, DAY, Time, Text in sorted(
-                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs], key=lambda t: t[1]):
-                if (dbchatid == IDitem):  # check userchatid against db id
-                    dbRemName = str(ReminderName)
-                    dbday = str(DAY)
-                    dbtime = str(Time)
-                    dbmsg = str(Text)
-                    stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
-                    replylist.append(stringreply)  # append into the list
+            for ReminderName, IDitem, DAY, Time, Text, dbUser in sorted(
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d["User"]) for d in Loc.Inputs], key=lambda t: t[1]):
+                if (IDitem == dbchatid):  # check userchatid against db id
+                    if (usernameofuser == dbUser):
+                        dbRemName = str(ReminderName)
+                        dbday = str(DAY)
+                        dbtime = str(Time)
+                        dbmsg = str(Text)
+                        stringreply = "Reminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                        replylist.append(stringreply)  # append into the list
 
 
     if not replylist:
@@ -381,7 +384,7 @@ def editindb(update: Update, context: CallbackContext)-> str:
         Loc.dict_lock_read()
         Loc.usercid_r = reminderchatid
         Loc.name_r = editnameuser
-        Loc.RemName = usersconfirmationedit
+        Loc.useredit_r = usersconfirmationedit
         Loc.lock_edit_Name(Loc.Inputs)
         replylist = []
 
