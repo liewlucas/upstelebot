@@ -646,13 +646,19 @@ def schedulecheck(context:CallbackContext):
         now = datetime.now()
         today = now.strftime("%A") #return today's day
         tdytime = now.strftime("%H:%M")
-        if(today == DAY or DAY == 'Everyday'):
+        if(today == DAY):
             if(tdytime == Time):
                 global dbchatid
                 dbchatid = str(IDitem)
                 global dbremindermsg
                 dbremindermsg = str(Text)
                 Send_Reminder_Message(update,context)
+                print("success")
+        elif(DAY == 'Everyday'):
+            if (tdytime == Time):
+                dbchatid = str(IDitem)
+                dbremindermsg = str(Text)
+                Send_Reminder_Message(update, context)
                 print("success")
 
         else:
