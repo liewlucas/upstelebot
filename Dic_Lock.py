@@ -4,11 +4,11 @@ import zipfile
 import hashlib, uuid, base64
 
 RemName = ""
-IDchat = ''
+IDchat = ""
 day_r = ""
 time_r = ""
 text_r = ""
-usercid_r = ''
+usercid_r = ""
 name_r = ""
 useredit_r = ""  #ReminderName Edits
 username_r = ""
@@ -46,7 +46,7 @@ def dict_lock_read():
             zip_inputs = zfile.read(name=zfile.namelist()[-1], pwd=str.encode(zip))
             global Inputs
             Inputs = json.loads(zip_inputs.decode('utf-8)'))
-            print(Inputs)
+            #print(Inputs)
 
             # Checking if file database empty, creating list to input data
             if bool(Inputs):
@@ -78,30 +78,27 @@ def dict_lock_update(newdata):
 
 def dict_del(datadel):
     with zipfile.ZipFile(zip_db) as zfile:
-        datasave = datadel
-        print(datadel)
         for i in range(len(datadel)):
-            if datadel[i]['IDitem'] == usercid_r:
-                if datadel[i]['ReminderName'] == name_r:
-                    del datadel[i]
-                    print("DELETED")
-                    bdata = json.dumps(datadel, indent=2).encode('utf-8')
-                    try:
-                        with zipfile.ZipFile(zip_db, 'w') as zwfile:
-                            zwfile.writestr(zfile.namelist()[-1], bdata)
-                            zwfile.close()
-                            print(datadel)
+            if datadel[i]['ReminderName'] == name_r:
+                del datadel[i]
+                print("DELETED")
+                bdata = json.dumps(datadel, indent=2).encode('utf-8')
+                try:
+                    with zipfile.ZipFile(zip_db, 'w') as zwfile:
+                        zwfile.writestr(zfile.namelist()[-1], bdata)
+                        zwfile.close()
+                        print(datadel)
 
-                    # Checking for invalid/Non-dictionary DB
-                    except AttributeError:
-                        print("AE!")
+                # Checking for invalid/Non-dictionary DB
+                except AttributeError:
+                    print("AE!")
 
-                    except IndexError:
-                        print("IE!")
+                except IndexError:
+                    print("IE!")
 
-                    except NameError:
-                        print("NE!")
-                    break
+                except NameError:
+                    print("NE!")
+                break
 
 
 #Edit Functions
@@ -111,7 +108,7 @@ def lock_edit_Name(dataed):
         global updateflag
         updateflag = False
         for ed in range(len(dataed)):
-            if dataed[ed]['IDitem'] == usercid_r and dataed[ed]['ReminderName'] == name_r :
+            if dataed[ed]['ReminderName'] == name_r :
                 #Fill list[dictionary] with user input parameters
                 updateflag = True
                 dataed[ed]['ReminderName'] = useredit_r  #useredit Name
@@ -143,7 +140,7 @@ def lock_edit_Time(dataed):
         global updateflag
         updateflag = False
         for ed in range(len(dataed)):
-            if dataed[ed]['IDitem'] == usercid_r and dataed[ed]['ReminderName'] == name_r:
+            if dataed[ed]['ReminderName'] == name_r:
                 updateflag = True
                 #Fill list[dictionary] with user input parameters
                 dataed[ed]['Time'] = time_r   #useredit Time
@@ -175,7 +172,7 @@ def lock_edit_Day(dataed):
         global updateflag
         updateflag = False
         for ed in range(len(dataed)):
-            if dataed[ed]['IDitem'] == usercid_r and dataed[ed]['ReminderName'] == name_r:
+            if dataed[ed]['ReminderName'] == name_r:
                 # Fill list[dictionary] with user input parameters
                 updateflag = True
                 dataed[ed]['DAY'] = day_r  #usereditDay
@@ -210,7 +207,7 @@ def lock_edit_Text(dataed):
         global updateflag
         updateflag = False
         for ed in range(len(dataed)):
-            if dataed[ed]['IDitem'] == usercid_r and dataed[ed]['ReminderName'] == name_r:
+            if dataed[ed]['ReminderName'] == name_r:
                 updateflag = True
                 # Fill list[dictionary] with user input parameters
                 dataed[ed]['Text'] = text_r  # useredit Time
