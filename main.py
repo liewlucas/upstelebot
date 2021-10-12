@@ -141,7 +141,6 @@ def del_command(update,context):
         if (usernameofuser == username):
             dbchatid = chatid
             dbgrpname = grpname
-
             global userchatidingroup
             userchatidingroup = update.message.message_id
             Loc.dict_lock_read()  # read DB
