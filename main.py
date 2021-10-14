@@ -21,7 +21,7 @@ print("Bot started...")
 
 logger = logging.getLogger(__name__)
 
-EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE = range(10)
+MASTERDELETE,EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE = range(11)
 
 def start_command(update, context):
     update.message.reply_text("Welcome to the Parakeet! \U0001F917")
@@ -665,14 +665,11 @@ def error(update, context):
     print(f"update {update} caused error {context.error}")
 
 def masterlist_command(update, context):
-    # update.message.reply_text("hello! here are your set reminders : (work in progress)")
-    #print(update.message.chat.idj)
     global userchatidingroup
     userchatidingroup = update.message.message_id
     Loc.dict_lock_read()  # read DB
     global userchatid
     userchatid = update.message.chat.id
-    #for IDitem, DAY, Time, Text in Rep.Inputs:
     replylist = []
     for ReminderName,IDitem, DAY, Time, Text, User in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs],key=lambda t: t[1]):
         dbRemName = str(ReminderName)
@@ -682,15 +679,15 @@ def masterlist_command(update, context):
         dbmsg = str(Text)
         grpname = update.message.chat.title # get group name
         dbuser = User
-        global chatname
-        if(dbIDitem == "-1001252293224"):
-            chatname = "New Alpha One"
-        elif(dbIDitem == "-473469885"):
-            chatname = "Parakeet Testing"
-        else:
-            chatname = dbIDitem
+        Gid.dict_read()
+        for chatid, grpname, username in sorted(
+                [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+            if(IDitem == chatid):
+                chatname = grpname
 
-        stringreply = "Group/ID: " + chatname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday  + "\n" + "Time: " + dbtime + "\n" +  "Message: "  + dbmsg + "\n User: " + dbuser +  "\n\n" #crafting string
+        stringreply = "Group/ID: "  + chatname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday  + "\n" + "Time: " + dbtime + "\n" + "User: " + dbuser + "\n\nMessage: "  + dbmsg + "\n\n\n\n" #crafting string
+
+
         replylist.append(stringreply) #append into the list
 
     if not replylist: #checking if list is empty
@@ -698,6 +695,95 @@ def masterlist_command(update, context):
     else:
         update.message.reply_text("\U0001F4D1Here are your List of Reminders: \n\n" + "".join(replylist),reply_to_message_id=userchatidingroup) #sentence + joining the list
         update.message.reply_text(grpname)
+
+
+def masterdel_command(update,context):
+    global userchatidingroup
+    userchatidingroup = update.message.message_id
+    Loc.dict_lock_read()  # read DB
+    global userchatid
+    userchatid = update.message.chat.id
+    replylist = []
+    namelist = []
+    for ReminderName, IDitem, DAY, Time, Text, User in sorted(
+            [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs],
+            key=lambda t: t[1]):
+        dbRemName = str(ReminderName)
+        dbIDitem = str(IDitem)
+        dbday = str(DAY)
+        dbtime = str(Time)
+        dbmsg = str(Text)
+        grpname = update.message.chat.title  # get group name
+        dbuser = User
+        Gid.dict_read()
+        for chatid, grpname, username in sorted(
+                [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+            if (IDitem == chatid):
+                chatname = grpname
+
+        stringreply = "Group/ID: " + chatname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "User: " + dbuser + "\n\nMessage: " + dbmsg + "\n\n\n\n"  # crafting string
+
+        replylist.append(stringreply)
+        namelist.append(dbRemName)# append into the list
+
+    if not replylist:  # checking if list is empty
+        update.message.reply_text("Sorry, you do not appear to have set any Reminders")
+    else:
+        reply_keyboard = [[name] for name in namelist] # get each item in namelist and put in custom keyboard
+        update.message.reply_text(
+            "\u274C DELETE \u274C\n\n"
+            "Here are your List of Reminders: \n\n" + "".join(replylist) + "\n\nPlease Select the Reminder you would like to delete according to ReminderName", reply_to_message_id=userchatidingroup, reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True),)  # sentence + joining the list + custom keyboard
+
+        return MASTERDELETE
+
+def masterdel_fromdb(update,context):
+    replylist = []
+    usernameofuser = update.message.from_user.username
+    global userchatidingroup
+    userchatidingroup = update.message.message_id
+    global usernamechoice
+    usernamechoice = str(update.message.text)
+    userchatidingroup = str(update.message.message_id)
+    # print(dbreminderchatid)
+    # Loc.usercid_r = dbreminderchatid
+    print(usernamechoice)
+    Loc.name_r = usernamechoice
+    Loc.dict_del(Loc.Inputs)
+    Gid.dict_read()
+  #  for chatid, grpname, username in sorted(
+       #     [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+        #dbchatid = chatid
+        #dbgrpname = grpname
+        #update.message.reply_text(dbchatid)
+
+    for ReminderName, IDitem, DAY, Time, Text, dbUser in sorted(
+            [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d["User"]) for d in Loc.Inputs],
+            key=lambda t: t[1]):
+        #if (IDitem == dbchatid):  # check userchatid against db id
+        dbRemName = str(ReminderName)
+        dbday = str(DAY)
+        dbtime = str(Time)
+        dbmsg = str(Text)
+        for chatid, grpname, username in sorted(
+                [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+            if (IDitem == chatid):
+                chatname = grpname
+        stringreply = "Group: " + chatname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n\n\n"  # crafting string
+        replylist.append(stringreply)  # append into the list
+
+    if not replylist:
+        update.message.reply_text("Your Reminder has been deleted and you currently do not have any Reminders.")
+    # update.message.reply_text(userchatidingroup)
+    # update.message.reply_text(userchatid)
+
+    else:
+        update.message.reply_text(
+            "Your Reminder has been deleted, Here is your Updated List of Reminders: \n\n" + "".join(replylist),
+            reply_to_message_id=userchatidingroup)
+        userchatidingroup = str(update.message.from_user.id)
+
+    return ConversationHandler.END
+
 
 # Function Not in Use
 def get_chat_id(update, context):
@@ -717,7 +803,7 @@ def get_chat_id(update, context):
     print(chat_id)
 
 def main():
-        updater = Updater(keys.API_MAINKEY, use_context=True)
+        updater = Updater(keys.API_J, use_context=True)
         dp = updater.dispatcher
 
         j = updater.job_queue
@@ -751,12 +837,19 @@ def main():
             fallbacks=[CommandHandler('cancel', cancel)],
         ))
 
+        masterdeleteconvhandler = (ConversationHandler(
+            entry_points=[CommandHandler('masterdelete', masterdel_command)],
+            states={MASTERDELETE: [MessageHandler(Filters.all, masterdel_fromdb)], },
+            fallbacks=[CommandHandler('cancel', cancel)],
+        ))
+
         dp.add_handler(CommandHandler("start", start_command))
         dp.add_handler(CommandHandler("help", help_command))
         #dp.add_handler(CommandHandler("schedule", schedule_command))
         dp.add_handler(scheduleconv_handler)
         dp.add_handler(deleteconvhandler)
         dp.add_handler(editconvhandler)
+        dp.add_handler(masterdeleteconvhandler)
         dp.add_handler(CommandHandler("list", list_command))
         dp.add_handler(CommandHandler("apple", scheduletest))
         dp.add_handler(CommandHandler("masterlist", masterlist_command))
