@@ -48,5 +48,20 @@
     "CHATID": -1001252293224,
     "GRPNAME": "New Alpha One",
     "USER": "liewlucass"
+  },
+  {
+    "CHATID": 579522431,
+    "GRPNAME": "PM Chat",
+    "USER": "xnegate"
+  },
+  {
+    "CHATID": 638839312,
+    "GRPNAME": "PM Chat",
+    "USER": null
+  },
+  {
+    "CHATID": -473469885,
+    "GRPNAME": "Parakeet Testing",
+    "USER": null
   }
 ]
