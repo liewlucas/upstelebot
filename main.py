@@ -39,7 +39,7 @@ def register_command(update, context):
     groupchatid2 = str(update.message.chat.id)
     groupusername = update.message.from_user.username
     Gid.dict_read()
-    wlu.dict_read() # reads whitelist update db
+    wlu.wl_read() # reads whitelist update db
     #update.message.reply_text(groupchatid)
     for chatid, grpname, username in sorted(
             [(d['CHATID'], d['GRPNAME'], d['USER']) for d in wlu.Inputs], key=lambda t: t[1]):
