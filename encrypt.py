@@ -1,48 +1,66 @@
-admin_pass = ""
-whitelistpass = ""
+import json
+import os
 
-def dict_check(Fname=wl_db):
+#variables filled in from main
+xx = ""
+yy = ""
+zz = ""
+
+admin_user = ""
+admin_ID = ""
+grpchatname = ""
+whitelistpass = ""
+wl_db = "db_new_whitelist"
+wInputs = []
+
+def wl_check(Fname=wl_db):
     # Checking if file exist, then creating if it does not
     if not os.path.isfile(Fname):
         print('File does not exist\nCreating New File')
-        udb = open(dict_db, 'w')
+        udb = open(wl_db, 'w')
         print(Fname)
         udb.close()
 
 
 # Function to read file database
-def dict_read():
+def wl_read():
     try:
-        udb = open(dict_db, "r")
+        udb = open(wl_db, "r")
     except:
-        dict_check()
-        dict_read()
+        wl_check()
+        wl_read()
 
     # Loading json format list from file database
     try:
-        with open(dict_db, 'r') as fr:
-            global Inputs
-            Inputs = json.load(fr)
-            print(Inputs)
+        with open(wl_db, 'r') as fr:
+            global wInputs
+            wInputs = json.load(fr)
+            print(wInputs)
 
             # Checking if file database empty, creating list to input data
-            if len(Inputs) == 0:
+            if len(wInputs) == 0:
                 return []
             else:
-                return Inputs
+                return wInputs
     except:
         return []
 
-def wl_register(datadel):
+def wl_register():
+    wl_read()
+    for i in range(len(wInputs)):
+        if wInputs[i]['USER'] == xx:
+            if wInputs[i]['CHATID'] == yy:
+                with open(wl_db, 'w') as fr:
+                    wInputs.append({'CHATID': admin_ID, 'GRPNAME': grpchatname, 'USER': admin_user, 'PASSWORD': whitelistpass})
+                    # indent=2 is not needed but makes the file human-readable
+                    json.dump(wInputs, fr, indent=2)
+                    print(wInputs)
+
+
+def wl_revoke(datadel):
     for i in range(len(datadel)):
-        if datadel[i]['IDitem'] == xx:
-            if datadel[i]['ReminderName'] == yy:
-                with open(stats, 'w') as frc:
-                    del datadel[i]
-                    json.dump(datadel, frc, indent=2)
-                    print(datadel)
-
-
-
-
-
+        if datadel[i]['GRPNAME'] == xx and datadel[i]['USER'] == yy and datadel[i]['PASSWORD'] == zz:
+            with open(wl_db, 'w') as frc:
+                del datadel[i]
+                json.dump(datadel, frc, indent=2)
+                print(datadel)
