@@ -1017,6 +1017,7 @@ def mastereditcontinue(update: Update, context: CallbackContext)-> int:
     if (usereditcon == "No"):
         Loc.dict_lock_read()
         replylist = []
+        print("Hi")
         for ReminderName, IDitem, DAY, Time, Text, username in sorted(
                 [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'],d['User']) for d in Loc.Inputs],
                 key=lambda t: t[1]):
