@@ -10,6 +10,7 @@ admin_user = ""
 admin_ID = ""
 grpchatname = ""
 whitelistpass = ""
+changed_adminpw = ""
 wl_db = "db_new_whitelist"
 wInputs = []
 
@@ -64,3 +65,12 @@ def wl_revoke(datadel):
                 del datadel[i]
                 json.dump(datadel, frc, indent=2)
                 print(datadel)
+
+
+def wl_edit(editpw):
+    for i in range(len(editpw)):
+        if editpw[i]['GRPNAME'] == xx and editpw[i]['USER'] == yy and editpw[i]['PASSWORD'] == zz:
+            with open(wl_db, 'w') as fe:
+                editpw[i]['PASSWORD'] = changed_adminpw
+                json.dump(editpw, fe, indent=2)
+                print(editpw)
