@@ -105,7 +105,7 @@ def list_command(update, context):
     replylist = []
     for chatid, grpname, username in sorted(
             [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-        if (usernameofuser == username):
+        if (usernameofuser in username):
             dbchatid = chatid
             global userchatidingroup
             userchatidingroup = update.message.message_id
@@ -127,6 +127,7 @@ def list_command(update, context):
     if not replylist:
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
     else: #checking if list is empty
+        print(replylist)
         update.message.reply_text("\U0001F4D1Here are your List of Reminders: \n\n" + "".join(replylist),
                                   reply_to_message_id=userchatidingroup)  # sentence + joining the list
 
@@ -143,7 +144,7 @@ def del_command(update,context):
     usernameofuser = update.message.from_user.username
     for chatid, grpname, username in sorted(
             [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-        if (usernameofuser == username):
+        if (usernameofuser in username):
             dbchatid = chatid
             dbgrpname = grpname
             global userchatidingroup
@@ -189,7 +190,7 @@ def deletefromdb(update: Update, context: CallbackContext)-> int:
     Gid.dict_read()
     for chatid, grpname, username in sorted(
             [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-        if (usernameofuser == username):
+        if usernameofuser in username:
             dbchatid = chatid
             dbgrpname = grpname
 
@@ -235,7 +236,7 @@ def edit_command(update, context):
     for ReminderName, IDitem, DAY, Time, Text, username in sorted(
             [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs],
             key=lambda t: t[1]):
-            if (usernameofuser == username):
+            if (usernameofuser in username):
                 for chatid, grpname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
                     if (IDitem == chatid):
                         dbchatid = chatid
@@ -265,16 +266,17 @@ def edit_command(update, context):
 def editfromuser(update: Update, context: CallbackContext)-> int:
     Gid.dict_read()
     replylist = []
+    print("Hi")
     global userchatidingroup
     userchatidingroup = update.message.message_id
     global editnameuser
     editnameuser = str(update.message.text)
     Loc.dict_lock_read()  # read DB
-    for ReminderName,IDitem, DAY, Time, Text in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs],key=lambda t: t[1]):
+    for ReminderName,IDitem, DAY, Time, Text, usernamedb in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs],key=lambda t: t[1]):
         for chatid, grpname, username in sorted(
                 [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
             
-            if (IDitem == chatid):
+            if usernamedb in username and IDitem == chatid:
                 dbchatid = chatid
                 global dbgrpname
                 dbgrpname = grpname
@@ -322,7 +324,7 @@ def editindb(update: Update, context: CallbackContext)-> str:
     Gid.dict_read()
     for chatid, grpname, username in sorted(
             [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-        if (usernameofuser == username):
+        if (usernameofuser in username):
             dbchatid = chatid
             global dbgrpname
             dbgrpname = grpname
@@ -441,12 +443,12 @@ def editcontinue(update: Update, context: CallbackContext)-> int:
     if (usereditcon == "No"):
         Loc.dict_lock_read()
         replylist = []
-        for ReminderName, IDitem, DAY, Time, Text, username in sorted(
+        for ReminderName, IDitem, DAY, Time, Text, usernamedb in sorted(
                 [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'],d['User']) for d in Loc.Inputs],
                 key=lambda t: t[1]):
             for chatid, grpname, username in sorted(
                     [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-                if (IDitem == chatid):
+                if usernamedb in username and IDitem == chatid:
                     global dbgrpname
                     dbgrpname = grpname
             if(editchoiceuser != "Reminder Name"):
@@ -553,7 +555,7 @@ def namefromuser(update: Update, context: CallbackContext)-> int:
     namelist = []
     for chatid, grpname, username in sorted(
             [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-        if (usernameofuser == username):
+        if (usernameofuser in username):
             if(groupname == grpname):
                 dbchatname = "This Chat"
                 namelist.append(dbchatname)
@@ -583,9 +585,7 @@ def grpfromuser(update: Update, context: CallbackContext)-> int:
     for chatid, grpname, username in sorted(
             [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
         if grpusertext == grpname:
-            dbchatid = str(chatid)
             dbchatname = str(grpname)
-            dbusername = str(username)
             chatidforschedule = chatid
         elif(grpusertext == "This Chat"):
              if(userchatid == chatid):
@@ -678,20 +678,27 @@ def masterlist_command(update, context):
     userchatidingroup = update.message.message_id
     Loc.dict_lock_read()  # read DB
     global userchatid
+    global chatname
     userchatid = update.message.chat.id
+    print("Test1")
     replylist = []
+    Gid.dict_read()
+
     for ReminderName,IDitem, DAY, Time, Text, User in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs],key=lambda t: t[1]):
         dbRemName = str(ReminderName)
-        dbIDitem = str(IDitem)
         dbday = str(DAY)
         dbtime= str(Time)
         dbmsg = str(Text)
         grpname = update.message.chat.title # get group name
-        dbuser = User
-        Gid.dict_read()
+        dbuser = str(User)
+        #Gid.dict_read()
         for chatid, grpname, username in sorted(
                 [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-            if(IDitem == chatid):
+            print(chatid)
+            print(IDitem)
+            if dbuser in username and IDitem == chatid:
+                print(grpname)
+                print(username)
                 chatname = grpname
 
         stringreply = "Group/ID: "  + chatname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday  + "\n" + "Time: " + dbtime + "\n" + "User: " + dbuser + "\n\nMessage: "  + dbmsg + "\n\n\n\n" #crafting string
@@ -702,6 +709,7 @@ def masterlist_command(update, context):
     if not replylist: #checking if list is empty
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
     else:
+        #print(replylist)
         update.message.reply_text("\U0001F4D1Here are your List of Reminders: \n\n" + "".join(replylist),reply_to_message_id=userchatidingroup) #sentence + joining the list
         update.message.reply_text(grpname)
 
@@ -727,7 +735,9 @@ def masterdel_command(update,context):
         Gid.dict_read()
         for chatid, grpname, username in sorted(
                 [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-            if (IDitem == chatid):
+            if dbuser in username and IDitem == chatid:
+                print(username)
+                print(grpname)
                 chatname = grpname
 
         stringreply = "Group/ID: " + chatname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "User: " + dbuser + "\n\nMessage: " + dbmsg + "\n\n\n\n"  # crafting string
@@ -739,9 +749,11 @@ def masterdel_command(update,context):
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
     else:
         reply_keyboard = [[name] for name in namelist] # get each item in namelist and put in custom keyboard
+        #print(replylist)
         update.message.reply_text(
             "\u274C DELETE \u274C\n\n"
-            "Here are your List of Reminders: \n\n" + "".join(replylist) + "\n\nPlease Select the Reminder you would like to delete according to ReminderName", reply_to_message_id=userchatidingroup, reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True),)  # sentence + joining the list + custom keyboard
+            "Here are your List of Reminders: \n\n" + "uwu" + "\n\nPlease Select the Reminder you would like to delete according to ReminderName", reply_to_message_id=userchatidingroup, reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True),)  # sentence + joining the list + custom keyboard
+            #.join(replylist)
 
         return MASTERDELETE
 
@@ -773,9 +785,10 @@ def masterdel_fromdb(update,context):
         dbday = str(DAY)
         dbtime = str(Time)
         dbmsg = str(Text)
+        usernamedb = dbUser
         for chatid, grpname, username in sorted(
                 [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-            if (IDitem == chatid):
+            if usernamedb in username and IDitem == chatid:
                 chatname = grpname
         stringreply = "Group: " + chatname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n\n\n"  # crafting string
         replylist.append(stringreply)  # append into the list
@@ -808,14 +821,15 @@ def masteredit_command(update, context):
     global userchatid
     userchatid = update.message.chat.id
 
-    for ReminderName, IDitem, DAY, Time, Text, username in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs],key=lambda t: t[1]):
+    for ReminderName, IDitem, DAY, Time, Text, dbUser in sorted([(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs],key=lambda t: t[1]):
         #if (IDitem == chatid):  # check userchatid against db id
         dbRemName = str(ReminderName)
         dbday = str(DAY)
         dbtime = str(Time)
         dbmsg = str(Text)
+        usernamedb = dbUser
         for chatid, grpname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-            if(IDitem == chatid):
+            if usernamedb in username and IDitem == chatid:
                 global dbgrpname
                 dbgrpname = grpname
         stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
@@ -843,10 +857,10 @@ def mastereditfromuser(update: Update, context: CallbackContext)-> int:
     global editnameuser
     editnameuser = str(update.message.text)
     Loc.dict_lock_read()  # read DB
-    for ReminderName, IDitem, DAY, Time, Text in sorted(
-            [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs], key=lambda t: t[1]):
+    for ReminderName, IDitem, DAY, Time, Text, dbUser in sorted(
+            [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs], key=lambda t: t[1]):
         for chatid, grpname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs],key=lambda t: t[1]):
-            if (IDitem == chatid):
+            if dbUser in username and IDitem == chatid:
                 dbchatid = chatid
                 global dbgrpname
                 dbgrpname = grpname
@@ -898,7 +912,7 @@ def mastereditindb(update: Update, context: CallbackContext)-> str:
     Gid.dict_read()
     for chatid, grpname, username in sorted(
             [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-        if (usernameofuser == username):
+        if (usernameofuser in username):
             dbchatid = chatid
             global dbgrpname
             dbgrpname = grpname
@@ -943,8 +957,8 @@ def mastereditindb(update: Update, context: CallbackContext)-> str:
         Loc.name_r = editnameuser
         Loc.lock_edit_Day(Loc.Inputs)
         replylist = []
-        for ReminderName, IDitem, DAY, Time, Text in sorted(
-                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs],
+        for ReminderName, IDitem, DAY, Time, Text, dbUser in sorted(
+                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']. d['User']) for d in Loc.Inputs],
                 key=lambda t: t[1]):
             if (ReminderName == editnameuser):
                 dbRemName = str(ReminderName)
@@ -1018,12 +1032,12 @@ def mastereditcontinue(update: Update, context: CallbackContext)-> int:
         Loc.dict_lock_read()
         replylist = []
         print("Hi")
-        for ReminderName, IDitem, DAY, Time, Text, username in sorted(
+        for ReminderName, IDitem, DAY, Time, Text, dbUser in sorted(
                 [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'],d['User']) for d in Loc.Inputs],
                 key=lambda t: t[1]):
             for chatid, grpname, username in sorted(
                     [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-                if (IDitem == chatid):
+                if dbUser in username and IDitem == chatid:
                     global dbgrpname
                     dbgrpname = grpname
             if(editchoiceuser != "Reminder Name"):
