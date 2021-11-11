@@ -56,9 +56,10 @@ def register_command(update, context):
                     Gid.grpchatname = groupname
                 for chatid, grpname, username in sorted(
                         [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-                    if (groupchatid == chatid and groupusername == username):
-                        duplicatevalue = True
-                        update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
+                    if (groupchatid == chatid):
+                        if(groupusername in username):
+                            duplicatevalue = True
+                            update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
                 if (duplicatevalue == False):
                     Gid.dict_update(Gid.Inputs)
                     update.message.reply_text("You Are an Authorised User, Your details are now Registered!")
