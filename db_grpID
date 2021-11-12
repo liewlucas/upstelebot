@@ -1,72 +1,57 @@
 [
   {
-    "CHATID": -473469885,
-    "GRPNAME": "Parakeet Testing",
-    "USER": "liewlucass"
-  },
-  {
-    "CHATID": -473469885,
-    "GRPNAME": "Parakeet Testing",
-    "USER": "xnegate"
-  },
-  {
-    "CHATID": -505241894,
-    "GRPNAME": "Parakeet Testing 2",
-    "USER": "liewlucass"
-  },
-  {
-    "CHATID": -558414218,
-    "GRPNAME": "Jadyl Testing",
-    "USER": "liewlucass"
-  },
-  {
-    "CHATID": -558414218,
-    "GRPNAME": "Jadyl Testing",
-    "USER": "xnegate"
-  },
-  {
-    "CHATID": -595608532,
-    "GRPNAME": "jadyltesting2",
-    "USER": "xnegate"
-  },
-  {
     "CHATID": 25057684,
     "GRPNAME": "PM Chat",
-    "USER": "liewlucass"
-  },
-  {
-    "CHATID": -595608532,
-    "GRPNAME": "jadyltesting2",
-    "USER": "liewlucass"
-  },
-  {
-    "CHATID": -1001252293224,
-    "GRPNAME": "New Alpha One",
-    "USER": "xnegate"
-  },
-  {
-    "CHATID": -1001252293224,
-    "GRPNAME": "New Alpha One",
-    "USER": "liewlucass"
+    "USER": [
+      "liewlucass"
+    ]
   },
   {
     "CHATID": 579522431,
     "GRPNAME": "PM Chat",
-    "USER": "xnegate"
+    "USER": [
+      "xnegate"
+    ]
   },
   {
-    "CHATID": 638839312,
-    "GRPNAME": "PM Chat",
-    "USER": null
+    "CHATID": -1001252293224,
+    "GRPNAME": "New Alpha One",
+    "USER": [
+      "xnegate",
+      "liewlucass"
+    ]
   },
   {
     "CHATID": -473469885,
     "GRPNAME": "Parakeet Testing",
-    "USER": null
+    "USER": [
+      "liewlucass",
+      "LeeYanEnEn",
+      "xnegate",
+      "dextuhhhh"
+    ]
   },
   {
-    "CHATID": -473469885,
-    "GRPNAME": "Parakeet Testing",
-    "USER": "LeeYanEnEn"
+    "CHATID": -763402858,
+    "GRPNAME": "Hello",
+    "USER": [
+      "LeeYanEnEn"
+    ]
+  },
+  {
+    "CHATID": -505241894,
+    "GRPNAME": "Parakeet Testing 2",
+    "USER": [
+      "xnegate",
+      "liewlucass"
+    ]
+  },
+  {
+    "CHATID": -551111942,
+    "GRPNAME": "JADYL",
+    "USER": [
+      "xnegate",
+      "liewlucass"
+    ]
   }
 ]
