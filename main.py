@@ -1,6 +1,6 @@
 import time
 
-from telegram import ReplyKeyboardMarkup, Update, ReplyKeyboardRemove, ForceReply, bot, update
+from telegram import ReplyKeyboardMarkup, Update, ReplyKeyboardRemove, ForceReply, bot, update, constants
 import constants as keys
 from telegram.ext import *
 import responses as R
@@ -742,11 +742,7 @@ def masterlist_command(update, context):
         # Gid.dict_read()
         for chatid, grpname, username in sorted(
                 [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-            print(chatid)
-            print(IDitem)
             if dbuser in username and IDitem == chatid:
-                print(grpname)
-                print(username)
                 chatname = grpname
 
         stringreply = "Group/ID: " + chatname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "User: " + dbuser + "\n\nMessage: " + dbmsg + "\n\n\n\n"  # crafting string
@@ -756,10 +752,26 @@ def masterlist_command(update, context):
     if not replylist:  # checking if list is empty
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
     else:
-        # print(replylist)
-        update.message.reply_text("\U0001F4D1Here are your List of Reminders: \n\n" + "".join(replylist),
-                                  reply_to_message_id=userchatidingroup)  # sentence + joining the list
-        update.message.reply_text(grpname)
+        replydata = "\U0001F4D1Here are your List of Reminders: \n\n" + "".join(replylist)
+        msg = replydata
+        sub_msgs = ""
+        if len(replydata) > constants.MAX_MESSAGE_LENGTH:    # Checking whether Message excedes Telegram's Bytes Limit(4096)
+            while len(msg):
+                split_point = msg[:constants.MAX_MESSAGE_LENGTH].rfind('\n')     # Finding point within Bytes Limit(4096) to split message
+                if split_point != -1:
+                    sub_msgs = (msg[split_point:])     # Subsequent Message Section(s)
+                    msg = msg[:split_point]            # Initial Message Section
+                    break                              # Ending the while Loop
+
+                else:
+                    print("Message Error!")
+            update.message.reply_text(msg, reply_to_message_id=userchatidingroup)  #Sending Initial Section (Before Telegram Message Limit)
+            # Do "while len(sub_msgs) > constants.MAX_MESSAGE_LENGTH:" check here for repeating loops of msg
+            update.message.reply_text(sub_msgs, reply_to_message_id=userchatidingroup)  #Sending Subsequent Message Section(s)
+
+        else:
+            update.message.reply_text(replydata, reply_to_message_id=userchatidingroup)  # sentence + joining the list
+
 
 
 def masterdel_command(update, context):
