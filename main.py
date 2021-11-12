@@ -499,7 +499,7 @@ def dayfromuser(update: Update, context: CallbackContext) -> int:
     dayusertext = str(update.message.text)
     # update.message.reply_text(dayusertext)
     dayresponse = R.day_response(dayusertext)  # process the text under responses.py
-    update.message.reply_text("At  what time do you want to set the reminder? (Format: HH:MM, e.g: 17:30)", reply_to_message_id=userchatidingroup, reply_markup=ForceReply(selective=True))  # first reply
+    update.message.reply_text("At what time do you want to set the reminder? (Format: HH:MM, e.g: 17:30)", reply_to_message_id=userchatidingroup, reply_markup=ForceReply(selective=True))  # first reply
 
     return TIME
 
@@ -671,7 +671,94 @@ def error(update, context):
     print(f"update {update} caused error {context.error}")
 
 
+
 '-------------------- MASTER COMMANDS ----------------------------'
+
+
+def Masterregister(update, context):
+    global userchatidingroup
+    userchatidingroup = update.message.message_id
+    reply_keyboard = [['New Alpha One', 'HOTEL VISTA Boys'], ['Parakeet Testing', 'Jadyl Testing']]
+    update.message.reply_text("\U0001F570 Register For Admin \U0001F570 \n\n" "Which group would you like to assign the admin to?",
+        reply_to_message_id=userchatidingroup,
+        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True), )
+    global userchatid  # create a global variable
+    userchatid = update.message.chat.id  # assign global variable to get chatID
+    Gid.dict_read()
+    for chatid, grpname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in wlu.Inputs], key=lambda t: t[1]):
+        if (grpname == grpnameinput) and (username == usernameinput):
+
+
+    return grpnameinput
+
+
+def grpnamefromuser(update: Update, context: CallbackContext) -> int:
+    global userchatidingroup
+    userchatidingroup = update.message.message_id
+    global grpnametext
+    grpnametext = str(update.message.text)
+    # update.message.reply_text(grpnametext)
+    Gid.dict_read()
+    for chatid, grpname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in wlu.Inputs], key=lambda t: t[1]):
+        if (grpname == grpnametext):
+            global chatidinput
+            chatidinput = chatid
+
+    update.message.reply_text("What is the admin's Telegram Username?", reply_to_message_id=userchatidingroup, reply_markup=ForceReply(selective=True))  # first reply
+
+    return usernameinput
+
+
+def usernamefromuser (update:Update, context: CallbackContext) -> int:
+    global userchatidingroup
+    userchatidingroup = update.message.message_id
+    #global usernametext
+    #usernametext = str(update.message.text)
+    #update.message.reply_text(timeusertext)
+    #global usernameresponse
+    #timeresponse = R.time_response(usernameresponse) # process time given under responses.py
+    update.message.reply_text("What would you like the Admin Password to be?",reply_to_message_id=userchatidingroup, reply_markup=ForceReply(selective=True),)
+
+    return passinput
+
+
+
+def masteradmin_command(update, context):
+    global userchatidingroup
+    userchatidingroup = update.message.message_id
+    global usernamecheck
+    usernamecheck = str(update.message.from_user.username)
+    if (usernamecheck != wlu.Masterexecutive):
+        print("Invalid User!")
+        update.message.reply_text("Apologies, You are not an Authorised Admin!")
+
+    else:
+        #wlu.Trigger = True
+        global userchatid
+        userchatid = update.message.chat.id
+        replylist = []
+
+        wlu.wl_read()  # read DB
+        for chatid, grpname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in wlu.Inputs], key=lambda t: t[1]):
+            if (grpname == grpnameinput) and (username == usernameinput):
+                print("Duplicate Admin Entry!")
+                update.message.reply_text("An Admin under this Username has Already been registered for this group!")
+
+            else:
+                grpnameinputs = wlu.adgroup
+                usernameinputs = wlu.adname
+                chatidinputs = wlu.adchatid
+                passinputs = wlu.adpass
+                wlu.wl_register()
+
+                wlu.wl_read()
+                for chatid, grpname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in wlu.Inputs], key=lambda t: t[1]):
+                    stringreply = "Group: " + grpname + "\nUsername: " + username + "\nChatID: " + chatid + "\n\n\n\n"  # crafting string
+                    replylist.append(stringreply)  # append into the list
+
+                update.message.reply_text("The Admin, " + usernameinputs + "has been registered for the groupchat, " + grpnameinputs + "!")
+                update.message.reply_text("\U0001F4D1Here are the List of Admins: \n\n" + "".join(replylist), reply_to_message_id=userchatidingroup)  # sentence + joining the list update.message.reply_text(grpname)
+
 
 def masterlist_command(update, context):
     global userchatidingroup
@@ -1114,6 +1201,18 @@ def main():
                     MASTEREDITCHOICE: [MessageHandler(Filters.all, masteruseredits)],
                     MASTEREDITINDB: [MessageHandler(Filters.all, mastereditindb)],
                     MASTEREDITCON: [MessageHandler(Filters.all, mastereditcontinue)], },
+            fallbacks=[CommandHandler('cancel', cancel)],
+        ))
+
+        Masteradminconvhandler = (ConversationHandler(
+            entry_points=[CommandHandler('Masteradmin', schedule_command)],
+            states={
+                NAME: [MessageHandler(Filters.all, namefromuser)],
+                grpnameinput: [MessageHandler(Filters.regex('^(New Alpha One|HOTEL VISTA Boys|Parakeet Testing|Jadyl Testing)$'), dayfromuser)],
+                TIME: [MessageHandler(Filters.regex('^([01]\d|2[0-3]):([0-5]\d)$'), timefromuser)],
+                MESSAGE: [MessageHandler(Filters.all, messagefromuser)],
+                GRP: [MessageHandler(Filters.all, grpfromuser)],
+            },
             fallbacks=[CommandHandler('cancel', cancel)],
         ))
 

@@ -2,15 +2,16 @@ import json
 import os
 
 #variables filled in from main
-xx = ""
-yy = ""
-zz = ""
+adname = "xnegate"
+adgrp = "New Alpha One"
+adchatid = ""
+adpass = "xnegate"
 
-admin_user = ""
-admin_ID = ""
-grpchatname = ""
-whitelistpass = ""
-changed_adminpw = ""
+#true/false return value
+Trigger = True     #Checking for Masterexecutive
+
+#Other Variables
+changed_adminpw = "ChangedPassword"
 wl_db = "db_new_whitelist"
 wInputs = []
 
@@ -46,31 +47,58 @@ def wl_read():
     except:
         return []
 
+
 def wl_register():
-    wl_read()
-    for i in range(len(wInputs)):
-        if wInputs[i]['USER'] == xx:
-            if wInputs[i]['CHATID'] == yy:
-                with open(wl_db, 'w') as fr:
-                    wInputs.append({'CHATID': admin_ID, 'GRPNAME': grpchatname, 'USER': admin_user, 'PASSWORD': whitelistpass})
-                    # indent=2 is not needed but makes the file human-readable
-                    json.dump(wInputs, fr, indent=2)
-                    print(wInputs)
+    if Trigger is True:
+        with open(wl_db, 'w') as fr:
+            for i in range(len(wInputs)):
+                wInputs.append({'CHATID': adchatid, 'GRPNAME': adgrp, 'USER': adname, 'PASSWORD': adpass})
+                # indent=2 is not needed but makes the file human-readable
+                json.dump(wInputs, fr, indent=2)
+                print(wInputs)
 
 
-def wl_revoke(datadel):
-    for i in range(len(datadel)):
-        if datadel[i]['GRPNAME'] == xx and datadel[i]['USER'] == yy and datadel[i]['PASSWORD'] == zz:
-            with open(wl_db, 'w') as frc:
-                del datadel[i]
-                json.dump(datadel, frc, indent=2)
-                print(datadel)
+def wl_revoke(datadel):    #For individual Users with individual passwords (Undecided)
+    if Trigger is True:
+        for i in range(len(datadel)):
+            if datadel[i]['GRPNAME'] == adgrp and datadel[i]['USER'] == adname and datadel[i]['PASSWORD'] == adpass:
+                with open(wl_db, 'w') as frc:
+                    del datadel[i]
+                    json.dump(datadel, frc, indent=2)
+                    print(datadel)
+
+
+def wl_reset(datar):     #For Grouped Users with Specific Passwords for Each Group (Undecided)
+    if Trigger is True:
+        for i in range(len(datar)):
+            if datar[i]['GRPNAME'] == adgrp:
+                with open(wl_db, 'w') as frc:
+                    datar[i]['USER'] = []       #Reset all Admin Users assigned to the selected group
+                    json.dump(datar, frc, indent=2)
+                    print(datar)
+
+
+def wl_resetpw(rpw):     #For Grouped Users with Specific Passwords for Each Group
+    if Trigger is True:
+        for i in range(len(rpw)):
+            if rpw[i]['GRPNAME'] == adgrp and rpw[i]['PASSWORD'] == adpass:
+                with open(wl_db, 'w') as fe:
+                    rpw[i]['PASSWORD'] = changed_adminpw       #Reset Password for Group (For Grouped Users)
+                    json.dump(rpw, fe, indent=2)
+                    print(rpw)
 
 
 def wl_edit(editpw):
-    for i in range(len(editpw)):
-        if editpw[i]['GRPNAME'] == xx and editpw[i]['USER'] == yy and editpw[i]['PASSWORD'] == zz:
-            with open(wl_db, 'w') as fe:
-                editpw[i]['PASSWORD'] = changed_adminpw
-                json.dump(editpw, fe, indent=2)
-                print(editpw)
+    if Trigger is True:
+        for i in range(len(editpw)):
+            if editpw[i]['GRPNAME'] == adgrp and editpw[i]['USER'] == adname and editpw[i]['PASSWORD'] == adpass:
+                with open(wl_db, 'w') as fe:
+                    editpw[i]['PASSWORD'] = changed_adminpw
+                    json.dump(editpw, fe, indent=2)
+                    print(editpw)
+
+wl_read()
+#wl_revoke(wInputs)
+wl_edit(wInputs)
+#wl_reset(wInputs)
+#wl_resetpw(wInputs)
