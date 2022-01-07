@@ -721,6 +721,7 @@ def grpfromuser(update: Update, context: CallbackContext) -> int:
     thisuserchatid = update.message.chat.id
     grpusertext = str(update.message.text)
     usernameofuser = update.message.from_user.username
+    replylist = []
 
     Gid.dict_read()
     for chatid, grpname, username in sorted(
@@ -733,9 +734,36 @@ def grpfromuser(update: Update, context: CallbackContext) -> int:
                 dbchatname = groupname
                 chatidforschedule = userchatid
     scheduletest(update, context)
-    update.message.reply_text(
-        "\u2705Your Reminder has been scheduled! Here are the details: \n\n" + "Group: " + dbchatname + "\n\nReminder Name: " + nameusertext + "\n\n" + timeresponse + "\n\nYour Reminder Message: " + messagefromuser,
-        reply_to_message_id=userchatidingroup)
+
+    stringreply = "\u2705Your Reminder has been scheduled! Here are the details: \n\n" + "Group: " + dbchatname + "\n\nReminder Name: " + nameusertext + "\n\n" + timeresponse + "\n\nYour Reminder Message: " + messagefromuser  # crafting string
+    replylist.append(stringreply)  # append into the list
+
+    if not replylist:  # checking if list is empty
+        update.message.reply_text("Sorry, there appears to be an error in scheduling the reminder!")
+    else:
+        replydata = "\U0001F4D1Here are your List of Reminders: \n\n" + "".join(replylist)
+        msg = replydata
+        sub_msgs = ""
+        if len(replydata) > constants.MAX_MESSAGE_LENGTH:  # Checking whether Message excedes Telegram's Bytes Limit(4096)
+            while len(msg):
+                split_point = msg[:constants.MAX_MESSAGE_LENGTH].rfind(
+                    '\n')  # Finding point within Bytes Limit(4096) to split message
+                if split_point != -1:
+                    sub_msgs = (msg[split_point:])  # Subsequent Message Section(s)
+                    msg = msg[:split_point]  # Initial Message Section
+                    break  # Ending the while Loop
+
+                else:
+                    print("Message Error!")
+            update.message.reply_text(msg,
+                                      reply_to_message_id=userchatidingroup)  # Sending Initial Section (Before Telegram Message Limit)
+            # Do "while len(sub_msgs) > constants.MAX_MESSAGE_LENGTH:" check here for repeating loops of msg
+            update.message.reply_text(sub_msgs,
+                                      reply_to_message_id=userchatidingroup)  # Sending Subsequent Message Section(s)
+
+        else:
+            update.message.reply_text(replydata, reply_to_message_id=userchatidingroup)  # sentence + joining the list
+
     successtext = 'Feel free to type /schedule again if you want to set another reminder.\nAlternatively, you could type /list to view all your set reminders'
     context.bot.send_message(chat_id=thisuserchatid, text=successtext)
 
@@ -1351,7 +1379,7 @@ def main():
     dp = updater.dispatcher
 
     j = updater.job_queue
-    job_minute = j.run_repeating(schedulecheck, interval=30, first=0)
+    job_minute = j.run_repeating(schedulecheck, interval=55, first=0)
     print("checking on DB started")
 
     scheduleconv_handler = (ConversationHandler(
