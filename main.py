@@ -671,18 +671,23 @@ def messagefromuser(update: Update, context: CallbackContext) -> int:
     userchatid = update.message.chat.id
     global messagefromuser
     messagefromuser = str(update.message.text)
-    global usernamefromuser
-    usernamefromuser = str(update.message.from_user.username)
-    # process time given under responses.py
-    update.message.reply_text("What would you like to name this Reminder?", reply_markup=ForceReply(selective=True),
-                              reply_to_message_id=userchatidingroup)
-    return NAME
-    # update.message.reply_text(timeresponse + "\n\nYour Reminder Message: " + messagefromuser)
-    # scheduletest(update, context)
-    # successtext = 'Feel free to type /schedule again if you want to set another reminder.\nAlternatively, you could type /list to view all your set reminders'
-    # context.bot.send_message(chat_id=userchatid, text=successtext)
+    if len(messagefromuser) > constants.MAX_MESSAGE_LENGTH-1000:
+        update.message.reply_text("Error! Scheduled Message is too long. Please reduce the length of the reminder message and send again.", reply_to_message_id=userchatidingroup)
+        cancel(update, context)
 
-    # return ConversationHandler.END
+    else:
+        global usernamefromuser
+        usernamefromuser = str(update.message.from_user.username)
+        # process time given under responses.py
+        update.message.reply_text("What would you like to name this Reminder?", reply_markup=ForceReply(selective=True),
+                                  reply_to_message_id=userchatidingroup)
+        return NAME
+        # update.message.reply_text(timeresponse + "\n\nYour Reminder Message: " + messagefromuser)
+        # scheduletest(update, context)
+        # successtext = 'Feel free to type /schedule again if you want to set another reminder.\nAlternatively, you could type /list to view all your set reminders'
+        # context.bot.send_message(chat_id=userchatid, text=successtext)
+
+        # return ConversationHandler.END
 
 
 def namefromuser(update: Update, context: CallbackContext) -> int:
@@ -1353,7 +1358,7 @@ def get_chat_id(update, context):
 
 
 def main():
-    updater = Updater(keys.API_J, use_context=True)
+    updater = Updater(keys.API_MAINKEY, use_context=True)
     dp = updater.dispatcher
 
     j = updater.job_queue
