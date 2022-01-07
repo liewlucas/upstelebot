@@ -1,6 +1,6 @@
 import time
-
-from telegram import ReplyKeyboardMarkup, Update, ReplyKeyboardRemove, ForceReply, bot, update, constants
+from telegram import ReplyKeyboardMarkup, Update, ReplyKeyboardRemove, ForceReply, bot, update, constants, \
+    InlineKeyboardButton, InlineKeyboardMarkup
 import constants as keys
 from telegram.ext import *
 import responses as R
@@ -10,6 +10,7 @@ import Repcheck as Rep
 import GrpIDUpdate as Gid
 import Dic_Lock as Loc  # Change to Com fdr getr Security ltrr
 import WhitelistUpdate as wlu
+
 
 now = datetime.now()
 current_time = now.strftime("%H:%M:%S")
@@ -28,7 +29,12 @@ MASTEREDITCON, MASTEREDITINDB, MASTEREDITCHOICE, MASTEREDIT, MASTERDELETE, EDITC
 
 
 def start_command(update, context):
-    update.message.reply_text("Welcome to the Parakeet! \U0001F917")
+    keyboard = []
+    text = "ILkeyboard"
+    callback = "nothing"
+    reply_button = InlineKeyboardMarkup(keyboard)
+    keyboard.append([InlineKeyboardButton(text, callback_data=callback)])
+    update.message.reply_text("Welcome to the Parakeet! \U0001F917", reply_markup= reply_button)
     update.message.reply_text(
         "Parakeet is a Bot to help you with your scheduling needs! A simple registration is all it takes to do so. \n\nTo get started, simply type /help to view all operational commands \U0001F4C4")
 
@@ -463,7 +469,7 @@ def editindb(update: Update, context: CallbackContext) -> str:
                     dbmsg = str(Text)
                     stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
                     replylist.append(stringreply)  # append into the list
-                    reply_keyboard = [["Yes"], ["No"]]
+                    reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
                     update.message.reply_text(
                         "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
                         , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True,
@@ -489,7 +495,7 @@ def editindb(update: Update, context: CallbackContext) -> str:
                 dbmsg = str(Text)
                 stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
                 replylist.append(stringreply)  # append into the list
-                reply_keyboard = [["Yes"], ["No"]]
+                reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
                 update.message.reply_text(
                     "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
                     , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
@@ -513,7 +519,7 @@ def editindb(update: Update, context: CallbackContext) -> str:
                 dbmsg = str(Text)
                 stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
                 replylist.append(stringreply)  # append into the list
-                reply_keyboard = [["Yes"], ["No"]]
+                reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
                 update.message.reply_text(
                     "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
                     , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
@@ -538,7 +544,7 @@ def editindb(update: Update, context: CallbackContext) -> str:
                 dbmsg = str(Text)
                 stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
                 replylist.append(stringreply)  # append into the list
-                reply_keyboard = [["Yes"], ["No"]]
+                reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
                 update.message.reply_text(
                     "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
                     , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
@@ -549,9 +555,9 @@ def editindb(update: Update, context: CallbackContext) -> str:
 def editcontinue(update: Update, context: CallbackContext) -> int:
     Gid.dict_read()
     usereditcon = str(update.message.text)
-    if (usereditcon == "Yes"):
+    if (usereditcon == "Continue Editing"):
         return edit_command(update, context)
-    if (usereditcon == "No"):
+    if (usereditcon == "Finish Editing"):
         Loc.dict_lock_read()
         replylist = []
         for ReminderName, IDitem, DAY, Time, Text, usernamedb in sorted(
@@ -1347,11 +1353,11 @@ def get_chat_id(update, context):
 
 
 def main():
-    updater = Updater(keys.API_MAINKEY, use_context=True)
+    updater = Updater(keys.API_J, use_context=True)
     dp = updater.dispatcher
 
     j = updater.job_queue
-    job_minute = j.run_repeating(schedulecheck, interval=30, first=0)
+    job_minute = j.run_repeating(schedulecheck, interval=60, first=0)
     print("checking on DB started")
 
     scheduleconv_handler = (ConversationHandler(
