@@ -870,23 +870,53 @@ def masterlist_command(update, context):
     else:
         replydata = "\U0001F4D1Here are your List of Reminders: \n\n" + "".join(replylist)
         msg = replydata
-        sub_msgs = ""
-        if len(replydata) > constants.MAX_MESSAGE_LENGTH:  # Checking whether Message excedes Telegram's Bytes Limit(4096)
+        # sub_msgs = ""
+        # sub_msgs_s = ""
+        # sub_msgs_con = ""
+        if len(replydata) > constants.MAX_MESSAGE_LENGTH:  # Checking whether Message exceeds Telegram's Bytes Limit(4096)
             while len(msg):
                 split_point = msg[:constants.MAX_MESSAGE_LENGTH].rfind(
                     '\n')  # Finding point within Bytes Limit(4096) to split message
                 if split_point != -1:
                     sub_msgs = (msg[split_point:])  # Subsequent Message Section(s)
                     msg = msg[:split_point]  # Initial Message Section
-                    break  # Ending the while Loop
 
+                    # Sending Initial Section (Before Telegram Message Limit)
+                    update.message.reply_text(msg,
+                                              reply_to_message_id=userchatidingroup)
+
+                    # Checking if Subsequent Section(s) are longer than Telegram Message Limit
+                    while len(sub_msgs) > constants.MAX_MESSAGE_LENGTH:
+                        split_point = sub_msgs[:constants.MAX_MESSAGE_LENGTH].rfind(
+                            '\n')  # Finding point within Bytes Limit(4096) to split message
+                        if split_point != -1:
+                            sub_msgs_con = (sub_msgs[split_point:])  # Subsequent Message Section(s)
+                            sub_msgs_s = sub_msgs[:split_point]
+
+                            # Sending Second Message Section
+                            update.message.reply_text(sub_msgs_s,
+                                                      reply_to_message_id=userchatidingroup)
+
+                            if len(sub_msgs_con) > constants.MAX_MESSAGE_LENGTH:
+                                sub_msgs = sub_msgs_con
+
+                            else:
+                                # Sending Subsequent Message Section(s)
+                                print("HIYO")
+                                update.message.reply_text(sub_msgs_con,
+                                                          reply_to_message_id=userchatidingroup)  # Sending Subsequent Message Section(s)
+                                break  # Ending the while Loop
+                        else:
+                            print("Message Error!")
+                    break  # Ending the while Loop
                 else:
                     print("Message Error!")
-            update.message.reply_text(msg,
-                                      reply_to_message_id=userchatidingroup)  # Sending Initial Section (Before Telegram Message Limit)
+
+            # update.message.reply_text(msg,
+            # reply_to_message_id=userchatidingroup)  # Sending Initial Section (Before Telegram Message Limit)
             # Do "while len(sub_msgs) > constants.MAX_MESSAGE_LENGTH:" check here for repeating loops of msg
-            update.message.reply_text(sub_msgs,
-                                      reply_to_message_id=userchatidingroup)  # Sending Subsequent Message Section(s)
+            # update.message.reply_text(sub_msgs,
+            # reply_to_message_id=userchatidingroup)  # Sending Subsequent Message Section(s)
 
         else:
             update.message.reply_text(replydata, reply_to_message_id=userchatidingroup)  # sentence + joining the list
@@ -1362,7 +1392,7 @@ def main():
     dp = updater.dispatcher
 
     j = updater.job_queue
-    job_minute = j.run_repeating(schedulecheck, interval=60, first=0)
+    job_minute = j.run_repeating(schedulecheck, interval=55, first=0)
     print("checking on DB started")
 
     scheduleconv_handler = (ConversationHandler(
