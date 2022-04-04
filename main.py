@@ -562,7 +562,7 @@ def editcontinue(update: Update, context: CallbackContext) -> int:
         replylist = []
         for ReminderName, IDitem, DAY, Time, Text, usernamedb in sorted(
                 [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs],
-                key=lambda t: t[1]):
+                key=lambda t: t[1]):  
             for chatid, grpname, username in sorted(
                     [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
                 if usernamedb in username and IDitem == chatid:
