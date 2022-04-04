@@ -1270,52 +1270,65 @@ def mastereditindb(update: Update, context: CallbackContext) -> str:
 
     if (editchoiceuser == "Reminder Name"):
         usernameofuser = update.message.from_user.username
-        Loc.dict_lock_read()
-        Loc.usercid_r = reminderchatid
-        Loc.name_r = editnameuser
-        Loc.useredit_r = usersconfirmationedit
-        Loc.lock_edit_Name(Loc.Inputs)
-        replylist = []
+        if len(usersconfirmationedit) > constants.MAX_MESSAGE_LENGTH - 2500:
+            update.message.reply_text(
+                "Error! Scheduled Reminder Name is too long. Please reduce the length of the reminder name and send again.",
+                reply_to_message_id=userchatidingroup)
+            return ConversationHandler.END
 
-        for ReminderName, IDitem, DAY, Time, Text, username in sorted(
-                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d["User"]) for d in Loc.Inputs],
-                key=lambda t: t[1]):
-            if (ReminderName == usersconfirmationedit):
-                dbRemName = str(ReminderName)
-                dbday = str(DAY)
-                dbtime = str(Time)
-                dbmsg = str(Text)
-                stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
-                replylist.append(stringreply)  # append into the list
-                reply_keyboard = [["Yes"], ["No"]]
-                update.message.reply_text(
-                    "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
-                    , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
+        else:
+            Loc.dict_lock_read()
+            Loc.usercid_r = reminderchatid
+            Loc.name_r = editnameuser
+            Loc.useredit_r = usersconfirmationedit
+            Loc.lock_edit_Name(Loc.Inputs)
+            replylist = []
+
+            for ReminderName, IDitem, DAY, Time, Text, username in sorted(
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d["User"]) for d in Loc.Inputs],
+                    key=lambda t: t[1]):
+                if (ReminderName == usersconfirmationedit):
+                    dbRemName = str(ReminderName)
+                    dbday = str(DAY)
+                    dbtime = str(Time)
+                    dbmsg = str(Text)
+                    stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                    replylist.append(stringreply)  # append into the list
+                    reply_keyboard = [["Yes"], ["No"]]
+                    update.message.reply_text(
+                        "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
+                        , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
 
     if (editchoiceuser == "Message"):
-
         usernameofuser = update.message.from_user.username
-        Loc.dict_lock_read()
-        Loc.text_r = usersconfirmationedit
-        Loc.usercid_r = reminderchatid
-        Loc.name_r = editnameuser
+        if len(usersconfirmationedit) > constants.MAX_MESSAGE_LENGTH - 500:
+            update.message.reply_text(
+                "Error! Scheduled Message is too long. Please reduce the length of the reminder message and send again.",
+                reply_to_message_id=userchatidingroup)
+            return ConversationHandler.END
 
-        Loc.lock_edit_Text(Loc.Inputs)
-        replylist = []
-        for ReminderName, IDitem, DAY, Time, Text in sorted(
-                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs],
-                key=lambda t: t[1]):
-            if (ReminderName == editnameuser):
-                dbRemName = str(ReminderName)
-                dbday = str(DAY)
-                dbtime = str(Time)
-                dbmsg = str(Text)
-                stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
-                replylist.append(stringreply)  # append into the list
-                reply_keyboard = [["Yes"], ["No"]]
-                update.message.reply_text(
-                    "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
-                    , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
+        else:
+            Loc.dict_lock_read()
+            Loc.text_r = usersconfirmationedit
+            Loc.usercid_r = reminderchatid
+            Loc.name_r = editnameuser
+
+            Loc.lock_edit_Text(Loc.Inputs)
+            replylist = []
+            for ReminderName, IDitem, DAY, Time, Text in sorted(
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs],
+                    key=lambda t: t[1]):
+                if (ReminderName == editnameuser):
+                    dbRemName = str(ReminderName)
+                    dbday = str(DAY)
+                    dbtime = str(Time)
+                    dbmsg = str(Text)
+                    stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                    replylist.append(stringreply)  # append into the list
+                    reply_keyboard = [["Yes"], ["No"]]
+                    update.message.reply_text(
+                        "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
+                        , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
 
     return MASTEREDITCON
 
