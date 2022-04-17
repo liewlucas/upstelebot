@@ -45,16 +45,22 @@ def dict_read():
 def dict_update(newdata):
     with open(dict_db, 'w') as fr:
         userlist.append(grpusername)
-        if not Inputs:
-            Inputs.append({'CHATID': grpchatid, 'GRPNAME': grpchatname, 'USER': userlist})
+        if not newdata:
+            newdata.append({'CHATID': grpchatid, 'GRPNAME': grpchatname, 'USER': userlist})
         else:
-            for chatid, groupname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in Inputs]):
-                if(chatid == grpchatid and grpusername not in username):
-                    username.append(grpusername)
-                    Repcheck = True
+            for chatid, groupname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in newdata]):
+                if(chatid == grpchatid and grpusername in username):
+                    print("Already Registered")
                     break
+
                 else:
-                    Repcheck = False
+                    if (chatid == grpchatid and grpusername not in username):
+                        username.append(grpusername)
+                        Repcheck = True
+                        break
+                    else:
+                        Repcheck = False
+
 
             if(Repcheck == False):
                 Inputs.append({'CHATID': grpchatid, 'GRPNAME': grpchatname, 'USER': userlist})

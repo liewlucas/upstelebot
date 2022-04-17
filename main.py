@@ -42,41 +42,47 @@ def start_command(update, context):
 def register_command(update, context):
     global duplicatevalue
     duplicatevalue = False
+    global whitelistverification
+    whitelistverification = False
     groupname = str(update.message.chat.title)
     groupchatid = update.message.chat.id
-    groupchatid2 = str(update.message.chat.id)
-    groupusername = update.message.from_user.username
+    #groupchatid2 = str(update.message.chat.id)
+    groupusername = str(update.message.from_user.username)
     Gid.dict_read()
     wlu.wl_read()  # reads whitelist update db
     # update.message.reply_text(groupchatid)
-    for chatid, grpname, username in sorted(
-            [(d['CHATID'], d['GRPNAME'], d['USER']) for d in wlu.Inputs], key=lambda t: t[1]):
-        if (groupchatid in chatid):
+    for chatid, grpname, username, password in sorted(
+            [(d['CHATID'], d['GRPNAME'], d['USER'], d['PASSWORD']) for d in wlu.Inputs], key=lambda t: t[1]):
+        if (groupchatid in chatid) and groupusername == username:   #checking for admin user and if group chat is whitelisted ***** Check "GROUPUSERNAME" format in future!
+
             update.message.reply_text("This is a Whitelisted Group, Checking Authorisation.....")
-            if (groupusername in username):
-                Gid.grpchatid = groupchatid
-                Gid.grpusername = groupusername
-                if (groupname == "None"):
-                    Gid.grpchatname = "PM Chat"
-                else:
-                    Gid.grpchatname = groupname
-                for chatid, grpname, username in sorted(
-                        [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-                    if (groupchatid == chatid):
-                        if (groupusername in username):
-                            duplicatevalue = True
-                            update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
-                if (duplicatevalue == False):
-                    Gid.dict_update(Gid.Inputs)
-                    update.message.reply_text("You Are an Authorised User, Your details are now Registered!")
-                    userpmid = update.message.from_user.id
-                    context.bot.send_message(chat_id=userpmid,
-                                             text="You are now a Registered Member in  Whitelisted Group: " + groupname + ", Feel free to set Reminders!")
-            elif (groupusername != username):
-                update.message.reply_text("Apologies, You are not an Authorised Member")
+            update.message.reply_text("Please enter your administrator PIN")
+            update.message.reply_text("Pin Accepted")
+            whitelistverification = True
+            Gid.grpchatid = groupchatid
+            Gid.grpusername = groupusername
+            if (groupname == "None"):
+                Gid.grpchatname = "PM Chat"
+            else:
+                Gid.grpchatname = groupname
+            for chatid, grpname, username in sorted(
+                    [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+                if (groupchatid == chatid) and (groupusername in username):
+                    duplicatevalue = True
+                    update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
+            if (duplicatevalue == False):
+                Gid.dict_update(Gid.Inputs)
+                update.message.reply_text("You Are an Authorised User, Your details are now Registered!")
+                userpmid = update.message.from_user.id
+                context.bot.send_message(chat_id=userpmid,
+                                         text="You are now a Registered Member in  Whitelisted Group: " + groupname + ", Feel free to set Reminders!")
+        elif (groupchatid in chatid) and (groupusername not in username):
+            whitelistverification = True
+            update.message.reply_text("Apologies, You are not an Authorised Member")
+
         else:
-            # update.message.reply_text("group not whitelisted")
-            print("group is not whitelisted")
+            #update.message.reply_text("group not whitelisted")
+            print("Group is not whitelisted")
             Gid.grpchatid = groupchatid
             Gid.grpusername = groupusername
             if (groupname == "None"):
@@ -84,18 +90,22 @@ def register_command(update, context):
             else:
                 Gid.grpchatname = groupname
 
-            for chatid, grpname, username in sorted(
-                    [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-                if (groupchatid == chatid and groupusername == username):
-                    duplicatevalue = True
-                    update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
+    if whitelistverification == True:
+        print("WL check done")
 
-            if (duplicatevalue == False):
-                Gid.dict_update(Gid.Inputs)
-                update.message.reply_text("This Group is not Whitelisted, Registration Completed!")
-                userpmid = update.message.from_user.id
-                context.bot.send_message(chat_id=userpmid,
-                                         text="You are now a Registered Member in " + Gid.grpchatname + " Feel free to set Reminders!")
+    else:
+        for chatid, grpname, username in sorted(
+                [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+            if (groupchatid == chatid and groupusername in username):
+                duplicatevalue = True
+                update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
+
+        if (duplicatevalue == False):
+            Gid.dict_update(Gid.Inputs)
+            update.message.reply_text("This Group is not Whitelisted, Registration Completed!")
+            userpmid = update.message.from_user.id
+            context.bot.send_message(chat_id=userpmid,
+                                     text="You are now a Registered Member in " + Gid.grpchatname + " Feel free to set Reminders!")
 
 
 def help_command(update, context):
@@ -201,7 +211,7 @@ def del_command(update, context):
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
     else:
         reply_keyboard = [[name] for name in namelist]  # get each item in namelist and put in custom keyboard
-        print(reply_keyboard)
+        #print(reply_keyboard)
         replydata = "\u274C DELETE \u274C\n\n" "Here are your List of Reminders: \n\n\n" + "".join(
             replylist) + "\n\u274C DELETE \u274C\nPlease Select the Reminder you would like to delete according to ReminderName"
         msg = replydata

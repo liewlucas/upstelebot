@@ -2,13 +2,13 @@
   {
     "CHATID": [-1001252293224],
     "GRPNAME": ["New Alpha One"],
-    "USER": ["liewlucass"],
-    "PASSWORD": ["liewlucass"]
+    "USER": "liewlucass",
+    "PASSWORD": "liewlucass"
   },
    {
     "CHATID": [-1001252293224],
     "GRPNAME": ["New Alpha One"],
-    "USER": ["xnegate"],
-    "PASSWORD": ["xnegate"]
+    "USER": "xnegate",
+    "PASSWORD": "xnegate"
   }
 ]
