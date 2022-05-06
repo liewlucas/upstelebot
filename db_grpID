@@ -1,5 +1,13 @@
 [
   {
+    "CHATID": -505241894,
+    "GRPNAME": "Parakeet Testing 2",
+    "USER": [
+      "liewlucass",
+      "xnegate"
+    ]
+  },
+  {
     "CHATID": 25057684,
     "GRPNAME": "PM Chat",
     "USER": [
@@ -27,8 +35,15 @@
     "USER": [
       "liewlucass",
       "LeeYanEnEn",
-      "xnegate",
-      "dextuhhhh"
+      "dextuhhhh",
+      "xnegate"
+    ]
+  },
+  {
+    "CHATID": -551111942,
+    "GRPNAME": "JADYL",
+    "USER": [
+      "liewlucass"
     ]
   },
   {
@@ -36,22 +51,6 @@
     "GRPNAME": "Hello",
     "USER": [
       "LeeYanEnEn"
-    ]
-  },
-  {
-    "CHATID": -505241894,
-    "GRPNAME": "Parakeet Testing 2",
-    "USER": [
-      "xnegate",
-      "liewlucass"
-    ]
-  },
-  {
-    "CHATID": -551111942,
-    "GRPNAME": "JADYL",
-    "USER": [
-      "xnegate",
-      "liewlucass"
     ]
   }
 ]

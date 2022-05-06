@@ -3,6 +3,18 @@ import os
 import zipfile
 import hashlib, uuid, base64
 
+linkname = "Link Testing" #Purpose of Link (Name)
+pltname = "Parakeet"
+pltid = -473469885 #Platoon ID
+linktext = "https://i.pinimg.com/564x/94/17/71/9417719e082284d1bef1b943956cdd96.jpg" #Link
+
+# For Edits
+linkname_r = "Link Testing"
+usereditlinkname = ""
+pltname_r = ""
+pltid_r = ""
+linktext_r = ""
+
 RemName = ""
 IDchat = ""
 day_r = ""
@@ -12,15 +24,14 @@ usercid_r = ""
 name_r = ""
 useredit_r = ""  #ReminderName Edits
 username_r = ""
-ID_List = []
 Inputs = []
-zip_db = "db_info.zip"
+zip_db = "link_info.zip"
 zip = (base64.b64decode("Z3JlYXRndWFyZDEyMw==").decode("utf-8"))
 salt = str.encode(uuid.uuid4().hex)
 Pass = hashlib.sha512(zip.encode('utf-8') + salt).hexdigest()
 
 
-def dict_lock_check(Fname=zip_db):
+def link_check(Fname=zip_db):
     # Checking if Zipfile exist
     if not os.path.isfile(Fname):
         print('File does not exist\n Required to create New Zip File')
@@ -39,7 +50,7 @@ def dict_lock_check(Fname=zip_db):
             print("Error: Zip file is corrupted")
 
 
-def dict_lock_read():
+def link_read():
     #dict_lock_check(zip_db)
     with zipfile.ZipFile(zip_db) as zfile:
         try:
@@ -59,10 +70,10 @@ def dict_lock_read():
             print('Zipfile Empty!')
 
 
-def dict_lock_update(newdata):
+def link_update(newdata):
     with zipfile.ZipFile(zip_db) as zfile:
         try:
-            newdata.append({"ReminderName": RemName, "IDitem": IDchat, "DAY": day_r, "Time": time_r, "Text": text_r, "User": username_r})
+            newdata.append({"LinkName": linkname, "PltName": pltname, "PltID": pltid, "LinkText": linktext})
             dict_append = json.dumps(newdata, indent=2).encode('utf-8')
             with zipfile.ZipFile(zip_db, 'w') as zwfile:
                 zwfile.writestr(zfile.namelist()[-1], dict_append)
@@ -76,10 +87,10 @@ def dict_lock_update(newdata):
 
 
 
-def dict_del(datadel):
+def link_del(datadel):
     with zipfile.ZipFile(zip_db) as zfile:
         for i in range(len(datadel)):
-            if datadel[i]['ReminderName'] == name_r:
+            if datadel[i]['LinkName'] == linkname_r:
                 del datadel[i]
                 print("DELETED")
                 bdata = json.dumps(datadel, indent=2).encode('utf-8')
@@ -102,16 +113,16 @@ def dict_del(datadel):
 
 
 #Edit Functions
-def lock_edit_Name(dataed):
+def link_edit_Name(dataed):
     with zipfile.ZipFile(zip_db) as zefile:
         global bedits_N
         global updateflag
         updateflag = False
         for ed in range(len(dataed)):
-            if dataed[ed]['ReminderName'] == name_r :
+            if dataed[ed]['LinkName'] == linkname_r:
                 #Fill list[dictionary] with user input parameters
                 updateflag = True
-                dataed[ed]['ReminderName'] = useredit_r  #useredit Name
+                dataed[ed]['LinkName'] = usereditlinkname  #useredit Name
                 bedits_N = json.dumps(dataed, indent=2).encode('utf-8')
 
                 try:
@@ -134,16 +145,16 @@ def lock_edit_Name(dataed):
     if updateflag == False:
         print("No matching Reminder!")
 
-def lock_edit_Time(dataed):
+def link_edit_Link(dataed):
     with zipfile.ZipFile(zip_db) as zefile:
         global bedits_T
         global updateflag
         updateflag = False
         for ed in range(len(dataed)):
-            if dataed[ed]['ReminderName'] == name_r:
+            if dataed[ed]['LinkName'] == linkname_r:
                 updateflag = True
                 #Fill list[dictionary] with user input parameters
-                dataed[ed]['Time'] = time_r   #useredit Time
+                dataed[ed]['LinkText'] = linktext   #useredit Time
                 bedits_T = json.dumps(dataed, indent=2).encode('utf-8')
 
                 try:
@@ -166,16 +177,17 @@ def lock_edit_Time(dataed):
     if updateflag == False:
         print("No matching Reminder!")
 
-def lock_edit_Day(dataed):
+def link_edit_Plt(dataed):
     with zipfile.ZipFile(zip_db) as zefile:
         global bedits_D
         global updateflag
         updateflag = False
         for ed in range(len(dataed)):
-            if dataed[ed]['ReminderName'] == name_r:
+            if dataed[ed]['LinkName'] == linkname_r:
                 # Fill list[dictionary] with user input parameters
                 updateflag = True
-                dataed[ed]['DAY'] = day_r  #usereditDay
+                dataed[ed]['PltName'] = pltname_r  # user edit for platoon name
+                dataed[ed]['PltID'] = pltid_r  # platoon name coorelates to relevant group chat id
                 bedits_D = json.dumps(dataed, indent=2).encode('utf-8')
 
                 try:
@@ -201,49 +213,45 @@ def lock_edit_Day(dataed):
 
 
 
-def lock_edit_Text(dataed):
-    with zipfile.ZipFile(zip_db) as zefile:
-        global bedits_x
-        global updateflag
-        updateflag = False
-        for ed in range(len(dataed)):
-            if dataed[ed]['ReminderName'] == name_r:
-                updateflag = True
+#def lock_edit_Text(dataed):
+    #with zipfile.ZipFile(zip_db) as zefile:
+        #global bedits_x
+        #global updateflag
+        #updateflag = False
+        #for ed in range(len(dataed)):
+            #if dataed[ed]['ReminderName'] == name_r:
+                #updateflag = True
                 # Fill list[dictionary] with user input parameters
-                dataed[ed]['Text'] = text_r  # useredit Time
-                bedits_x = json.dumps(dataed, indent=2).encode('utf-8')
+                #dataed[ed]['Text'] = text_r  # useredit Time
+                #bedits_x = json.dumps(dataed, indent=2).encode('utf-8')
 
-                try:
-                    with zipfile.ZipFile(zip_db, 'w') as zwfile:
-                        zwfile.writestr(zefile.namelist()[-1], bedits_x)
-                        zwfile.close()
-                        print("Data Edited")
-                        print(dataed)
+                #try:
+                    #with zipfile.ZipFile(zip_db, 'w') as zwfile:
+                        #zwfile.writestr(zefile.namelist()[-1], bedits_x)
+                        #zwfile.close()
+                        #print("Data Edited")
+                        #print(dataed)
 
 
                 # Checking for invalid/Non-dictionary DB
-                except AttributeError:
-                    print("AE!")
+                #except AttributeError:
+                    #print("AE!")
 
-                except IndexError:
-                    print("IE!")
+                #except IndexError:
+                    #print("IE!")
 
-                except NameError:
-                    print("NE!")
+                #except NameError:
+                    #print("NE!")
 
-    if updateflag == False:
-        print("No matching Reminder!")
-
-
+    #if updateflag == False:
+        #print("No matching Reminder!")
 
 
-#dict_lock_check(zip_db)
-#dict_lock_read()
-#dict_lock_update(Inputs)
-#dict_del(Inputs)
-#lock_edit_Day(Inputs)
-#lock_edit_Time(Inputs)
-#lock_edit_Text(Inputs)
-#lock_edit_Name(Inputs)
 
-
+link_check(zip_db)
+link_read()
+link_update(Inputs)
+#link_del(Inputs)
+#link_edit_Name(Inputs)
+#link_edit_Link(Inputs)
+#link_edit_Plt(Inputs)

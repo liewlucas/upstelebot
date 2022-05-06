@@ -22,8 +22,8 @@ print("Bot started...")
 
 logger = logging.getLogger(__name__)
 
-MASTEREDITCON, MASTEREDITINDB, MASTEREDITCHOICE, MASTEREDIT, MASTERDELETE, EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE = range(
-    15)
+MASTEREDITCON, MASTEREDITINDB, MASTEREDITCHOICE, MASTEREDIT, MASTERDELETE, EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE, REGISTER = range(
+    16)
 
 "------------------STARTING COMMANDS ------------------------"
 
@@ -42,60 +42,78 @@ def start_command(update, context):
 def register_command(update, context):
     global duplicatevalue
     duplicatevalue = False
+    global wlverification
+    wlverification = False
+    global userchatidingroup
+    userchatidingroup = update.message.message_id
     groupname = str(update.message.chat.title)
     groupchatid = update.message.chat.id
-    groupchatid2 = str(update.message.chat.id)
-    groupusername = update.message.from_user.username
+    #groupchatid2 = str(update.message.chat.id)
+    groupusername = str(update.message.from_user.username)
     Gid.dict_read()
     wlu.wl_read()  # reads whitelist update db
     # update.message.reply_text(groupchatid)
     for chatid, grpname, username in sorted(
             [(d['CHATID'], d['GRPNAME'], d['USER']) for d in wlu.Inputs], key=lambda t: t[1]):
-        if (groupchatid in chatid):
-            update.message.reply_text("This is a Whitelisted Group, Checking Authorisation.....")
-            if (groupusername in username):
-                Gid.grpchatid = groupchatid
-                Gid.grpusername = groupusername
-                if (groupname == "None"):
-                    Gid.grpchatname = "PM Chat"
-                else:
-                    Gid.grpchatname = groupname
-                for chatid, grpname, username in sorted(
-                        [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-                    if (groupchatid == chatid):
-                        if (groupusername in username):
-                            duplicatevalue = True
-                            update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
-                if (duplicatevalue == False):
-                    Gid.dict_update(Gid.Inputs)
-                    update.message.reply_text("You Are an Authorised User, Your details are now Registered!")
-                    userpmid = update.message.from_user.id
-                    context.bot.send_message(chat_id=userpmid,
-                                             text="You are now a Registered Member in  Whitelisted Group: " + groupname + ", Feel free to set Reminders!")
-            elif (groupusername != username):
-                update.message.reply_text("Apologies, You are not an Authorised Member")
-        else:
-            # update.message.reply_text("group not whitelisted")
-            print("group is not whitelisted")
+        if groupchatid == chatid:
+            wlverification = True
+            update.message.reply_text("This is a Whitelisted Group! Verifying Authorisation...")
+
+    for chatid, grpname, username in sorted(
+            [(d['CHATID'], d['GRPNAME'], d['USER']) for d in wlu.Inputs], key=lambda t: t[1]):
+        if wlverification == True and groupchatid == chatid and groupusername in username:
             Gid.grpchatid = groupchatid
             Gid.grpusername = groupusername
             if (groupname == "None"):
                 Gid.grpchatname = "PM Chat"
             else:
                 Gid.grpchatname = groupname
-
             for chatid, grpname, username in sorted(
                     [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-                if (groupchatid == chatid and groupusername == username):
+                if (groupchatid == chatid) and (groupusername in username):
                     duplicatevalue = True
-                    update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
 
-            if (duplicatevalue == False):
+            if duplicatevalue == False:
                 Gid.dict_update(Gid.Inputs)
-                update.message.reply_text("This Group is not Whitelisted, Registration Completed!")
+                update.message.reply_text("You Are an Authorised User, Your details are now Registered!")
                 userpmid = update.message.from_user.id
                 context.bot.send_message(chat_id=userpmid,
-                                         text="You are now a Registered Member in " + Gid.grpchatname + " Feel free to set Reminders!")
+                                         text="You are now a Registered Member in  Whitelisted Group: " + groupname + ", Feel free to set Reminders!")
+
+            else:
+                update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
+
+        elif wlverification == True and groupusername not in username:
+            update.message.reply_text("Apologies, You are not an Authorised Member in this group.")
+
+
+    if wlverification == False:
+        print("Group is not whitelisted")
+        print(groupchatid)
+        print(wlu.Inputs)
+        Gid.grpchatid = groupchatid
+        Gid.grpusername = groupusername
+        if (groupname == "None"):
+            Gid.grpchatname = "PM Chat"
+        else:
+            Gid.grpchatname = groupname
+
+        for chatid, grpname, username in sorted(
+                [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+            if groupchatid == chatid and groupusername in username:
+                duplicatevalue = True
+
+        if duplicatevalue == False:
+            Gid.dict_update(Gid.Inputs)
+            update.message.reply_text("This Group is not Whitelisted, Registration Completed!")
+            userpmid = update.message.from_user.id
+            context.bot.send_message(chat_id=userpmid,
+                                     text="You are now a Registered Member in " + Gid.grpchatname + " Feel free to set Reminders!")
+
+        else:
+            update.message.reply_text("You Are Already Registered! Feel Free to set a Reminder")
+
+
 
 
 def help_command(update, context):
@@ -201,7 +219,7 @@ def del_command(update, context):
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
     else:
         reply_keyboard = [[name] for name in namelist]  # get each item in namelist and put in custom keyboard
-        print(reply_keyboard)
+        #print(reply_keyboard)
         replydata = "\u274C DELETE \u274C\n\n" "Here are your List of Reminders: \n\n\n" + "".join(
             replylist) + "\n\u274C DELETE \u274C\nPlease Select the Reminder you would like to delete according to ReminderName"
         msg = replydata
@@ -471,7 +489,7 @@ def editindb(update: Update, context: CallbackContext) -> str:
                     replylist.append(stringreply)  # append into the list
                     reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
                     update.message.reply_text(
-                        "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
+                        "Would you like to continue Editing? Please select the option you would like to proceed with."
                         , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True,
                                                            selective=True))
         except:
@@ -497,57 +515,71 @@ def editindb(update: Update, context: CallbackContext) -> str:
                 replylist.append(stringreply)  # append into the list
                 reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
                 update.message.reply_text(
-                    "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
+                    "Would you like to continue Editing? Please select the option you would like to proceed with."
                     , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
 
     if (editchoiceuser == "Reminder Name"):
         usernameofuser = update.message.from_user.username
-        Loc.dict_lock_read()
-        Loc.usercid_r = reminderchatid
-        Loc.name_r = editnameuser
-        Loc.useredit_r = usersconfirmationedit
-        Loc.lock_edit_Name(Loc.Inputs)
-        replylist = []
+        if len(usersconfirmationedit) > constants.MAX_MESSAGE_LENGTH - 2500:
+            update.message.reply_text(
+                "Error! Reminder Name is too long. Please reduce the length of the reminder name and send again.",
+                reply_to_message_id=userchatidingroup)
+            return ConversationHandler.END
+        else:
+            Loc.dict_lock_read()
+            Loc.usercid_r = reminderchatid
+            Loc.name_r = editnameuser
+            Loc.useredit_r = usersconfirmationedit
+            Loc.lock_edit_Name(Loc.Inputs)
+            replylist = []
 
-        for ReminderName, IDitem, DAY, Time, Text, username in sorted(
-                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d["User"]) for d in Loc.Inputs],
-                key=lambda t: t[1]):
-            if (ReminderName == usersconfirmationedit):
-                dbRemName = str(ReminderName)
-                dbday = str(DAY)
-                dbtime = str(Time)
-                dbmsg = str(Text)
-                stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
-                replylist.append(stringreply)  # append into the list
-                reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
-                update.message.reply_text(
-                    "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
-                    , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
+            for ReminderName, IDitem, DAY, Time, Text, username in sorted(
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d["User"]) for d in Loc.Inputs],
+                    key=lambda t: t[1]):
+                if (ReminderName == usersconfirmationedit):
+                    dbRemName = str(ReminderName)
+                    dbday = str(DAY)
+                    dbtime = str(Time)
+                    dbmsg = str(Text)
+                    stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                    replylist.append(stringreply)  # append into the list
+                    reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
+                    update.message.reply_text(
+                        "Would you like to continue Editing? Please select the option you would like to proceed with."
+                        , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
 
     if (editchoiceuser == "Message"):
 
         usernameofuser = update.message.from_user.username
-        Loc.dict_lock_read()
-        Loc.text_r = usersconfirmationedit
-        Loc.usercid_r = reminderchatid
-        Loc.name_r = editnameuser
+        if len(usersconfirmationedit) > constants.MAX_MESSAGE_LENGTH - 500:
+            update.message.reply_text(
+                "Error! Scheduled Message is too long. Please reduce the length of the reminder message and send again.",
+                reply_to_message_id=userchatidingroup)
+            return ConversationHandler.END
 
-        Loc.lock_edit_Text(Loc.Inputs)
-        replylist = []
-        for ReminderName, IDitem, DAY, Time, Text in sorted(
-                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs],
-                key=lambda t: t[1]):
-            if (ReminderName == editnameuser):
-                dbRemName = str(ReminderName)
-                dbday = str(DAY)
-                dbtime = str(Time)
-                dbmsg = str(Text)
-                stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
-                replylist.append(stringreply)  # append into the list
-                reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
-                update.message.reply_text(
-                    "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
-                    , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
+        else:
+            Loc.dict_lock_read()
+            Loc.text_r = usersconfirmationedit
+            Loc.usercid_r = reminderchatid
+            Loc.name_r = editnameuser
+
+            Loc.lock_edit_Text(Loc.Inputs)
+            replylist = []
+
+            for ReminderName, IDitem, DAY, Time, Text in sorted(
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs],
+                    key=lambda t: t[1]):
+                if (ReminderName == editnameuser):
+                    dbRemName = str(ReminderName)
+                    dbday = str(DAY)
+                    dbtime = str(Time)
+                    dbmsg = str(Text)
+                    stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                    replylist.append(stringreply)  # append into the list
+                    reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
+                    update.message.reply_text(
+                        "Would you like to continue Editing? Please select the option you would like to proceed with."
+                        , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
 
     return EDITCON
 
@@ -671,9 +703,9 @@ def messagefromuser(update: Update, context: CallbackContext) -> int:
     userchatid = update.message.chat.id
     global messagefromuser
     messagefromuser = str(update.message.text)
-    if len(messagefromuser) > constants.MAX_MESSAGE_LENGTH-1000:
+    if len(messagefromuser) > constants.MAX_MESSAGE_LENGTH-500:
         update.message.reply_text("Error! Scheduled Message is too long. Please reduce the length of the reminder message and send again.", reply_to_message_id=userchatidingroup)
-        cancel(update, context)
+        return ConversationHandler.END
 
     else:
         global usernamefromuser
@@ -698,21 +730,26 @@ def namefromuser(update: Update, context: CallbackContext) -> int:
     global nameusertext
     nameusertext = str(update.message.text)
     usernameofuser = update.message.from_user.username
-    global groupname
-    groupname = str(update.message.chat.title)
-    if (groupname == "None"):
-        groupname = "PM Chat"
-    Gid.dict_read()
-    namelist = []
-    for chatid, grpname, username in sorted(
-            [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
-        if (usernameofuser in username):
-            if (groupname == grpname):
-                dbchatname = "This Chat"
-                namelist.append(dbchatname)
-            else:
-                dbchatname = str(grpname)
-                namelist.append(dbchatname)
+    if len(nameusertext) > constants.MAX_MESSAGE_LENGTH - 2500:
+        update.message.reply_text("Error! Reminder Name is too long. Please reduce the length of the reminder name and send again.", reply_to_message_id=userchatidingroup)
+        return ConversationHandler.END
+
+    else:
+        global groupname
+        groupname = str(update.message.chat.title)
+        if (groupname == "None"):
+            groupname = "PM Chat"
+        Gid.dict_read()
+        namelist = []
+        for chatid, grpname, username in sorted(
+                [(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs], key=lambda t: t[1]):
+            if (usernameofuser in username):
+                if (groupname == grpname):
+                    dbchatname = "This Chat"
+                    namelist.append(dbchatname)
+                else:
+                    dbchatname = str(grpname)
+                    namelist.append(dbchatname)
 
     reply_keyboard = [[name] for name in namelist]  # get each item in namelist and put in custom keyboard
     update.message.reply_text(
@@ -870,23 +907,53 @@ def masterlist_command(update, context):
     else:
         replydata = "\U0001F4D1Here are your List of Reminders: \n\n" + "".join(replylist)
         msg = replydata
-        sub_msgs = ""
-        if len(replydata) > constants.MAX_MESSAGE_LENGTH:  # Checking whether Message excedes Telegram's Bytes Limit(4096)
+        # sub_msgs = ""
+        # sub_msgs_s = ""
+        # sub_msgs_con = ""
+        if len(replydata) > constants.MAX_MESSAGE_LENGTH:  # Checking whether Message exceeds Telegram's Bytes Limit(4096)
             while len(msg):
                 split_point = msg[:constants.MAX_MESSAGE_LENGTH].rfind(
                     '\n')  # Finding point within Bytes Limit(4096) to split message
                 if split_point != -1:
                     sub_msgs = (msg[split_point:])  # Subsequent Message Section(s)
                     msg = msg[:split_point]  # Initial Message Section
-                    break  # Ending the while Loop
 
+                    # Sending Initial Section (Before Telegram Message Limit)
+                    update.message.reply_text(msg,
+                                              reply_to_message_id=userchatidingroup)
+
+                    # Checking if Subsequent Section(s) are longer than Telegram Message Limit
+                    while len(sub_msgs) > constants.MAX_MESSAGE_LENGTH:
+                        split_point = sub_msgs[:constants.MAX_MESSAGE_LENGTH].rfind(
+                            '\n')  # Finding point within Bytes Limit(4096) to split message
+                        if split_point != -1:
+                            sub_msgs_con = (sub_msgs[split_point:])  # Subsequent Message Section(s)
+                            sub_msgs_s = sub_msgs[:split_point]
+
+                            # Sending Second Message Section
+                            update.message.reply_text(sub_msgs_s,
+                                                      reply_to_message_id=userchatidingroup)
+
+                            if len(sub_msgs_con) > constants.MAX_MESSAGE_LENGTH:
+                                sub_msgs = sub_msgs_con
+
+                            else:
+                                # Sending Subsequent Message Section(s)
+                                # print("HIYO")
+                                update.message.reply_text(sub_msgs_con,
+                                                          reply_to_message_id=userchatidingroup)  # Sending Subsequent Message Section(s)
+                                break  # Ending the while Loop
+                        else:
+                            print("Message Error!")
+                    break  # Ending the while Loop
                 else:
                     print("Message Error!")
-            update.message.reply_text(msg,
-                                      reply_to_message_id=userchatidingroup)  # Sending Initial Section (Before Telegram Message Limit)
+
+            # update.message.reply_text(msg,
+            # reply_to_message_id=userchatidingroup)  # Sending Initial Section (Before Telegram Message Limit)
             # Do "while len(sub_msgs) > constants.MAX_MESSAGE_LENGTH:" check here for repeating loops of msg
-            update.message.reply_text(sub_msgs,
-                                      reply_to_message_id=userchatidingroup)  # Sending Subsequent Message Section(s)
+            # update.message.reply_text(sub_msgs,
+            # reply_to_message_id=userchatidingroup)  # Sending Subsequent Message Section(s)
 
         else:
             update.message.reply_text(replydata, reply_to_message_id=userchatidingroup)  # sentence + joining the list
@@ -1029,6 +1096,7 @@ def masteredit_command(update, context):
     Gid.dict_read()
     namelist = []
     replylist = []
+    print(Gid.Inputs)
 
     global userchatidingroup
     userchatidingroup = update.message.message_id
@@ -1045,19 +1113,23 @@ def masteredit_command(update, context):
         dbtime = str(Time)
         dbmsg = str(Text)
         usernamedb = dbUser
+        print(usernamedb)
         for chatid, grpname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs],
                                                 key=lambda t: t[1]):
             if usernamedb in username and IDitem == chatid:
                 global dbgrpname
                 dbgrpname = grpname
-        stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
-        replylist.append(stringreply)  # append into the list
-        namelist.append(dbRemName)  # append all names relating to this chatid into local list
+                print(dbgrpname)
+                stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                replylist.append(stringreply)  # append into the list
+                namelist.append(dbRemName)  # append all names relating to this chatid into local list
+                #print(dbRemName)
 
     if not replylist:  # checking if list is empty
         update.message.reply_text("Sorry, you do not appear to have set any Reminders")
     else:
         reply_keyboard = [[name] for name in namelist]  # get each item in namelist and put in custom keyboard
+        print(reply_keyboard)
         replydata = "\U0001F4DD EDITING \U0001F4DD \n\n" "Here are your List of Reminders: \n\n" + "".join(replylist) + \
                         "\n\n" + "\U0001F4DD EDIT \U0001F4DD\nPlease Select the Reminder you would like to Edit"
         msg = replydata
@@ -1069,10 +1141,11 @@ def masteredit_command(update, context):
                 if split_point != -1:
                     sub_msgs = (msg[split_point:])  # Subsequent Message Section(s)
                     msg = msg[:split_point]  # Initial Message Section
-                    break  # Ending the while Loop
+                    #break  # Ending the while Loop
 
                 else:
                     print("Message Error!")
+
             update.message.reply_text(msg,
                                       reply_to_message_id=userchatidingroup,
                                       reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True,
@@ -1084,7 +1157,9 @@ def masteredit_command(update, context):
                                                                        selective=True), )   # Sending Subsequent Message Section(s)
 
         else:
-            update.message.reply_text(replydata, reply_to_message_id=userchatidingroup)  # sentence + joining the list
+            update.message.reply_text(replydata, reply_to_message_id=userchatidingroup,
+                                      reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True,
+                                                                       selective=True), )  # sentence + joining the list
             #userchatidingroup = str(update.message.from_user.id)
 
         return MASTEREDIT
@@ -1104,9 +1179,11 @@ def mastereditfromuser(update: Update, context: CallbackContext) -> int:
         for chatid, grpname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in Gid.Inputs],
                                                 key=lambda t: t[1]):
             if dbUser in username and IDitem == chatid:
-                dbchatid = chatid
+                #dbchatid = chatid
                 global dbgrpname
                 dbgrpname = grpname
+
+
         if (ReminderName == editnameuser):
             dbRemName = str(ReminderName)
             dbday = str(DAY)
@@ -1193,9 +1270,9 @@ def mastereditindb(update: Update, context: CallbackContext) -> str:
                     dbmsg = str(Text)
                     stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
                     replylist.append(stringreply)  # append into the list
-                    reply_keyboard = [["Yes"], ["No"]]
+                    reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
                     update.message.reply_text(
-                        "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
+                        "Would you like to continue Editing? Please select the option you would like to proceed with."
                         , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True,
                                                            selective=True))
         except:
@@ -1209,8 +1286,9 @@ def mastereditindb(update: Update, context: CallbackContext) -> str:
         Loc.name_r = editnameuser
         Loc.lock_edit_Day(Loc.Inputs)
         replylist = []
+        print("hi")
         for ReminderName, IDitem, DAY, Time, Text, dbUser in sorted(
-                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'].d['User']) for d in Loc.Inputs],
+                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs],
                 key=lambda t: t[1]):
             if (ReminderName == editnameuser):
                 dbRemName = str(ReminderName)
@@ -1219,59 +1297,73 @@ def mastereditindb(update: Update, context: CallbackContext) -> str:
                 dbmsg = str(Text)
                 stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
                 replylist.append(stringreply)  # append into the list
-                reply_keyboard = [["Yes"], ["No"]]
+                print(stringreply)
+                reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
                 update.message.reply_text(
-                    "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
+                    "Would you like to continue Editing? Please select the option you would like to proceed with."
                     , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
 
     if (editchoiceuser == "Reminder Name"):
         usernameofuser = update.message.from_user.username
-        Loc.dict_lock_read()
-        Loc.usercid_r = reminderchatid
-        Loc.name_r = editnameuser
-        Loc.useredit_r = usersconfirmationedit
-        Loc.lock_edit_Name(Loc.Inputs)
-        replylist = []
+        if len(usersconfirmationedit) > constants.MAX_MESSAGE_LENGTH - 2500:
+            update.message.reply_text(
+                "Error! Scheduled Reminder Name is too long. Please reduce the length of the reminder name and send again.",
+                reply_to_message_id=userchatidingroup)
+            return ConversationHandler.END
 
-        for ReminderName, IDitem, DAY, Time, Text, username in sorted(
-                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d["User"]) for d in Loc.Inputs],
-                key=lambda t: t[1]):
-            if (ReminderName == usersconfirmationedit):
-                dbRemName = str(ReminderName)
-                dbday = str(DAY)
-                dbtime = str(Time)
-                dbmsg = str(Text)
-                stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
-                replylist.append(stringreply)  # append into the list
-                reply_keyboard = [["Yes"], ["No"]]
-                update.message.reply_text(
-                    "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
-                    , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
+        else:
+            Loc.dict_lock_read()
+            Loc.usercid_r = reminderchatid
+            Loc.name_r = editnameuser
+            Loc.useredit_r = usersconfirmationedit
+            Loc.lock_edit_Name(Loc.Inputs)
+            replylist = []
+
+            for ReminderName, IDitem, DAY, Time, Text, username in sorted(
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text'], d['User']) for d in Loc.Inputs],
+                    key=lambda t: t[1]):
+                if (ReminderName == usersconfirmationedit):
+                    dbRemName = str(ReminderName)
+                    dbday = str(DAY)
+                    dbtime = str(Time)
+                    dbmsg = str(Text)
+                    stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                    replylist.append(stringreply)  # append into the list
+                    reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
+                    update.message.reply_text(
+                        "Would you like to continue Editing? Please select the option you would like to proceed with."
+                        , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
 
     if (editchoiceuser == "Message"):
-
         usernameofuser = update.message.from_user.username
-        Loc.dict_lock_read()
-        Loc.text_r = usersconfirmationedit
-        Loc.usercid_r = reminderchatid
-        Loc.name_r = editnameuser
+        if len(usersconfirmationedit) > constants.MAX_MESSAGE_LENGTH - 500:
+            update.message.reply_text(
+                "Error! Scheduled Message is too long. Please reduce the length of the reminder message and send again.",
+                reply_to_message_id=userchatidingroup)
+            return ConversationHandler.END
 
-        Loc.lock_edit_Text(Loc.Inputs)
-        replylist = []
-        for ReminderName, IDitem, DAY, Time, Text in sorted(
-                [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs],
-                key=lambda t: t[1]):
-            if (ReminderName == editnameuser):
-                dbRemName = str(ReminderName)
-                dbday = str(DAY)
-                dbtime = str(Time)
-                dbmsg = str(Text)
-                stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
-                replylist.append(stringreply)  # append into the list
-                reply_keyboard = [["Yes"], ["No"]]
-                update.message.reply_text(
-                    "Would you like to continue Editing? Select Yes to continue or No to Finish Editing."
-                    , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
+        else:
+            Loc.dict_lock_read()
+            Loc.text_r = usersconfirmationedit
+            Loc.usercid_r = reminderchatid
+            Loc.name_r = editnameuser
+
+            Loc.lock_edit_Text(Loc.Inputs)
+            replylist = []
+            for ReminderName, IDitem, DAY, Time, Text in sorted(
+                    [(d['ReminderName'], d['IDitem'], d['DAY'], d['Time'], d['Text']) for d in Loc.Inputs],
+                    key=lambda t: t[1]):
+                if (ReminderName == editnameuser):
+                    dbRemName = str(ReminderName)
+                    dbday = str(DAY)
+                    dbtime = str(Time)
+                    dbmsg = str(Text)
+                    stringreply = "Group: " + dbgrpname + "\nReminder Name: " + dbRemName + "\nDay: " + dbday + "\n" + "Time: " + dbtime + "\n" + "Message: " + dbmsg + "\n\n"  # crafting string
+                    replylist.append(stringreply)  # append into the list
+                    reply_keyboard = [["Continue Editing"], ["Finish Editing"]]
+                    update.message.reply_text(
+                        "Would you like to continue Editing? Please select the option you would like to proceed with."
+                        , reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
 
     return MASTEREDITCON
 
@@ -1279,9 +1371,9 @@ def mastereditindb(update: Update, context: CallbackContext) -> str:
 def mastereditcontinue(update: Update, context: CallbackContext) -> int:
     Gid.dict_read()
     usereditcon = str(update.message.text)
-    if (usereditcon == "Yes"):
+    if (usereditcon == "Continue Editing"):
         return masteredit_command(update, context)
-    if (usereditcon == "No"):
+    if (usereditcon == "Finish Editing"):
         Loc.dict_lock_read()
         replylist = []
         print("Hi")
@@ -1354,7 +1446,7 @@ def get_chat_id(update, context):
         chat_id = context.bot_data[update.poll.id]
 
     return chat_id
-    print(chat_id)
+
 
 
 def main():
@@ -1362,8 +1454,9 @@ def main():
     dp = updater.dispatcher
 
     j = updater.job_queue
-    job_minute = j.run_repeating(schedulecheck, interval=60, first=0)
+    job_minute = j.run_repeating(schedulecheck, interval=55, first=0)
     print("checking on DB started")
+
 
     scheduleconv_handler = (ConversationHandler(
         entry_points=[CommandHandler('schedule', schedule_command)],
