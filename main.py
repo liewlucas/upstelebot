@@ -22,8 +22,8 @@ print("Bot started...")
 
 logger = logging.getLogger(__name__)
 
-MASTEREDITCON, MASTEREDITINDB, MASTEREDITCHOICE, MASTEREDIT, MASTERDELETE, EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE, REGISTER = range(
-    16)
+PASSWORDVALIDATION,PASSWORDPROMPT,LINKHANDLER,MASTEREDITCON, MASTEREDITINDB, MASTEREDITCHOICE, MASTEREDIT, MASTERDELETE, EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE, REGISTER = range(
+    19)
 
 "------------------STARTING COMMANDS ------------------------"
 
@@ -37,6 +37,57 @@ def start_command(update, context):
     update.message.reply_text("Welcome to the Parakeet! \U0001F917", reply_markup= reply_button)
     update.message.reply_text(
         "Parakeet is a Bot to help you with your scheduling needs! A simple registration is all it takes to do so. \n\nTo get started, simply type /help to view all operational commands \U0001F4C4")
+
+
+def links_command(update,context):
+    reply_keyboard = [['A1', 'A2'], ['B1', 'B2']]
+    update.message.reply_text("Please Select which links you would like to view", reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
+    return PASSWORDPROMPT
+
+def linkpassword(update,context):
+    global platoon
+    platoon = update.message.text
+    update.message.reply_text("Please Enter Password for " + platoon +  " :", reply_markup=ForceReply(selective=True))
+    global A1Password
+    A1Password = "1000"
+    global A2Password
+    A2Password = "2000"
+    global B1Password
+    B1Password = "3000"
+    global B2Password
+    B2Password = "4000"
+    return PASSWORDVALIDATION
+
+def passwordvalidation(update,context):
+    passwordfromuser = update.message.text
+    if(platoon == "A1"):
+        if(passwordfromuser == A1Password):
+            update.message.reply_text("HERES LINKS")
+        else:
+            update.message.reply_text("Wrong Password! Try Again!")
+            update.message.reply_text("Please Enter Password for " + platoon + " :",
+                                      reply_markup=ForceReply(selective=True))
+            return PASSWORDVALIDATION
+
+
+
+def Inlinelinks_command(update, context):
+    keyboard =[
+        [InlineKeyboardButton("A1", callback_data=LINKHANDLER),InlineKeyboardButton("A2", callback_data=str(LINKHANDLER))],
+               [InlineKeyboardButton("B1", callback_data=str(LINKHANDLER)),InlineKeyboardButton("B2", callback_data=str(LINKHANDLER))]]
+    reply_button = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text("Please Select Which links you would like to view.", reply_markup=reply_button)
+    #return LINKHANDLER
+
+def inlinelinkhandler(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    #query.edit_message_text(text=f"Selected option: {query.data}")
+    #query.edit_message_reply_markup(reply_markup=ForceReply(selective=True) )
+    return PASSWORDPROMPT
+
+#def inlinelinkpassword(update: Update, context: CallbackContext) -> None:
+
+
 
 
 def register_command(update, context):
@@ -1450,7 +1501,7 @@ def get_chat_id(update, context):
 
 
 def main():
-    updater = Updater(keys.API_MAINKEY, use_context=True)
+    updater = Updater(keys.API_J, use_context=True)
     dp = updater.dispatcher
 
     j = updater.job_queue
@@ -1501,6 +1552,13 @@ def main():
         fallbacks=[CommandHandler('cancel', cancel)],
     ))
 
+    linkshandler = (ConversationHandler(
+        entry_points=[CommandHandler('links', links_command)],
+        states={PASSWORDPROMPT: [MessageHandler(Filters.all, linkpassword)],
+                PASSWORDVALIDATION:[MessageHandler(Filters.all, passwordvalidation)]},
+        fallbacks=[CommandHandler('cancel', cancel)],
+    ))
+
     dp.add_handler(CommandHandler("start", start_command))
     dp.add_handler(CommandHandler("help", help_command))
     # dp.add_handler(CommandHandler("schedule", schedule_command))
@@ -1509,6 +1567,7 @@ def main():
     dp.add_handler(editconvhandler)
     dp.add_handler(masterdeleteconvhandler)
     dp.add_handler(mastereditconvhandler)
+    dp.add_handler(linkshandler)
     dp.add_handler(CommandHandler("list", list_command))
     dp.add_handler(CommandHandler("apple", scheduletest))
     dp.add_handler(CommandHandler("masterlist", masterlist_command))
