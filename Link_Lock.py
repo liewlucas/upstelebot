@@ -3,27 +3,18 @@ import os
 import zipfile
 import hashlib, uuid, base64
 
-linkname = "Link Testing" #Purpose of Link (Name)
-pltname = "Parakeet"
-pltid = -473469885 #Platoon ID
-linktext = "https://i.pinimg.com/564x/94/17/71/9417719e082284d1bef1b943956cdd96.jpg" #Link
+linkname = "" #Purpose of Link (Name)
+pltname = "" #Name of Platoon
+pltid = "" #Platoon ID
+linktext = "" #Link
 
 # For Edits
-linkname_r = "Link Testing"
+linkname_r = ""
 usereditlinkname = ""
 pltname_r = ""
 pltid_r = ""
 linktext_r = ""
 
-RemName = ""
-IDchat = ""
-day_r = ""
-time_r = ""
-text_r = ""
-usercid_r = ""
-name_r = ""
-useredit_r = ""  #ReminderName Edits
-username_r = ""
 Inputs = []
 zip_db = "link_info.zip"
 zip = (base64.b64decode("Z3JlYXRndWFyZDEyMw==").decode("utf-8"))
@@ -154,7 +145,7 @@ def link_edit_Link(dataed):
             if dataed[ed]['LinkName'] == linkname_r:
                 updateflag = True
                 #Fill list[dictionary] with user input parameters
-                dataed[ed]['LinkText'] = linktext   #useredit Time
+                dataed[ed]['LinkText'] = linktext_r  #useredit Time
                 bedits_T = json.dumps(dataed, indent=2).encode('utf-8')
 
                 try:
@@ -249,9 +240,10 @@ def link_edit_Plt(dataed):
 
 
 link_check(zip_db)
-link_read()
-link_update(Inputs)
+#link_read()
+#link_update(Inputs)
 #link_del(Inputs)
-#link_edit_Name(Inputs)
+
 #link_edit_Link(Inputs)
 #link_edit_Plt(Inputs)
+#link_edit_Name(Inputs)
