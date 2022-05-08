@@ -7,7 +7,7 @@ pltname = "" #Name of Platoon
 passw = "" #respective platoon pw
 
 
-# For Deletes
+# For Edits/Deletes
 pltname_r = ""
 passw_r = ""
 
@@ -100,9 +100,44 @@ def pw_del(datadel):
                 break
 
 
+def pw_edit(dataed):
+    with zipfile.ZipFile(zip_db) as zefile:
+        global bedits_D
+        global updateflag
+        updateflag = False
+        for ed in range(len(dataed)):
+            if dataed[ed]['PltName'] == pltname_r:
+                # Fill list[dictionary] with user input parameters
+                updateflag = True
+                dataed[ed]['Password'] = passw_r  #usereditDay
+                bedits_D = json.dumps(dataed, indent=2).encode('utf-8')
+
+                try:
+                    with zipfile.ZipFile(zip_db, 'w') as zwfile:
+                        zwfile.writestr(zefile.namelist()[-1], bedits_D)
+                        zwfile.close()
+                        print("Data Edited")
+                        print(dataed)
+
+
+                # Checking for invalid/Non-dictionary DB
+                except AttributeError:
+                    print("AE!")
+
+                except IndexError:
+                    print("IE!")
+
+                except NameError:
+                    print("NE!")
+
+    if updateflag == False:
+        print("No matching Reminder!")
+
+
 
 #pw_check()
 #pw_read()
 #pw_update(Inputs)
 #pw_del(Inputs)
+#pw_edit(Inputs)
 
