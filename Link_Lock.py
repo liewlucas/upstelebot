@@ -5,14 +5,12 @@ import hashlib, uuid, base64
 
 linkname = "" #Purpose of Link (Name)
 pltname = "" #Name of Platoon
-pltid = "" #Platoon ID
 linktext = "" #Link
 
 # For Edits
 linkname_r = ""
 usereditlinkname = ""
 pltname_r = ""
-pltid_r = ""
 linktext_r = ""
 
 Inputs = []
@@ -64,7 +62,7 @@ def link_read():
 def link_update(newdata):
     with zipfile.ZipFile(zip_db) as zfile:
         try:
-            newdata.append({"LinkName": linkname, "PltName": pltname, "PltID": pltid, "LinkText": linktext})
+            newdata.append({"LinkName": linkname, "PltName": pltname, "LinkText": linktext})
             dict_append = json.dumps(newdata, indent=2).encode('utf-8')
             with zipfile.ZipFile(zip_db, 'w') as zwfile:
                 zwfile.writestr(zfile.namelist()[-1], dict_append)
@@ -178,7 +176,6 @@ def link_edit_Plt(dataed):
                 # Fill list[dictionary] with user input parameters
                 updateflag = True
                 dataed[ed]['PltName'] = pltname_r  # user edit for platoon name
-                dataed[ed]['PltID'] = pltid_r  # platoon name coorelates to relevant group chat id
                 bedits_D = json.dumps(dataed, indent=2).encode('utf-8')
 
                 try:
