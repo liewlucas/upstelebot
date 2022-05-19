@@ -27,8 +27,8 @@ print("Bot started...")
 
 logger = logging.getLogger(__name__)
 
-ADDLINKTEXT,ADDLINKNAME,ADDLINKSVALIDATION,ADDLINKS,PASSWORDVALIDATION,PASSWORDPROMPT,LINKHANDLER,MASTEREDITCON, MASTEREDITINDB, MASTEREDITCHOICE, MASTEREDIT, MASTERDELETE, EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE, REGISTER = range(
-    23)
+DELETELINKCONFIRM,DELETELINKVALIDATION,DELETELINKS,ADDLINKTEXT,ADDLINKNAME,ADDLINKSVALIDATION,ADDLINKS,PASSWORDVALIDATION,PASSWORDPROMPT,LINKHANDLER,MASTEREDITCON, MASTEREDITINDB, MASTEREDITCHOICE, MASTEREDIT, MASTERDELETE, EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE, REGISTER = range(
+    26)
 
 "------------------STARTING COMMANDS ------------------------"
 
@@ -43,229 +43,117 @@ def start_command(update, context):
     update.message.reply_text(
         "Parakeet is a Bot to help you with your scheduling needs! A simple registration is all it takes to do so. \n\nTo get started, simply type /help to view all operational commands \U0001F4C4")
 
+'---------- VIEW  LINKS -------------'
 
 def links_command(update,context):
-    reply_keyboard = [['A1', 'A2'], ['B1', 'B2']]
-    update.message.reply_text("Please Select which links you would like to view", reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
+    pwl.pw_read()
+    namelist = []
+    for pltname, pltpassword in sorted(
+            [(d['PltName'], d['Password']) for d in pwl.Inputs], key=lambda t: t[1]):
+        platoonName= str(pltname)
+        namelist.append(platoonName)
+    stringreply = "Please Select which Links you would like to access"
+    #reply_keyboard = [['A1', 'A2'], ['B1', 'B2']]
+    #n =0
+    #for name in namelist:
+        #namelistfirstitem = namelist[n]
+        #namelistnext = namelist[n+1]
+    reply_keyboard = [[name] for name in namelist]
+    update.message.reply_text(stringreply, reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
     return PASSWORDPROMPT
 
 def linkpassword(update,context):
     global platoon
     platoon = update.message.text
     update.message.reply_text("Please Enter Password for " + platoon +  " :", reply_markup=ForceReply(selective=True))
-    global A1Password
-    A1Password = "1000"
-    global A2Password
-    A2Password = "2000"
-    global B1Password
-    B1Password = "3000"
-    global B2Password
-    B2Password = "4000"
     return PASSWORDVALIDATION
 
 def passwordvalidation(update,context):
     userchatid= update.message.chat.id
     messageid = update.message.message_id
     passwordfromuser = update.message.text
-    if(platoon == "A1"):
-        LL.link_read()
-        if(passwordfromuser == A1Password):
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Password Verified!")
-            replylist=[]
-            for linkname, pltname, linktext in sorted(
-                    [(d['LinkName'], d['PltName'], d['LinkText']) for d in LL.Inputs], key=lambda t: t[1]):
-                nameplt = str(pltname)
-                namelink=str(linkname)
-                textlink=str(linktext)
-                if (platoon == nameplt):
-                    stringreply = "Name: " + namelink + "\nLink: " + textlink + "\n\n"  # crafting string
-                    replylist.append(stringreply)
+    LL.link_read()
+    pwl.pw_read()
+    for pltname, pltpassword in sorted(
+            [(d['PltName'], d['Password']) for d in pwl.Inputs], key=lambda t: t[1]):
+        if(platoon == pltname):
+            if(passwordfromuser == pltpassword):
+                tb.deleteMessage(userchatid, messageid)
+                update.message.reply_text("Password Verified!")
+                replylist=[]
+                for linkname, pltname, linktext in sorted(
+                        [(d['LinkName'], d['PltName'], d['LinkText']) for d in LL.Inputs], key=lambda t: t[1]):
+                    nameplt = str(pltname)
+                    namelink=str(linkname)
+                    textlink=str(linktext)
+                    if (platoon == nameplt):
+                        stringreply = "Name: " + namelink + "\nLink: " + textlink + "\n\n"  # crafting string
+                        replylist.append(stringreply)
 
-            if not replylist:
-                update.message.reply_text("Apologies, Your Platoon currently does not have any links set.")
-                return ConversationHandler.END
+                if not replylist:
+                    update.message.reply_text("Apologies, Your Platoon currently does not have any links set.")
+                    return ConversationHandler.END
 
+                else:
+                    replydata = "Here are the links for " + platoon + "!\n\n" + "".join(replylist)
+                    update.message.reply_text(replydata)
+                    return ConversationHandler.END
             else:
-                replydata = "Here are the links for " + platoon + "!\n\n" + "".join(replylist)
-                update.message.reply_text(replydata)
-                return ConversationHandler.END
-        else:
-            update.message.reply_text("Wrong Password! Try Again!")
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Please Enter Password for " + platoon + " :",
-                                      reply_markup=ForceReply(selective=True))
-            return PASSWORDVALIDATION
+                update.message.reply_text("Wrong Password! Try Again!")
+                tb.deleteMessage(userchatid, messageid)
+                update.message.reply_text("Please Enter Password for " + platoon + " :",
+                                          reply_markup=ForceReply(selective=True))
+                return PASSWORDVALIDATION
 
-    if (platoon == "A2"):
-        LL.link_read()
-        if (passwordfromuser == A2Password):
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Password Verified!")
-            replylist = []
-            for linkname, pltname, linktext in sorted(
-                    [(d['LinkName'], d['PltName'], d['LinkText']) for d in LL.Inputs], key=lambda t: t[1]):
-                nameplt = str(pltname)
-                namelink = str(linkname)
-                textlink = str(linktext)
-                if (platoon == nameplt):
-                    stringreply = "Name: " + namelink + "\nLink: " + textlink + "\n\n"  # crafting string
-                    replylist.append(stringreply)
-
-            if not replylist:
-                update.message.reply_text("Apologies, Your Platoon currently does not have any links set.")
-                return ConversationHandler.END
-
-            else:
-                replydata = "Here are the links for " + platoon + "!\n\n" + "".join(replylist)
-                update.message.reply_text(replydata)
-                return ConversationHandler.END
-
-        else:
-            update.message.reply_text("Wrong Password! Try Again!")
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Please Enter Password for " + platoon + " :",
-                                      reply_markup=ForceReply(selective=True))
-            return PASSWORDVALIDATION
-
-    if (platoon == "B1"):
-        LL.link_read()
-        if (passwordfromuser == B1Password):
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Password Verified!")
-            replylist = []
-            for linkname, pltname, linktext in sorted(
-                    [(d['LinkName'], d['PltName'], d['LinkText']) for d in LL.Inputs], key=lambda t: t[1]):
-                nameplt = str(pltname)
-                namelink = str(linkname)
-                textlink = str(linktext)
-                if (platoon == nameplt):
-                    stringreply = "Name: " + namelink + "\nLink: " + textlink + "\n\n"  # crafting string
-                    replylist.append(stringreply)
-
-            if not replylist:
-                update.message.reply_text("Apologies, Your Platoon currently does not have any links set.")
-                return ConversationHandler.END
-
-            else:
-                replydata = "Here are the links for " + platoon + "!\n\n" + "".join(replylist)
-                update.message.reply_text(replydata)
-                return ConversationHandler.END
-        else:
-            update.message.reply_text("Wrong Password! Try Again!")
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Please Enter Password for " + platoon + " :",
-                                      reply_markup=ForceReply(selective=True))
-            return PASSWORDVALIDATION
-
-    if (platoon == "B2"):
-        LL.link_read()
-        if (passwordfromuser == B2Password):
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Password Verified!")
-            replylist = []
-            for linkname, pltname, linktext in sorted(
-                    [(d['LinkName'], d['PltName'], d['LinkText']) for d in LL.Inputs], key=lambda t: t[1]):
-                nameplt = str(pltname)
-                namelink = str(linkname)
-                textlink = str(linktext)
-                if (platoon == nameplt):
-                    stringreply = "Name: " + namelink + "\nLink: " + textlink + "\n\n"  # crafting string
-                    replylist.append(stringreply)
-
-            if not replylist:
-                update.message.reply_text("Apologies, Your Platoon currently does not have any links set.")
-                return ConversationHandler.END
-
-            else:
-                replydata = "Here are the links for " + platoon + "!\n\n" + "".join(replylist)
-                update.message.reply_text(replydata)
-                return ConversationHandler.END
-        else:
-            update.message.reply_text("Wrong Password! Try Again!")
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Please Enter Password for " + platoon + " :",
-                                      reply_markup=ForceReply(selective=True))
-            return PASSWORDVALIDATION
+'---------- ADD LINKS -------------'
 
 def add_links(update,context):
-    reply_keyboard = [['A1', 'A2'], ['B1', 'B2']]
-    update.message.reply_text("Please Select which Platoon you would like to add links to.",
+    pwl.pw_read()
+    namelist = []
+    for pltname, pltpassword in sorted(
+            [(d['PltName'], d['Password']) for d in pwl.Inputs], key=lambda t: t[1]):
+        platoonName = str(pltname)
+        namelist.append(platoonName)
+    stringreply = "Please Select which Platoon you would like to add links to."
+    # reply_keyboard = [['A1', 'A2'], ['B1', 'B2']]
+    # n =0
+    # for name in namelist:
+    # namelistfirstitem = namelist[n]
+    # namelistnext = namelist[n+1]
+    reply_keyboard = [[name] for name in namelist]
+    update.message.reply_text(stringreply,
                               reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
+
     return ADDLINKS
 
 def addlinkpassword(update,context):
     global addlinkplatoon
     addlinkplatoon = str(update.message.text)
     update.message.reply_text("Please Enter Password for " + addlinkplatoon + " :", reply_markup=ForceReply(selective=True))
-    global A1Password
-    A1Password = "1000"
-    global A2Password
-    A2Password = "2000"
-    global B1Password
-    B1Password = "3000"
-    global B2Password
-    B2Password = "4000"
+
     return ADDLINKSVALIDATION
 
 def addinglinkname(update,context):
     userchatid = update.message.chat.id
     messageid = update.message.message_id
     passwordfromuser=str(update.message.text)
-    if (addlinkplatoon == "A1"):
-        if (passwordfromuser == A1Password):
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Password Verified!")
-            update.message.reply_text("Please enter a Friendly Name for the Link.",reply_markup=ForceReply(selective=True))
-            return ADDLINKNAME
-        else:
-            update.message.reply_text("Wrong Password! Try Again!")
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Please Enter Password for " + addlinkplatoon + " :",
-                                      reply_markup=ForceReply(selective=True))
-            return ADDLINKSVALIDATION
-
-    if (addlinkplatoon == "A2"):
-        if (passwordfromuser == A2Password):
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Password Verified!")
-            update.message.reply_text("Please enter a Friendly Name for the Link.",
-                                      reply_markup=ForceReply(selective=True))
-            return ADDLINKNAME
-        else:
-            update.message.reply_text("Wrong Password! Try Again!")
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Please Enter Password for " + addlinkplatoon + " :",
-                                      reply_markup=ForceReply(selective=True))
-            return ADDLINKSVALIDATION
-
-    if (addlinkplatoon == "B1"):
-        if (passwordfromuser == B1Password):
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Password Verified!")
-            update.message.reply_text("Please enter a Friendly Name for the Link.",
-                                      reply_markup=ForceReply(selective=True))
-            return ADDLINKNAME
-        else:
-            update.message.reply_text("Wrong Password! Try Again!")
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Please Enter Password for " + addlinkplatoon + " :",
-                                      reply_markup=ForceReply(selective=True))
-            return ADDLINKSVALIDATION
-
-    if (addlinkplatoon == "B2"):
-        if (passwordfromuser == B2Password):
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Password Verified!")
-            update.message.reply_text("Please enter a Friendly Name for the Link.",
-                                      reply_markup=ForceReply(selective=True))
-            return ADDLINKNAME
-        else:
-            update.message.reply_text("Wrong Password! Try Again!")
-            tb.deleteMessage(userchatid, messageid)
-            update.message.reply_text("Please Enter Password for " + addlinkplatoon + " :",
-                                      reply_markup=ForceReply(selective=True))
-            return ADDLINKSVALIDATION
+    LL.link_read()
+    pwl.pw_read()
+    for pltname, pltpassword in sorted(
+            [(d['PltName'], d['Password']) for d in pwl.Inputs], key=lambda t: t[1]):
+        if(addlinkplatoon == pltname):
+            if(passwordfromuser == pltpassword):
+                tb.deleteMessage(userchatid, messageid)
+                update.message.reply_text("Password Verified!")
+                update.message.reply_text("Please enter a Friendly Name for the Link.",
+                                          reply_markup=ForceReply(selective=True))
+                return ADDLINKNAME
+            else:
+                update.message.reply_text("Wrong Password! Try Again!")
+                tb.deleteMessage(userchatid, messageid)
+                update.message.reply_text("Please Enter Password for " + addlinkplatoon + " :",
+                                          reply_markup=ForceReply(selective=True))
+                return ADDLINKSVALIDATION
 
 def addinglinktext(update,context):
     global userlinkname
@@ -292,6 +180,91 @@ def addlinkdata(update,context):
 
     replydata = "Link Added! \nHere are the updated links for " + addlinkplatoon + "!\n\n" + "".join(replylist)
     update.message.reply_text(replydata)
+    return ConversationHandler.END
+
+'---------- DELETE LINKS -------------'
+
+def delete_links(update,context):
+    pwl.pw_read()
+    namelist = []
+    for pltname, pltpassword in sorted(
+            [(d['PltName'], d['Password']) for d in pwl.Inputs], key=lambda t: t[1]):
+        platoonName = str(pltname)
+        namelist.append(platoonName)
+    stringreply = "Please Select which Platoon you would like to delete links for."
+    # reply_keyboard = [['A1', 'A2'], ['B1', 'B2']]
+    # n =0
+    # for name in namelist:
+    # namelistfirstitem = namelist[n]
+    # namelistnext = namelist[n+1]
+    reply_keyboard = [[name] for name in namelist]
+    update.message.reply_text(stringreply,
+                              reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
+
+    return DELETELINKS
+
+def deletelinkvalidation(update,context):
+    global deletelinkplatoon
+    deletelinkplatoon = str(update.message.text)
+    update.message.reply_text("Please Enter Password for " + deletelinkplatoon + " :",
+                              reply_markup=ForceReply(selective=True))
+
+    return DELETELINKVALIDATION
+
+def deletelinkconfirm(update,context):
+    userchatid = update.message.chat.id
+    messageid = update.message.message_id
+    passwordfromuser=str(update.message.text)
+    LL.link_read()
+    pwl.pw_read()
+    for pltname, pltpassword in sorted(
+            [(d['PltName'], d['Password']) for d in pwl.Inputs], key=lambda t: t[1]):
+        if(deletelinkplatoon == pltname):
+            if(passwordfromuser == pltpassword):
+                tb.deleteMessage(userchatid, messageid)
+                update.message.reply_text("Password Verified!")
+                linklist = []
+                for linkname, pltname, linktext in sorted(
+                        [(d['LinkName'], d['PltName'], d['LinkText']) for d in LL.Inputs], key=lambda t: t[1]):
+                    if(deletelinkplatoon == pltname):
+                        linklist.append(linkname)
+                if not linklist:
+                    update.message.reply_text("Apologies, Your Platoon currently does not have any links set.")
+                    return ConversationHandler.END
+
+                else:
+                    reply_keyboard = [[link] for link in linklist]
+                    update.message.reply_text("Please select which link you would like to delete",
+                                              reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
+                    return DELETELINKCONFIRM
+
+            else:
+                update.message.reply_text("Wrong Password! Try Again!")
+                tb.deleteMessage(userchatid, messageid)
+                update.message.reply_text("Please Enter Password for " + deletelinkplatoon + " :",
+                                          reply_markup=ForceReply(selective=True))
+                return DELETELINKVALIDATION
+
+def deletelinkdb(update,context):
+    linkfromuser = str(update.message.text)
+    LL.link_read()
+    LL.linkname_r = linkfromuser
+    LL.link_del(LL.Inputs)
+    replylist = []
+    for linkname, pltname, linktext in sorted(
+            [(d['LinkName'], d['PltName'], d['LinkText']) for d in LL.Inputs], key=lambda t: t[1]):
+        nameplt = str(pltname)
+        namelink = str(linkname)
+        textlink = str(linktext)
+        if (deletelinkplatoon == nameplt):
+            stringreply = "Name: " + namelink + "\nLink: " + textlink + "\n\n"  # crafting string
+            replylist.append(stringreply)
+
+    if not replylist:
+        update.message.reply_text("Your Reminder has been deleted and you currently do not have any Reminders.")
+    else:
+        replydata = "Link Deleted! \nHere are the updated links for " + deletelinkplatoon + "!\n\n" + "".join(replylist)
+        update.message.reply_text(replydata)
     return ConversationHandler.END
 
 
@@ -1794,6 +1767,13 @@ def main():
                 ADDLINKTEXT:[MessageHandler(Filters.all, addlinkdata)]},
         fallbacks=[CommandHandler('cancel', cancel)],
     ))
+    deletelinkhandler = (ConversationHandler(
+        entry_points=[CommandHandler('deletelinks', delete_links)],
+        states={DELETELINKS: [MessageHandler(Filters.all, deletelinkvalidation)],
+                DELETELINKVALIDATION: [MessageHandler(Filters.all, deletelinkconfirm)],
+                DELETELINKCONFIRM: [MessageHandler(Filters.all, deletelinkdb)]},
+        fallbacks=[CommandHandler('cancel', cancel)],
+    ))
 
     dp.add_handler(CommandHandler("start", start_command))
     dp.add_handler(CommandHandler("help", help_command))
@@ -1805,6 +1785,7 @@ def main():
     dp.add_handler(mastereditconvhandler)
     dp.add_handler(linkshandler)
     dp.add_handler(addlinkhandler)
+    dp.add_handler(deletelinkhandler)
     dp.add_handler(CommandHandler("list", list_command))
     dp.add_handler(CommandHandler("apple", scheduletest))
     dp.add_handler(CommandHandler("masterlist", masterlist_command))
