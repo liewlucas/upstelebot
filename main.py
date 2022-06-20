@@ -742,7 +742,7 @@ def main():
 
         updater.start_polling(0)  # seconds on how often bot check for input
         updater.idle()
-#jdsk
+#
 
 main()
 
