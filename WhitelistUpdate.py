@@ -2,33 +2,34 @@ import json
 import os
 
 
-dict_db = "db_whitelist"
+wl_db = "db_whitelist"
+Masterexecutive = ("liewlucass", "xnegate")
 grpchatid = ""
 grpchatname = ""
 grpusername = ""
 Inputs = []
 
 
-def dict_check(Fname=dict_db):
+def wl_check(Fname=wl_db):
     # Checking if file exist, then creating if it does not
     if not os.path.isfile(Fname):
         print('File does not exist\nCreating New File')
-        udb = open(dict_db, 'w')
+        udb = open(wl_db, 'w')
         print(Fname)
         udb.close()
 
 
 # Function to read file database
-def dict_read():
+def wl_read():
     try:
-        udb = open(dict_db, "r")
+        udb = open(wl_db, "r")
     except:
-        dict_check()
-        dict_read()
+        wl_check()
+        wl_read()
 
     # Loading json format list from file database
     try:
-        with open(dict_db, 'r') as fr:
+        with open(wl_db, 'r') as fr:
             global Inputs
             Inputs = json.load(fr)
             print(Inputs)
@@ -41,8 +42,8 @@ def dict_read():
     except:
         return []
 
-def dict_update(newdata):
-    with open(dict_db, 'w') as fr:
+def whitelist_reg(newdata):
+    with open(wl_db, 'w') as fr:
         Inputs.append({'CHATID': grpchatid , 'GRPNAME': grpchatname, 'USER': grpusername })
         # indent=2 is not needed but makes the file human-readable
         json.dump(newdata, fr, indent=2)

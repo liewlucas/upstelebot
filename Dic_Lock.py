@@ -10,7 +10,7 @@ time_r = ""
 text_r = ""
 usercid_r = ""
 name_r = ""
-useredit_r = ""
+useredit_r = ""  #ReminderName Edits
 username_r = ""
 ID_List = []
 Inputs = []
@@ -46,7 +46,7 @@ def dict_lock_read():
             zip_inputs = zfile.read(name=zfile.namelist()[-1], pwd=str.encode(zip))
             global Inputs
             Inputs = json.loads(zip_inputs.decode('utf-8)'))
-            print(Inputs)
+            #print(Inputs)
 
             # Checking if file database empty, creating list to input data
             if bool(Inputs):
@@ -72,155 +72,168 @@ def dict_lock_update(newdata):
 
         #Checking for invalid/Non-dictionary DB
         except AttributeError:
-            print('Invalid DB! Please add Valid DB to Zipfile to enable Update!')
+            print('Invalid DB! Please add Valid DB Text File to Zipfile to enable Update!')
 
 
 
 def dict_del(datadel):
     with zipfile.ZipFile(zip_db) as zfile:
         for i in range(len(datadel)):
-            if datadel[i]['IDitem'] == usercid_r:
-                if datadel[i]['ReminderName'] == name_r:
-                    del datadel[i]
-                    bdata = json.dumps(datadel, indent=2).encode('utf-8')
-                    try:
-                        with zipfile.ZipFile(zip_db, 'w') as zwfile:
-                            zwfile.writestr(zfile.namelist()[-1], bdata)
-                            zwfile.close()
-                            print(datadel)
+            if datadel[i]['ReminderName'] == name_r:
+                del datadel[i]
+                print("DELETED")
+                bdata = json.dumps(datadel, indent=2).encode('utf-8')
+                try:
+                    with zipfile.ZipFile(zip_db, 'w') as zwfile:
+                        zwfile.writestr(zfile.namelist()[-1], bdata)
+                        zwfile.close()
+                        print(datadel)
 
-                    # Checking for invalid/Non-dictionary DB
-                    except AttributeError:
-                        print('AE')
-                        return datadel
-                    except IndexError:
-                        print("IE")
-                        return datadel
-                    except NameError:
-                        print("NE")
-                        return datadel
-                    break
+                # Checking for invalid/Non-dictionary DB
+                except AttributeError:
+                    print("AE!")
 
-                # Checking for Invalid delete selection
-                else:
-                    print('Reminder to delete different from User Selection!')
-            # Checking for Invalid ID selecting delete
-            else:
-                print('')
+                except IndexError:
+                    print("IE!")
+
+                except NameError:
+                    print("NE!")
+                break
+
 
 #Edit Functions
 def lock_edit_Name(dataed):
     with zipfile.ZipFile(zip_db) as zefile:
         global bedits_N
+        global updateflag
+        updateflag = False
         for ed in range(len(dataed)):
-            if dataed[ed]['IDitem'] == usercid_r:
-                if dataed[ed]['ReminderName'] == name_r:
-                        #Fill list[dictionary] with user input parameters
-                        dataed[ed]['ReminderName'] = RemName  #usereditTime
-                        bedits_N = json.dumps(dataed, indent=2).encode('utf-8')
-                        break
+            if dataed[ed]['ReminderName'] == name_r :
+                #Fill list[dictionary] with user input parameters
+                updateflag = True
+                dataed[ed]['ReminderName'] = useredit_r  #useredit Name
+                bedits_N = json.dumps(dataed, indent=2).encode('utf-8')
 
-        try:
-            with zipfile.ZipFile(zip_db, 'w') as zwfile:
-                zwfile.writestr(zefile.namelist()[-1], bedits_N)
-                zwfile.close()
-                print(dataed)
+                try:
+                    with zipfile.ZipFile(zip_db, 'w') as zwfile:
+                        zwfile.writestr(zefile.namelist()[-1], bedits_N)
+                        zwfile.close()
+                        print("Data Edited")
+                        print(dataed)
 
-        # Checking for invalid/Non-dictionary DB
-        except AttributeError:
-            print("AE")
-            return dataed
-        except IndexError:
-            print("IE")
-            return dataed
-        except NameError:
-            print("NE")
-            return dataed
+                # Checking for invalid/Non-dictionary DB
+                except AttributeError:
+                    print("AE!")
+
+                except IndexError:
+                    print("IE!")
+
+                except NameError:
+                    print("NE!")
+
+    if updateflag == False:
+        print("No matching Reminder!")
 
 def lock_edit_Time(dataed):
     with zipfile.ZipFile(zip_db) as zefile:
         global bedits_T
+        global updateflag
+        updateflag = False
         for ed in range(len(dataed)):
-            if dataed[ed]['IDitem'] == usercid_r:
-                if dataed[ed]['ReminderName'] == name_r:
-                        #Fill list[dictionary] with user input parameters
-                        dataed[ed]['Time'] = time_r   #usereditReminderName
-                        bedits_T = json.dumps(dataed, indent=2).encode('utf-8')
-                        break
+            if dataed[ed]['ReminderName'] == name_r:
+                updateflag = True
+                #Fill list[dictionary] with user input parameters
+                dataed[ed]['Time'] = time_r   #useredit Time
+                bedits_T = json.dumps(dataed, indent=2).encode('utf-8')
 
-        try:
-            with zipfile.ZipFile(zip_db, 'w') as zwfile:
-                zwfile.writestr(zefile.namelist()[-1], bedits_T)
-                zwfile.close()
-                print(dataed)
+                try:
+                    with zipfile.ZipFile(zip_db, 'w') as zwfile:
+                        zwfile.writestr(zefile.namelist()[-1], bedits_T)
+                        zwfile.close()
+                        print("Data Edited")
+                        print(dataed)
 
-        # Checking for invalid/Non-dictionary DB
-        except AttributeError:
-            print("AE")
-            return dataed
-        except IndexError:
-            print("IE")
-            return dataed
-        except NameError:
-            print("NE")
-            return dataed
+                # Checking for invalid/Non-dictionary DB
+                except AttributeError:
+                    print("AE!")
+
+                except IndexError:
+                    print("IE!")
+
+                except NameError:
+                    print("NE!")
+
+    if updateflag == False:
+        print("No matching Reminder!")
 
 def lock_edit_Day(dataed):
     with zipfile.ZipFile(zip_db) as zefile:
         global bedits_D
+        global updateflag
+        updateflag = False
         for ed in range(len(dataed)):
-            if dataed[ed]['IDitem'] == usercid_r:
-                if dataed[ed]['ReminderName'] == name_r:
-                    # Fill list[dictionary] with user input parameters
-                    dataed[ed]['DAY'] = day_r  #usereditDay
-                    bedits_D = json.dumps(dataed, indent=2).encode('utf-8')
-                    break
+            if dataed[ed]['ReminderName'] == name_r:
+                # Fill list[dictionary] with user input parameters
+                updateflag = True
+                dataed[ed]['DAY'] = day_r  #usereditDay
+                bedits_D = json.dumps(dataed, indent=2).encode('utf-8')
 
-        try:
-            with zipfile.ZipFile(zip_db, 'w') as zwfile:
-                print(bedits_D)
-                zwfile.writestr(zefile.namelist()[-1], bedits_D)
-                zwfile.close()
-                print(dataed)
+                try:
+                    with zipfile.ZipFile(zip_db, 'w') as zwfile:
+                        zwfile.writestr(zefile.namelist()[-1], bedits_D)
+                        zwfile.close()
+                        print("Data Edited")
+                        print(dataed)
 
-        # Checking for invalid/Non-dictionary DB
-        except AttributeError:
-            print("AE")
-            return dataed
-        except IndexError:
-            print("IE")
-            return dataed
-        except NameError:
-            print("NE")
-            return dataed
+
+                # Checking for invalid/Non-dictionary DB
+                except AttributeError:
+                    print("AE!")
+
+                except IndexError:
+                    print("IE!")
+
+                except NameError:
+                    print("NE!")
+
+    if updateflag == False:
+        print("No matching Reminder!")
+
+
 
 def lock_edit_Text(dataed):
     with zipfile.ZipFile(zip_db) as zefile:
         global bedits_x
+        global updateflag
+        updateflag = False
         for ed in range(len(dataed)):
-            if dataed[ed]['IDitem'] == usercid_r:
-                if dataed[ed]['ReminderName'] == name_r:
-                    # Fill list[dictionary] with user input parameters
-                    dataed[ed]['Text'] = text_r  #usereditText
-                    bedits_x = json.dumps(dataed, indent=2).encode('utf-8')
-                    break
+            if dataed[ed]['ReminderName'] == name_r:
+                updateflag = True
+                # Fill list[dictionary] with user input parameters
+                dataed[ed]['Text'] = text_r  # useredit Time
+                bedits_x = json.dumps(dataed, indent=2).encode('utf-8')
 
-        try:
-            with zipfile.ZipFile(zip_db, 'w') as zwfile:
-                zwfile.writestr(zefile.namelist()[-1], bedits_x)
-                zwfile.close()
-                print(dataed)
+                try:
+                    with zipfile.ZipFile(zip_db, 'w') as zwfile:
+                        zwfile.writestr(zefile.namelist()[-1], bedits_x)
+                        zwfile.close()
+                        print("Data Edited")
+                        print(dataed)
 
-        # Checking for invalid/Non-dictionary DB
-        except AttributeError:
-            print("AE")
-            return dataed
-        except IndexError:
-            print("IE")
-            return dataed
-        except NameError:
-            print("NE")
-            return dataed
+
+                # Checking for invalid/Non-dictionary DB
+                except AttributeError:
+                    print("AE!")
+
+                except IndexError:
+                    print("IE!")
+
+                except NameError:
+                    print("NE!")
+
+    if updateflag == False:
+        print("No matching Reminder!")
+
 
 
 
