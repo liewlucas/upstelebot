@@ -28,8 +28,8 @@ print("Bot started...")
 
 logger = logging.getLogger(__name__)
 
-DELETELINKCONFIRM,DELETELINKVALIDATION,DELETELINKS,ADDLINKTEXT,ADDLINKNAME,ADDLINKSVALIDATION,ADDLINKS,PASSWORDVALIDATION,PASSWORDPROMPT,LINKHANDLER,MASTEREDITCON, MASTEREDITINDB, MASTEREDITCHOICE, MASTEREDIT, MASTERDELETE, EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE, REGISTER = range(
-    26)
+EDITLINKSDETAILS,EDITLINKSTYPE,EDITLINKSCONFIRM,EDITLINKSVALIDATION,EDITLINKS,DELETELINKCONFIRM,DELETELINKVALIDATION,DELETELINKS,ADDLINKTEXT,ADDLINKNAME,ADDLINKSVALIDATION,ADDLINKS,PASSWORDVALIDATION,PASSWORDPROMPT,LINKHANDLER,MASTEREDITCON, MASTEREDITINDB, MASTEREDITCHOICE, MASTEREDIT, MASTERDELETE, EDITCON, EDITINDB, EDITCHOICE, EDIT, GRP, DELETE, NAME, DAY, TIME, MESSAGE, REGISTER = range(
+    31)
 
 "------------------STARTING COMMANDS ------------------------"
 
@@ -115,7 +115,7 @@ def add_links(update,context):
             [(d['PltName'], d['Password']) for d in pwl.Inputs], key=lambda t: t[1]):
         platoonName = str(pltname)
         namelist.append(platoonName)
-    stringreply = "Please Select which Platoon you would like to add links to."
+    stringreply = "Please Select which Platoon you would like to ADD links to."
     # reply_keyboard = [['A1', 'A2'], ['B1', 'B2']]
     # n =0
     # for name in namelist:
@@ -192,7 +192,7 @@ def delete_links(update,context):
             [(d['PltName'], d['Password']) for d in pwl.Inputs], key=lambda t: t[1]):
         platoonName = str(pltname)
         namelist.append(platoonName)
-    stringreply = "Please Select which Platoon you would like to delete links for."
+    stringreply = "Please Select which Platoon you would like to DELETE links for."
     # reply_keyboard = [['A1', 'A2'], ['B1', 'B2']]
     # n =0
     # for name in namelist:
@@ -235,7 +235,7 @@ def deletelinkconfirm(update,context):
 
                 else:
                     reply_keyboard = [[link] for link in linklist]
-                    update.message.reply_text("Please select which link you would like to delete",
+                    update.message.reply_text("Please select which link you would like to DELETE",
                                               reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
                     return DELETELINKCONFIRM
 
@@ -268,9 +268,136 @@ def deletelinkdb(update,context):
         update.message.reply_text(replydata)
     return ConversationHandler.END
 
+'---------- EDIT LINKS -------------'
+
+def edit_links(update,context):
+    pwl.pw_read()
+    namelist = []
+    for pltname, pltpassword in sorted(
+            [(d['PltName'], d['Password']) for d in pwl.Inputs], key=lambda t: t[1]):
+        platoonName = str(pltname)
+        namelist.append(platoonName)
+    stringreply = "Please Select which Platoon you would like to EDIT links for."
+    # reply_keyboard = [['A1', 'A2'], ['B1', 'B2']]
+    # n =0
+    # for name in namelist:
+    # namelistfirstitem = namelist[n]
+    # namelistnext = namelist[n+1]
+    reply_keyboard = [[name] for name in namelist]
+    update.message.reply_text(stringreply,
+                              reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
+
+    return EDITLINKS
+
+def editlinkvalidation(update,context):
+    global editlinkplatoon
+    editlinkplatoon = str(update.message.text)
+    update.message.reply_text("Please Enter Password for " + editlinkplatoon + " :",
+                              reply_markup=ForceReply(selective=True))
+
+    return EDITLINKSVALIDATION
+
+def editlinkconfirm(update,context):
+    userchatid = update.message.chat.id
+    messageid = update.message.message_id
+    passwordfromuser = str(update.message.text)
+    LL.link_read()
+    pwl.pw_read()
+    for pltname, pltpassword in sorted(
+            [(d['PltName'], d['Password']) for d in pwl.Inputs], key=lambda t: t[1]):
+        if (editlinkplatoon == pltname):
+            if (passwordfromuser == pltpassword):
+                tb.deleteMessage(userchatid, messageid)
+                update.message.reply_text("Password Verified!")
+                linklist = []
+                for linkname, pltname, linktext in sorted(
+                        [(d['LinkName'], d['PltName'], d['LinkText']) for d in LL.Inputs], key=lambda t: t[1]):
+                    if (editlinkplatoon == pltname):
+                        linklist.append(linkname)
+                if not linklist:
+                    update.message.reply_text("Apologies, Your Platoon currently does not have any links set.")
+                    return ConversationHandler.END
+
+                else:
+                    reply_keyboard = [[link] for link in linklist]
+                    update.message.reply_text("Please select which link you would like to EDIT",
+                                              reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True,
+                                                                               selective=True))
+                    return EDITLINKSCONFIRM
+
+            else:
+                update.message.reply_text("Wrong Password! Try Again!")
+                tb.deleteMessage(userchatid, messageid)
+                update.message.reply_text("Please Enter Password for " + editlinkplatoon + " :",
+                                          reply_markup=ForceReply(selective=True))
+                return EDITLINKSVALIDATION
+
+def editlinktype(update,context):
+    global userselectlinkname
+    userselectlinkname = str(update.message.text)
+    reply_keyboard = [["Link Name"], ["Link Text"]]
+    update.message.reply_text("Please Select which Field would you like to EDIT.",
+                              reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
+    return EDITLINKSTYPE
 
 
+def editlinkdetails(update,context):
+    global editlinktype
+    editlinktype = str(update.message.text)
+    update.message.reply_text("Please Enter the new details for: " + editlinktype + ".",
+                              reply_markup=ForceReply(selective=True))
+    return EDITLINKSDETAILS
 
+def editlinkdb(update,context):
+    linkdetails = str(update.message.text)
+    LL.link_read()
+    if(editlinktype == "Link Name"):
+        LL.link_read()
+        LL.linkname_r = userselectlinkname
+        LL.usereditlinkname = linkdetails
+        LL.link_edit_Name(LL.Inputs)
+        replylist = []
+        for linkname, pltname, linktext in sorted(
+                [(d['LinkName'], d['PltName'], d['LinkText']) for d in LL.Inputs], key=lambda t: t[1]):
+            nameplt = str(pltname)
+            namelink = str(linkname)
+            textlink = str(linktext)
+            if (editlinkplatoon == nameplt):
+                stringreply = "Name: " + namelink + "\nLink: " + textlink + "\n\n"  # crafting string
+                replylist.append(stringreply)
+
+        if not replylist:
+            update.message.reply_text("Your Platoon has no Links.")
+        else:
+            replydata = "Link Edited! \nHere are the updated links for " + editlinkplatoon + "!\n\n" + "".join(
+                replylist)
+            update.message.reply_text(replydata)
+
+            return ConversationHandler.END
+
+    if(editlinktype == "Link Text"):
+        LL.link_read()
+        LL.linkname_r= userselectlinkname
+        LL.linktext_r = linkdetails
+        LL.link_edit_Link(LL.Inputs)
+
+        replylist = []
+        for linkname, pltname, linktext in sorted(
+                [(d['LinkName'], d['PltName'], d['LinkText']) for d in LL.Inputs], key=lambda t: t[1]):
+            nameplt = str(pltname)
+            namelink = str(linkname)
+            textlink = str(linktext)
+            if (editlinkplatoon == nameplt):
+                stringreply = "Name: " + namelink + "\nLink: " + textlink + "\n\n"  # crafting string
+                replylist.append(stringreply)
+
+        if not replylist:
+            update.message.reply_text("Your Platoon has no Links.")
+        else:
+            replydata = "Link Edited! \nHere are the updated links for " + editlinkplatoon + "!\n\n" + "".join(replylist)
+            update.message.reply_text(replydata)
+
+    return ConversationHandler.END
 
 def Inlinelinks_command(update, context):
     keyboard =[
@@ -1775,6 +1902,15 @@ def main():
                 DELETELINKCONFIRM: [MessageHandler(Filters.all, deletelinkdb)]},
         fallbacks=[CommandHandler('cancel', cancel)],
     ))
+    editlinkhandler = (ConversationHandler(
+        entry_points=[CommandHandler('editlinks', edit_links)],
+        states={EDITLINKS: [MessageHandler(Filters.all, editlinkvalidation)],
+                EDITLINKSVALIDATION: [MessageHandler(Filters.all, editlinkconfirm)],
+                EDITLINKSCONFIRM: [MessageHandler(Filters.all, editlinktype)],
+                EDITLINKSTYPE:[MessageHandler(Filters.all, editlinkdetails)],
+                EDITLINKSDETAILS: [MessageHandler(Filters.all, editlinkdb)]},
+        fallbacks=[CommandHandler('cancel', cancel)],
+    ))
 
     dp.add_handler(CommandHandler("start", start_command))
     dp.add_handler(CommandHandler("help", help_command))
@@ -1787,6 +1923,7 @@ def main():
     dp.add_handler(linkshandler)
     dp.add_handler(addlinkhandler)
     dp.add_handler(deletelinkhandler)
+    dp.add_handler(editlinkhandler)
     dp.add_handler(CommandHandler("list", list_command))
     dp.add_handler(CommandHandler("apple", scheduletest))
     dp.add_handler(CommandHandler("masterlist", masterlist_command))
