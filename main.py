@@ -62,7 +62,7 @@ def links_command(update,context):
     reply_keyboard = [[name] for name in namelist]
     update.message.reply_text(stringreply, reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True, selective=True))
     return PASSWORDPROMPT
-
+#updated 20 jun
 def linkpassword(update,context):
     global platoon
     platoon = update.message.text
