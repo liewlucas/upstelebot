@@ -18,7 +18,7 @@ import admindb_lock as adml
 
 now = datetime.now()
 current_time = now.strftime("%H:%M:%S")
-tb = telegram.Bot(token = keys.API_J)
+tb = telegram.Bot(token = keys.API_WHALEMINDER_KEY)
 
 
 print("Current Time =", current_time)
@@ -33,16 +33,15 @@ EDITLINKSDETAILS,EDITLINKSTYPE,EDITLINKSCONFIRM,EDITLINKSVALIDATION,EDITLINKS,DE
 
 "------------------STARTING COMMANDS ------------------------"
 
-
 def start_command(update, context):
     keyboard = []
-    text = "ILkeyboard"
-    callback = "nothing"
-    reply_button = InlineKeyboardMarkup(keyboard)
+    text = "WhaleTastic!"
+    callback = "nothing"  # Use a unique identifier for the callback
     keyboard.append([InlineKeyboardButton(text, callback_data=callback)])
-    update.message.reply_text("Welcome to the Parakeet! \U0001F917", reply_markup= reply_button)
+    reply_button = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text("Welcome to the Whaleminder! \U0001F433", reply_markup=reply_button)
     update.message.reply_text(
-        "Parakeet is a Bot to help you with your scheduling needs! A simple registration is all it takes to do so. \n\nTo get started, simply type /help to view all operational commands \U0001F4C4")
+        "Whaleminder is a Bot to help you with your scheduling needs! A simple registration is all it takes to do so. \n\nTo get started, simply type /help to view all operational commands \U0001F4C4")
 
 '---------- VIEW  LINKS -------------'
 
@@ -1829,7 +1828,7 @@ def get_chat_id(update, context):
 
 
 def main():
-    updater = Updater(keys.API_MAINKEY, use_context=True)
+    updater = Updater(keys.API_WHALEMINDER_KEY, use_context=True)
     dp = updater.dispatcher
 
     j = updater.job_queue
