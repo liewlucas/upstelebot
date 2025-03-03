@@ -3,6 +3,7 @@ import os
 
 
 wl_db = "db_whitelist"
+Masterexecutive = ("liewlucass", "xnegate")
 grpchatid = ""
 grpchatname = ""
 grpusername = ""

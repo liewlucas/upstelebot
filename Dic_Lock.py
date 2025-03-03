@@ -14,7 +14,7 @@ useredit_r = ""  #ReminderName Edits
 username_r = ""
 ID_List = []
 Inputs = []
-zip_db = "/Users/lucas/Desktop/lucas/Telegram Bot/upstelebot/db_info.zip"
+zip_db = "db_info.zip"
 zip = (base64.b64decode("Z3JlYXRndWFyZDEyMw==").decode("utf-8"))
 salt = str.encode(uuid.uuid4().hex)
 Pass = hashlib.sha512(zip.encode('utf-8') + salt).hexdigest()

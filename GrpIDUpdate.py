@@ -7,7 +7,8 @@ grpchatid = ""
 grpchatname = ""
 grpusername = ""
 Inputs = []
-
+userlist = []
+Repcheck = True
 
 def dict_check(Fname=dict_db):
     # Checking if file exist, then creating if it does not
@@ -43,7 +44,29 @@ def dict_read():
 
 def dict_update(newdata):
     with open(dict_db, 'w') as fr:
-        Inputs.append({'CHATID': grpchatid , 'GRPNAME': grpchatname, 'USER': grpusername })
+        userlist.append(grpusername)
+        if not newdata:
+            newdata.append({'CHATID': grpchatid, 'GRPNAME': grpchatname, 'USER': userlist})
+        else:
+            for chatid, groupname, username in sorted([(d['CHATID'], d['GRPNAME'], d['USER']) for d in newdata]):
+                if(chatid == grpchatid and grpusername in username):
+                    print("Already Registered")
+                    break
+
+                else:
+                    if (chatid == grpchatid and grpusername not in username):
+                        username.append(grpusername)
+                        Repcheck = True
+                        break
+                    else:
+                        Repcheck = False
+
+
+            if(Repcheck == False):
+                Inputs.append({'CHATID': grpchatid, 'GRPNAME': grpchatname, 'USER': userlist})
+
+
+
         # indent=2 is not needed but makes the file human-readable
         json.dump(newdata, fr, indent=2)
         print(Inputs)
