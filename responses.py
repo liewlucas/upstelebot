@@ -1,6 +1,6 @@
 import time
 from datetime import datetime
-from telegram import bot
+from telegram import Bot
 
 
 now = datetime.now()
